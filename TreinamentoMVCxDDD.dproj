@@ -102,6 +102,26 @@
             <Form>FrmCadCliente</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="src\infrastructure\persistence\repositories\ClienteRepository.pas"/>
+        <DCCReference Include="src\infrastructure\persistence\databases\ConexaoAdapter.pas"/>
+        <DCCReference Include="src\infrastructure\persistence\databases\ConexaoSingleton.pas"/>
+        <DCCReference Include="src\infrastructure\persistence\databases\DatabaseConnection.pas"/>
+        <DCCReference Include="src\infrastructure\persistence\databases\IConexao.Database.pas"/>
+        <DCCReference Include="src\domain\models\cliente\ClienteModel.pas"/>
+        <DCCReference Include="src\domain\valueobjects\EnderecoValueObject.pas"/>
+        <DCCReference Include="src\domain\valueobjects\ContatoValueObject.pas"/>
+        <DCCReference Include="src\domain\valueobjects\DocumentoValueObject.pas"/>
+        <DCCReference Include="src\shared\utils\ClienteValidacoes.pas"/>
+        <DCCReference Include="src\shared\utils\Validadores.pas"/>
+        <DCCReference Include="src\application\services\ClienteAppService.pas"/>
+        <DCCReference Include="src\shared\utils\FormatUtil.pas"/>
+        <DCCReference Include="src\application\dtos\ClienteDTO.pas"/>
+        <DCCReference Include="src\application\mappers\ClienteMapper.pas"/>
+        <DCCReference Include="src\infrastructure\services\CEPService.pas"/>
+        <DCCReference Include="src\domain\services\ICliente.Service.pas"/>
+        <DCCReference Include="src\domain\repositories\ICliente.Repository.pas"/>
+        <DCCReference Include="src\domain\exceptions\ClienteExceptions.pas"/>
+        <DCCReference Include="src\infrastructure\persistence\services\ClienteService.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

@@ -4,7 +4,27 @@ uses
   Vcl.Forms,
   umain in 'src\presentation\forms\main\umain.pas' {FrmMain},
   ucadastropadrao in 'src\presentation\forms\base\ucadastropadrao.pas' {FrmCadastroPadrao},
-  ucadcliente in 'src\presentation\forms\clientes\ucadcliente.pas' {FrmCadCliente};
+  ucadcliente in 'src\presentation\forms\clientes\ucadcliente.pas' {FrmCadCliente},
+  ClienteRepository in 'src\infrastructure\persistence\repositories\ClienteRepository.pas',
+  ConexaoAdapter in 'src\infrastructure\persistence\databases\ConexaoAdapter.pas',
+  ConexaoSingleton in 'src\infrastructure\persistence\databases\ConexaoSingleton.pas',
+  DatabaseConnection in 'src\infrastructure\persistence\databases\DatabaseConnection.pas',
+  IConexao.Database in 'src\infrastructure\persistence\databases\IConexao.Database.pas',
+  ClienteModel in 'src\domain\models\cliente\ClienteModel.pas',
+  EnderecoValueObject in 'src\domain\valueobjects\EnderecoValueObject.pas',
+  ContatoValueObject in 'src\domain\valueobjects\ContatoValueObject.pas',
+  DocumentoValueObject in 'src\domain\valueobjects\DocumentoValueObject.pas',
+  ClienteValidacoes in 'src\shared\utils\ClienteValidacoes.pas',
+  Validadores in 'src\shared\utils\Validadores.pas',
+  ClienteAppService in 'src\application\services\ClienteAppService.pas',
+  FormatUtil in 'src\shared\utils\FormatUtil.pas',
+  ClienteDTO in 'src\application\dtos\ClienteDTO.pas',
+  ClienteMapper in 'src\application\mappers\ClienteMapper.pas',
+  CEPService in 'src\infrastructure\services\CEPService.pas',
+  ICliente.Service in 'src\domain\services\ICliente.Service.pas',
+  ICliente.Repository in 'src\domain\repositories\ICliente.Repository.pas',
+  ClienteExceptions in 'src\domain\exceptions\ClienteExceptions.pas',
+  ClienteService in 'src\infrastructure\persistence\services\ClienteService.pas';
 
 {$R *.res}
 

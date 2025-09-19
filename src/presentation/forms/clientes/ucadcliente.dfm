@@ -4,7 +4,12 @@ inherited FrmCadCliente: TFrmCadCliente
   Caption = 'Cadastro de Clientes'
   ClientHeight = 656
   ClientWidth = 755
+  KeyPreview = True
   Position = poMainFormCenter
+  OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
+  OnShow = FormShow
+  ExplicitTop = -69
   ExplicitWidth = 761
   ExplicitHeight = 685
   PixelsPerInch = 96
@@ -13,22 +18,27 @@ inherited FrmCadCliente: TFrmCadCliente
     Width = 755
     inherited BtnInserir: TSpeedButton
       Left = 25
+      OnClick = BtnInserirClick
       ExplicitLeft = 25
     end
     inherited BtnAlterar: TSpeedButton
-      Left = 142
-      ExplicitLeft = 142
+      Left = 141
+      OnClick = BtnAlterarClick
+      ExplicitLeft = 141
     end
     inherited BtnExcluir: TSpeedButton
       Left = 259
+      OnClick = BtnExcluirClick
       ExplicitLeft = 259
     end
     inherited BtnGravar: TSpeedButton
       Left = 376
+      OnClick = BtnGravarClick
       ExplicitLeft = 376
     end
     inherited BtnCancelar: TSpeedButton
       Left = 493
+      OnClick = BtnCancelarClick
       ExplicitLeft = 493
     end
     inherited BtnSair: TSpeedButton
@@ -126,6 +136,7 @@ inherited FrmCadCliente: TFrmCadCliente
         ParentFont = False
         ParentShowHint = False
         ShowHint = True
+        OnClick = BtnPesquisarCepClick
       end
       object Label3: TLabel
         Left = 405
@@ -198,6 +209,7 @@ inherited FrmCadCliente: TFrmCadCliente
         CharCase = ecUpperCase
         MaxLength = 9
         TabOrder = 5
+        OnExit = EdtCepExit
       end
       object EdtCidade: TEdit
         Left = 106
@@ -272,6 +284,8 @@ inherited FrmCadCliente: TFrmCadCliente
         CharCase = ecUpperCase
         MaxLength = 18
         TabOrder = 12
+        OnExit = EdtCnpjExit
+        OnKeyPress = EdtCnpjKeyPress
       end
       object EdtNomeFantasia: TEdit
         Left = 106
@@ -355,7 +369,7 @@ inherited FrmCadCliente: TFrmCadCliente
       ExplicitWidth = 737
       ExplicitHeight = 242
       object DbGridClientes: TDBGrid
-        Left = 10
+        Left = 12
         Top = 20
         Width = 717
         Height = 211
@@ -365,6 +379,9 @@ inherited FrmCadCliente: TFrmCadCliente
         TitleFont.Height = -11
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        OnCellClick = DbGridClientesCellClick
+        OnDblClick = DbGridClientesDblClick
+        OnKeyDown = DbGridClientesKeyDown
         Columns = <
           item
             Expanded = False
@@ -437,7 +454,7 @@ inherited FrmCadCliente: TFrmCadCliente
       755
       47)
     object BtnPesquisar: TSpeedButton
-      Left = 646
+      Left = 648
       Top = 10
       Width = 96
       Height = 27
@@ -470,6 +487,7 @@ inherited FrmCadCliente: TFrmCadCliente
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         FFB67E0EFFFFFFFFFFFFBD8C27B67E0EB67C09B67B08B57B08B67B08B67B08B5
         7B08B67B08B67B08B57B08B67C09B67E0EBD8C27FFFFFFFFFFFF}
+      OnClick = BtnPesquisarClick
     end
     object Label12: TLabel
       Left = 12
@@ -491,6 +509,7 @@ inherited FrmCadCliente: TFrmCadCliente
       Height = 21
       CharCase = ecUpperCase
       TabOrder = 1
+      OnKeyPress = EdtPesquisarKeyPress
     end
     object CbxFiltro: TComboBox
       Left = 61
@@ -499,6 +518,7 @@ inherited FrmCadCliente: TFrmCadCliente
       Height = 21
       TabOrder = 0
       Text = 'Todos'
+      OnChange = CbxFiltroChange
     end
   end
 end

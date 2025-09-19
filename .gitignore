@@ -1,0 +1,56 @@
+# --------------------------------------
+# Arquivos compilados / temporários
+# --------------------------------------
+*.exe
+*.dll
+*.dcu
+*.dcp
+*.bpl
+*.bpi
+*.drc
+*.map
+*.dres
+*.rsm
+*.tds
+*.dsk
+*.local
+*.identcache
+*.projdata
+*.tvsconfig
+*.stat
+*.dproj.local
+*.dproj.identcache
+*.dproj.env
+*.~*
+*.bak
+*.tmp
+*.log
+*.res
+
+# --------------------------------------
+# Diretórios de build
+# --------------------------------------
+/__history/
+/__recovery/
+/Win32/
+/Win64/
+/Debug/
+/Release/
+/Build/
+/Output/
+/Bin/
+/Obj/
+
+# --------------------------------------
+# Arquivos de configuração locais
+# --------------------------------------
+*.cfg
+*.user
+*.global
+
+# --------------------------------------
+# Arquivos de IDE
+# --------------------------------------
+*.idea/
+*.vs/
+/view/__history

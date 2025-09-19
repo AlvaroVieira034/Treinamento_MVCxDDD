@@ -1,0 +1,146 @@
+PedidoSystem/
+├── 📁 src/
+│   ├── 📁 application/          # Camada de Aplicação
+│   │   ├── 📁 services/         # Application Services
+│   │   │   ├── PedidoAppService.pas
+│   │   │   ├── ClienteAppService.pas
+│   │   │   └── ProdutoAppService.pas
+│   │   ├── 📁 dtos/             # Data Transfer Objects
+│   │   │   ├── PedidoDTO.pas
+│   │   │   ├── PedidoItemDTO.pas
+│   │   │   ├── ClienteDTO.pas
+│   │   │   └── ProdutoDTO.pas
+│   │   ├── 📁 mappers/          # Mappers
+│   │   │   ├── PedidoMapper.pas
+│   │   │   ├── ClienteMapper.pas
+│   │   │   └── ProdutoMapper.pas
+│   │
+│   ├── 📁 domain/               # Camada de Domínio (CORE)
+│   │   ├── 📁 models/           # Agregados e Entidades
+│   │   │   ├── 📁 pedido/       # Agregado Pedido (RAIZ)
+│   │   │   │   ├── Pedido.pas           # Aggregate Root
+│   │   │   │   ├── PedidoItem.pas       # Entity dentro do agregado
+│   │   │   │   └── StatusPedido.pas     # Enum/Value Object
+│   │   │   │
+│   │   │   ├── 📁 cliente/      # Agregado Cliente
+│   │   │   │   ├── Cliente.pas
+│   │   │   │   ├── Endereco.pas
+│   │   │   │   └── Contato.pas
+│   │   │   │
+│   │   │   └── 📁 produto/      # Agregado Produto
+│   │   │       ├── Produto.pas
+│   │   │       ├── CategoriaProduto.pas
+│   │   │       └── Estoque.pas
+│   │   │
+│   │   ├── 📁 services/         # Domain Services
+│   │   │   ├── IPedidoService.pas
+│   │   │   ├── IEstoqueService.pas
+│   │   │   └── ICalculadoraImpostos.pas
+│   │   │
+│   │   ├── 📁 repositories/     # Interfaces de Repositório
+│   │   │   ├── IPedidoRepository.pas
+│   │   │   ├── IClienteRepository.pas
+│   │   │   └── IProdutoRepository.pas
+│   │   │
+│   │   ├── 📁 exceptions/       # Exceptions de Domínio
+│   │   │   ├── PedidoExceptions.pas
+│   │   │   ├── ClienteExceptions.pas
+│   │   │   └── ProdutoExceptions.pas
+│   │   │
+│   │   └── 📁 valueobjects/     # Value Objects compartilhados
+│   │       ├── EnderecoValueObject.pas
+│   │       ├── ContatoValueObject.pas
+│   │       └── DocumentoValueObject.pas
+│   │
+│   ├── 📁 infrastructure/       # Camada de Infraestrutura
+│   │   ├── 📁 persistence/      # Implementação de Repositórios
+│   │   │   ├── 📁 repositories/
+│   │   │   │   ├── PedidoRepository.pas
+│   │   │   │   ├── ClienteRepository.pas
+│   │   │   │   └── ProdutoRepository.pas
+│   │   │   ├── 📁 mappings/     # Mapeamentos ORM
+│   │   │   │   ├── PedidoMapping.pas
+│   │   │   │   ├── ClienteMapping.pas
+│   │   │   │   └── ProdutoMapping.pas
+│   │   │   └── 📁 databases/
+│   │   │       ├── ConexaoSingleton.pas
+│   │   │       └── DatabaseConfig.pas
+│   │   │
+│   │   └── 📁 services/         # Implementações de Infrastructure Services
+│   │       ├── EmailService.pas
+│   │       ├── CEPService.pas
+│   │       └── CalculadoraImpostosService.pas
+│   │
+│   ├── 📁 presentation/         # Camada de Apresentação
+│   │   ├── 📁 forms/
+│   │   │   ├── 📁 pedidos/
+│   │   │   │   ├── ucadpedido.pas
+│   │   │   │   ├── uconsproduto.pas
+│   │   │   │   └── urelpedidos.pas
+│   │   │   ├── 📁 clientes/
+│   │   │   │   └── ucadcliente.pas
+│   │   │   └── 📁 produtos/
+│   │   │       └── ucadproduto.pas
+│   │   │
+│   │   ├── 📁 controllers/
+│   │   │   ├── PedidoController.pas
+│   │   │   ├── ClienteController.pas
+│   │   │   └── ProdutoController.pas
+│   │   │
+│   │   └── 📁 base/             # Formulários base
+│   │       ├── ucadastropadrao.pas
+│   │       └── uconsultapadrao.pas
+│   │
+│   └── 📁 shared/               # Recursos Compartilhados
+│       ├── 📁 kernel/
+│       │   ├── ConexaoAdapter.pas
+│       │   ├── UnitOfWork.pas
+│       │   └── DateTimeUtil.pas
+│       ├── 📁 utils/
+│       │   ├── FormatUtil.pas
+│       │   ├── ValidationUtil.pas
+│       │   └── CNPJUtil.pas
+│       ├── 📁 constants/
+│       │   └── SistemaConsts.pas
+│       └── 📁 types/
+│           └── SistemaTypes.pas
+│
+├── 📁 tests/
+│   ├── 📁 unit/
+│   │   ├── 📁 domain/
+│   │   │   ├── 📁 pedido/
+│   │   │   │   ├── PedidoTest.pas
+│   │   │   │   └── PedidoItemTest.pas
+│   │   │   ├── 📁 cliente/
+│   │   │   │   └── ClienteTest.pas
+│   │   │   └── 📁 produto/
+│   │   │       └── ProdutoTest.pas
+│   │   ├── 📁 application/
+│   │   │   ├── PedidoAppServiceTest.pas
+│   │   │   ├── ClienteAppServiceTest.pas
+│   │   │   └── ProdutoAppServiceTest.pas
+│   │   └── 📁 infrastructure/
+│   │       ├── PedidoRepositoryTest.pas
+│   │       ├── ClienteRepositoryTest.pas
+│   │       └── ProdutoRepositoryTest.pas
+│   └── 📁 integration/
+│       ├── PedidoIntegrationTest.pas
+│       └── SistemaIntegrationTest.pas
+│
+├── 📁 database/
+│   ├── 📁 scripts/
+│   │   ├── create_tables.sql
+│   │   ├── insert_seed_data.sql
+│   │   └── 📁 procedures/
+│   └── 📁 migrations/
+│       ├── 001_create_pedidos.sql
+│       ├── 002_create_clientes.sql
+│       └── 003_create_produtos.sql
+│
+└── 📁 docs/
+    ├── 📁 domain/
+    │   ├── pedidos.md
+    │   ├── clientes.md
+    │   └── produtos.md
+    └── 📁 architecture/
+        └── sistema.md

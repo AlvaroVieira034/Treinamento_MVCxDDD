@@ -26,21 +26,18 @@ type
 implementation
 
 { ECNPJDuplicadoException }
-
 constructor ECNPJDuplicadoException.Create(const ACNPJ: string);
 begin
   inherited CreateFmt('CNPJ %s já está cadastrado para outro cliente!', [ACNPJ]);
 end;
 
 { EClienteNaoEncontradoException }
-
 constructor EClienteNaoEncontradoException.Create(AClienteId: Integer);
 begin
   inherited CreateFmt('Cliente com ID %d não encontrado!', [AClienteId]);
 end;
 
 { EClienteNaoPodeSerExcluidoException }
-
 constructor EClienteNaoPodeSerExcluidoException.Create(AClienteId: Integer);
 begin
   inherited CreateFmt(

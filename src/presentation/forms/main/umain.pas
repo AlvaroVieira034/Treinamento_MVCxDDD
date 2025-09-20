@@ -19,6 +19,7 @@ type
     ImageList: TImageList;
     procedure BtnClientesClick(Sender: TObject);
     procedure BtnSairClick(Sender: TObject);
+
   private
     { Private declarations }
   public

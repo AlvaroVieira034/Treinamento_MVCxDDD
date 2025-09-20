@@ -9,13 +9,13 @@ inherited FrmCadCliente: TFrmCadCliente
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnShow = FormShow
-  ExplicitTop = -69
   ExplicitWidth = 761
   ExplicitHeight = 685
   PixelsPerInch = 96
   TextHeight = 13
   inherited PnlTopo: TPanel
     Width = 755
+    ExplicitWidth = 755
     inherited BtnInserir: TSpeedButton
       Left = 25
       OnClick = BtnInserirClick
@@ -344,18 +344,16 @@ inherited FrmCadCliente: TFrmCadCliente
     Width = 755
     Height = 270
     Align = alClient
-    ExplicitLeft = 25
-    ExplicitTop = 362
+    ExplicitLeft = 0
+    ExplicitTop = 339
     ExplicitWidth = 755
-    ExplicitHeight = 229
+    ExplicitHeight = 270
     inherited LblTotRegistros: TLabel
       Left = 655
       Top = 250
-      Height = 17
       Anchors = [akRight, akBottom]
       ExplicitLeft = 655
       ExplicitTop = 250
-      ExplicitHeight = 17
     end
     inherited GrbGrid: TGroupBox
       Left = 8
@@ -448,8 +446,6 @@ inherited FrmCadCliente: TFrmCadCliente
     BevelOuter = bvNone
     ParentBackground = False
     TabOrder = 3
-    ExplicitLeft = 8
-    ExplicitTop = 601
     DesignSize = (
       755
       47)

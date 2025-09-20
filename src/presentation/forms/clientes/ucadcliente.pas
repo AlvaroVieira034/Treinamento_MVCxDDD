@@ -583,10 +583,6 @@ begin
   Formatar(EdtCnpj, TFormato.CNPJ);
 end;
 
-
-
-
-
 procedure TFrmCadCliente.EdtCnpjKeyPress(Sender: TObject; var Key: Char);
 begin
   inherited;

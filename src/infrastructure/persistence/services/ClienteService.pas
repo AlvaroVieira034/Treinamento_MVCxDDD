@@ -204,6 +204,7 @@ end;
 
 function TClienteService.VerificarCnpjExistente(const ACNPJ: string; ACodigoCliente: Integer): Boolean;
 begin
+  Result := False;
   QryTemp.Close;
   QryTemp.SQL.Add('select count(*) as quant from tab_cliente where des_cnpj = :cnpj');
   if ACodigoCliente > 0 then
@@ -221,7 +222,6 @@ end;
 function TClienteService.ClientePodeSerExcluido(AClienteId: Integer): Boolean;
 begin
   Result := False;
-
   if AClienteId <= 0 then
     Exit(False);
 

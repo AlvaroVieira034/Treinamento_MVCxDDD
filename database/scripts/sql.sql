@@ -16,5 +16,15 @@ update bdtestedguarani.dbo.tab_cliente set des_logradouro = des_endereco
 
 alter table bdtestedguarani.dbo.tab_cliente drop column des_endereco
 
+select * from bdtestedguarani.dbo.tab_pedido
+
 
 select * from bdtestedguarani.dbo.tab_cliente
+
+select * from bdtestedguarani.dbo.tab_pedido
+
+
+sp_help tab_produto
+
+
+select * from tab_produto

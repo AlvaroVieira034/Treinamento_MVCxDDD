@@ -72,19 +72,13 @@ end;
 
 function TClienteAppService.Inserir(ACliente: TCliente): Boolean;
 begin
-  // Valida o cliente antes de inserir
   ValidarCliente(ACliente);
-
-  // Insere no repositório
   Result := FClienteRepository.Inserir(ACliente);
 end;
 
 function TClienteAppService.Alterar(ACliente: TCliente; ACodigo: Integer): Boolean;
 begin
-  // Valida o cliente antes de alterar
   ValidarCliente(ACliente);
-
-  // Atualiza no repositório
   Result := FClienteRepository.Alterar(ACliente, ACodigo);
 end;
 
@@ -114,8 +108,6 @@ end;
 
 function TClienteAppService.GetDataSource: TDataSource;
 begin
-  // Retorna o DataSource do serviço (para compatibilidade)
-  // NOTA: Idealmente a UI trabalharia com DTOs, não diretamente com DataSource
   Result := FClienteService.GetDataSource();
 end;
 

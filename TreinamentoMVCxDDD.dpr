@@ -10,7 +10,6 @@ uses
   ConexaoSingleton in 'src\infrastructure\persistence\databases\ConexaoSingleton.pas',
   DatabaseConnection in 'src\infrastructure\persistence\databases\DatabaseConnection.pas',
   IConexao.Database in 'src\infrastructure\persistence\databases\IConexao.Database.pas',
-  ClienteModel in 'src\domain\models\cliente\ClienteModel.pas',
   EnderecoValueObject in 'src\domain\valueobjects\EnderecoValueObject.pas',
   ContatoValueObject in 'src\domain\valueobjects\ContatoValueObject.pas',
   DocumentoValueObject in 'src\domain\valueobjects\DocumentoValueObject.pas',
@@ -23,14 +22,16 @@ uses
   ICliente.Repository in 'src\domain\repositories\ICliente.Repository.pas',
   ClienteExceptions in 'src\domain\exceptions\ClienteExceptions.pas',
   ClienteService in 'src\infrastructure\persistence\services\ClienteService.pas',
-  ProdutoModel in 'src\domain\models\produto\ProdutoModel.pas',
   ProdutoDTO in 'src\application\dtos\ProdutoDTO.pas',
   ProdutoRepository in 'src\infrastructure\persistence\repositories\ProdutoRepository.pas',
   ProdutoService in 'src\infrastructure\persistence\services\ProdutoService.pas',
   ProdutoAppSevice in 'src\application\services\ProdutoAppSevice.pas',
-  IProdutoService in 'src\domain\services\IProdutoService.pas',
-  IProdutoRepository in 'src\domain\repositories\IProdutoRepository.pas',
-  ProdutoExceptions in 'src\domain\exceptions\ProdutoExceptions.pas';
+  ProdutoExceptions in 'src\domain\exceptions\ProdutoExceptions.pas',
+  ClienteModel in 'src\domain\models\ClienteModel.pas',
+  ProdutoModel in 'src\domain\models\ProdutoModel.pas',
+  ProdutoValueObject in 'src\domain\valueobjects\ProdutoValueObject.pas',
+  IProduto.Repository in 'src\domain\repositories\IProduto.Repository.pas',
+  IProduto.Service in 'src\domain\services\IProduto.Service.pas';
 
 {$R *.res}
 

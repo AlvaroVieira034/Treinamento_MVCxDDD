@@ -12,16 +12,16 @@ type
     FTelefone: string;
     FEmail: string;
 
-    procedure Validar;
-
   public
     constructor Create; overload;
     constructor Create(const ATelefone, AEmail: string); overload;
 
+    procedure Validar;
     function ValidarTelefone: Boolean;
     function ValidarEmail: Boolean;
     function ToString: string; override;
     function Equals(OutroContato: TContato): Boolean;
+    function ObterErrosValidacao: TArray<string>;
 
     property Telefone: string read FTelefone write FTelefone;
     property Email: string read FEmail write FEmail;
@@ -30,7 +30,6 @@ type
 implementation
 
 { TContato }
-
 
 constructor TContato.Create;
 begin
@@ -84,6 +83,17 @@ begin
   Result := (FTelefone = OutroContato.Telefone) and (FEmail = OutroContato.Email);
 end;
 
+function TContato.ObterErrosValidacao: TArray<string>;
+begin
+  Result := [];
+  // Telefone é opcional, mas se preenchido deve ser válido
+  if (FTelefone.Trim <> '') and (not ValidarTelefone) then
+    Result := Result + ['Telefone inválido: ' + FTelefone];
+
+  // Email é opcional, mas se preenchido deve ser válido
+  if (FEmail.Trim <> '') and (not ValidarEmail) then
+    Result := Result + ['Email inválido: ' + FEmail];
+end;
 
 end.
 

@@ -3,7 +3,7 @@ unit ClienteDTO;
 interface
 
 uses
-  System.SysUtils, ClienteModel;
+  System.SysUtils, ClienteModel, Data.DB, FireDAC.Comp.Client;
 
 type
   TClienteDTO = class
@@ -34,7 +34,9 @@ type
 
     // Métodos de conversão
     class function FromEntity(ACliente: TCliente): TClienteDTO;
+    class function FromDataset(ADataset: TDataSet): TClienteDTO;
     procedure ToEntity(var ACliente: TCliente);
+    procedure MapearParaQuery(AQuery: TFDQuery);
 
     // Properties
     property Cod_Ativo: Integer read FCod_Ativo write FCod_Ativo;
@@ -92,15 +94,39 @@ begin
   Result.Des_RazaoSocial := ACliente.Des_RazaoSocial;
   Result.Des_NomeFantasia := ACliente.Des_NomeFantasia;
   Result.Des_Contato := ACliente.Des_Contato;
-  Result.Des_Cep := ACliente.Des_Cep;
-  Result.Des_Logradouro := ACliente.Des_Logradouro;
-  Result.FDes_Numero := ACliente.Des_Numero;
-  Result.Des_Complemento := ACliente.Des_Complemento;
-  Result.Des_Cidade := ACliente.Des_Cidade;
-  Result.Des_UF := ACliente.Des_UF;
-  Result.Des_Cnpj := ACliente.Des_Cnpj;
-  Result.Des_Telefone := ACliente.Des_Telefone;
-  Result.Des_Email := ACliente.Des_Email;
+
+  // Acessando dados através dos Value Objects
+  Result.Des_Cep := ACliente.Endereco.Cep;
+  Result.Des_Logradouro := ACliente.Endereco.Logradouro;
+  Result.FDes_Numero := ACliente.Endereco.Numero;
+  Result.Des_Complemento := ACliente.Endereco.Complemento;
+  Result.Des_Cidade := ACliente.Endereco.Cidade;
+  Result.Des_UF := ACliente.Endereco.UF;
+  Result.Des_Cnpj := ACliente.Documento.CNPJ;
+  Result.Des_Telefone := ACliente.Contato.Telefone;
+  Result.Des_Email := ACliente.Contato.Email;
+end;
+
+class function TClienteDTO.FromDataset(ADataset: TDataSet): TClienteDTO;
+begin
+  Result := TClienteDTO.Create;
+  with ADataset do
+  begin
+    Result.Cod_Ativo := FieldByName('COD_ATIVO').AsInteger;
+    Result.Cod_Cliente := FieldByName('COD_CLIENTE').AsInteger;
+    Result.Des_RazaoSocial := FieldByName('DES_RAZAOSOCIAL').AsString;
+    Result.Des_NomeFantasia := FieldByName('DES_NOMEFANTASIA').AsString;
+    Result.Des_Contato := FieldByName('DES_CONTATO').AsString;
+    Result.Des_Cep := FieldByName('DES_CEP').AsString;
+    Result.Des_Logradouro := FieldByName('DES_LOGRADOURO').AsString;
+    Result.Des_Numero := FieldByName('DES_NUMERO').AsString;
+    Result.Des_Complemento := FieldByName('DES_COMPLEMENTO').AsString;
+    Result.Des_Cidade := FieldByName('DES_CIDADE').AsString;
+    Result.Des_UF := FieldByName('DES_UF').AsString;
+    Result.Des_Cnpj := FieldByName('DES_CNPJ').AsString;
+    Result.Des_Telefone := FieldByName('DES_TELEFONE').AsString;
+    Result.Des_Email := FieldByName('DES_EMAIL').AsString;
+  end;
 end;
 
 procedure TClienteDTO.ToEntity(var ACliente: TCliente);
@@ -110,15 +136,35 @@ begin
   ACliente.Des_RazaoSocial := FDes_RazaoSocial;
   ACliente.Des_NomeFantasia := FDes_NomeFantasia;
   ACliente.Des_Contato := FDes_Contato;
-  ACliente.Des_Cep := FDes_Cep;
-  ACliente.Des_Logradouro := FDes_Logradouro;
-  ACliente.Des_Numero := FDes_Numero;
-  ACliente.Des_Complemento := FDes_Complemento;
-  ACliente.Des_Cidade := FDes_Cidade;
-  ACliente.Des_UF := FDes_UF;
-  ACliente.Des_Cnpj := FDes_Cnpj;
-  ACliente.Des_Telefone := FDes_Telefone;
-  ACliente.Des_Email := FDes_Email;
+  ACliente.Endereco.CEP := FDes_Cep;
+  ACliente.Endereco.Logradouro := FDes_Logradouro;
+  ACliente.Endereco.Numero := FDes_Numero;
+  ACliente.Endereco.Complemento := FDes_Complemento;
+  ACliente.Endereco.Cidade := FDes_Cidade;
+  ACliente.Endereco.UF := FDes_UF;
+  ACliente.Documento.CNPJ := FDes_Cnpj;
+  ACliente.Contato.Telefone := FDes_Telefone;
+  ACliente.Contato.Email := FDes_Email;
+end;
+
+procedure TClienteDTO.MapearParaQuery(AQuery: TFDQuery);
+begin
+  with AQuery do
+  begin
+    ParamByName('COD_ATIVO').AsInteger := FCod_Ativo;
+    ParamByName('DES_RAZAOSOCIAL').AsString := FDes_RazaoSocial;
+    ParamByName('DES_NOMEFANTASIA').AsString := FDes_NomeFantasia;
+    ParamByName('DES_CONTATO').AsString := FDes_Contato;
+    ParamByName('DES_CEP').AsString := FDes_Cep;
+    ParamByName('DES_LOGRADOURO').AsString := FDes_Logradouro;
+    ParamByName('DES_NUMERO').AsString := FDes_Numero;
+    ParamByName('DES_COMPLEMENTO').AsString := FDes_Complemento;
+    ParamByName('DES_CIDADE').AsString := FDes_Cidade;
+    ParamByName('DES_UF').AsString := FDes_UF;
+    ParamByName('DES_CNPJ').AsString := FDes_Cnpj;
+    ParamByName('DES_TELEfone').AsString := FDes_Telefone;
+    ParamByName('DES_EMAIL').AsString := FDes_Email;
+  end;
 end;
 
 end.

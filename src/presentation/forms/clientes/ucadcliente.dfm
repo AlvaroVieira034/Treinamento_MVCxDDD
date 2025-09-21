@@ -9,6 +9,7 @@ inherited FrmCadCliente: TFrmCadCliente
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnShow = FormShow
+  ExplicitTop = -5
   ExplicitWidth = 761
   ExplicitHeight = 685
   PixelsPerInch = 96
@@ -505,6 +506,7 @@ inherited FrmCadCliente: TFrmCadCliente
       Height = 21
       CharCase = ecUpperCase
       TabOrder = 1
+      OnChange = EdtPesquisarChange
       OnKeyPress = EdtPesquisarKeyPress
     end
     object CbxFiltro: TComboBox

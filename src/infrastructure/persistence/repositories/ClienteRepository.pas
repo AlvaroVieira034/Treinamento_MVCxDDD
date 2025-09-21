@@ -3,8 +3,8 @@ unit ClienteRepository;
 interface
 
 uses
-  ClienteModel, ConexaoAdapter, ConexaoSingleton, ICliente.Repository, ClienteExceptions,
-  System.SysUtils, FireDAC.Comp.Client, FireDAC.Stan.Param, Data.DB;
+  ClienteModel, ConexaoAdapter, ConexaoSingleton, ICliente.Repository, ClienteDTO,
+  ClienteExceptions, System.SysUtils, FireDAC.Comp.Client, FireDAC.Stan.Param, Data.DB;
 
 type
   TClienteRepository = class(TInterfacedObject, IClienteRepository)
@@ -14,6 +14,35 @@ type
     Transacao: TFDTransaction;
     Conexao: TConexao;
     FConexao: TFDConnection;
+
+    // Constantes SQL
+    const
+      SQL_INSERT =
+        'insert into tab_cliente(' +
+        'cod_ativo, des_razaosocial, des_nomefantasia, des_contato, ' +
+        'des_cep, des_logradouro, des_numero, des_complemento, ' +
+        'des_cidade, des_uf, des_cnpj, des_telefone, des_email) ' +
+        'values (' +
+        ':cod_ativo, :des_razaosocial, :des_nomefantasia, :des_contato, ' +
+        ':des_cep, :des_logradouro, :des_numero, :des_complemento, ' +
+        ':des_cidade, :des_uf, :des_cnpj, :des_telefone, :des_email)';
+
+      SQL_UPDATE =
+        'update tab_cliente set ' +
+        'cod_ativo = :cod_ativo, ' +
+        'des_razaosocial = :des_razaosocial, ' +
+        'des_nomefantasia = :des_nomefantasia, ' +
+        'des_contato = :des_contato, ' +
+        'des_cep = :des_cep, ' +
+        'des_logradouro = :des_logradouro, ' +
+        'des_numero = :des_numero, ' +
+        'des_complemento = :des_complemento, ' +
+        'des_cidade = :des_cidade, ' +
+        'des_uf = :des_uf, ' +
+        'des_cnpj = :des_cnpj, ' +
+        'des_telefone = :des_telefone, ' +
+        'des_email = :des_email ' +
+        'where cod_cliente = :cod_cliente';
 
   public
     constructor Create(AConnection: TFDConnection);
@@ -46,104 +75,47 @@ begin
 end;
 
 function TClienteRepository.Inserir(ACliente: TCliente): Boolean;
+var DTO: TClienteDTO;
 begin
-  Result := ExecutarTransacao(
-    procedure
-    begin
-      with QryClientes, ACliente do
+  DTO := TClienteDTO.FromEntity(ACliente);
+  try
+    Result := ExecutarTransacao(
+      procedure
       begin
-        Close;
-        SQL.Clear;
-        SQL.Add('insert into tab_cliente(');
-        SQL.Add('cod_ativo, ');
-        SQL.Add('des_razaosocial, ');
-        SQL.Add('des_nomefantasia, ');
-        SQL.Add('des_contato, ');
-        SQL.Add('des_cep, ');
-        SQL.Add('des_logradouro, ');
-        SQL.Add('des_numero, ');
-        SQL.Add('des_complemento, ');
-        SQL.Add('des_cidade, ');
-        SQL.Add('des_uf, ');
-        SQL.Add('des_cnpj, ');
-        SQL.Add('des_telefone, ');
-        SQL.Add('des_email) ');
-        SQL.Add('values (:cod_ativo, ');
-        SQL.Add(':des_razaosocial, ');
-        SQL.Add(':des_nomefantasia, ');
-        SQL.Add(':des_contato, ');
-        SQL.Add(':des_cep, ');
-        SQL.Add(':des_logradouro, ');
-        SQL.Add(':des_numero, ');
-        SQL.Add(':des_complemento, ');
-        SQL.Add(':des_cidade, ');
-        SQL.Add(':des_uf,');
-        SQL.Add(':des_cnpj,');
-        SQL.Add(':des_telefone,');
-        SQL.Add(':des_email)');
-
-        ParamByName('COD_ATIVO').AsInteger := Cod_Ativo;
-        ParamByName('DES_RAZAOSOCIAL').AsString := Des_RazaoSocial;
-        ParamByName('DES_NOMEFANTASIA').AsString := Des_NomeFantasia;
-        ParamByName('DES_CONTATO').AsString := Des_Contato;
-        ParamByName('DES_CEP').AsString := Des_Cep;
-        ParamByName('DES_LOGRADOURO').AsString := Des_Logradouro;
-        ParamByName('DES_NUMERO').AsString := Des_Numero;
-        ParamByName('DES_COMPLEMENTO').AsString := Des_Complemento;
-        ParamByName('DES_CIDADE').AsString := Des_Cidade;
-        ParamByName('DES_UF').AsString := Des_UF;
-        ParamByName('DES_CNPJ').AsString := Des_Cnpj;
-        ParamByName('DES_TELEFONE').AsString := Des_Telefone;
-        ParamByName('DES_EMAIL').AsString := Des_Email;
-
-        ExecSQL;
-      end;
-    end);
+        with QryClientes do
+        begin
+          Close;
+          SQL.Clear;
+          SQL.Text := SQL_INSERT;
+          DTO.MapearParaQuery(QryClientes);
+          ExecSQL;
+        end;
+      end);
+  finally
+    DTO.Free
+  end;
 end;
 
 function TClienteRepository.Alterar(ACliente: TCliente; AId: Integer): Boolean;
+var DTO: TClienteDTO;
 begin
-  Result := ExecutarTransacao(
-    procedure
-    begin
-      with QryClientes, ACliente do
+  DTO := TClienteDTO.FromEntity(ACliente);
+  try
+    Result := ExecutarTransacao(
+      procedure
       begin
-        Close;
-        SQL.Clear;
-        SQL.Add('update tab_cliente set ');
-        SQL.Add('cod_ativo = :cod_ativo, ');
-        SQL.Add('des_razaosocial = :des_razaosocial, ');
-        SQL.Add('des_nomefantasia = :des_nomefantasia, ');
-        SQL.Add('des_contato = :des_contato, ');
-        SQL.Add('des_cep = :des_cep, ');
-        SQL.Add('des_logradouro = :des_logradouro, ');
-        SQL.Add('des_numero = :des_numero, ');
-        SQL.Add('des_complemento = :des_complemento, ');
-        SQL.Add('des_cidade = :des_cidade, ');
-        SQL.Add('des_uf = :des_uf, ');
-        SQL.Add('des_cnpj = :des_cnpj, ');
-        SQL.Add('des_telefone = :des_telefone, ');
-        SQL.Add('des_email = :des_email ');
-        SQL.Add('where cod_cliente = :cod_cliente');
-
-        ParamByName('COD_ATIVO').AsInteger := Cod_Ativo;
-        ParamByName('DES_RAZAOSOCIAL').AsString := Des_RazaoSocial;
-        ParamByName('DES_NOMEFANTASIA').AsString := Des_NomeFantasia;
-        ParamByName('DES_CONTATO').AsString := Des_Contato;
-        ParamByName('DES_CEP').AsString := Des_Cep;
-        ParamByName('DES_LOGRADOURO').AsString := Des_Logradouro;
-        ParamByName('DES_NUMERO').AsString := Des_Numero;
-        ParamByName('DES_COMPLEMENTO').AsString := Des_Complemento;
-        ParamByName('DES_CIDADE').AsString := Des_Cidade;
-        ParamByName('DES_UF').AsString := Des_UF;
-        ParamByName('DES_CNPJ').AsString := Des_Cnpj;
-        ParamByName('DES_TELEFONE').AsString := Des_Telefone;
-        ParamByName('DES_EMAIL').AsString := Des_Email;
-        ParamByName('COD_CLIENTE').AsInteger := AId;
-
-        ExecSQL;
-      end;
-    end);
+        with QryClientes do
+        begin
+          Close;
+          SQL.Clear;
+          SQL.Text := SQL_UPDATE;
+          DTO.MapearParaQuery(QryClientes);
+          ExecSQL;
+        end;
+      end);
+  finally
+    DTO.Free
+  end;
 end;
 
 function TClienteRepository.Excluir(AId: Integer): Boolean;
@@ -190,5 +162,4 @@ begin
   QryClientes.Transaction := Transacao;
 end;
 
-end.
 end.

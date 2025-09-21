@@ -16,17 +16,17 @@ type
     FCidade: string;
     FUF: string;
 
-    procedure Validar;
-
   public
     constructor Create; overload;
     constructor Create(const ACEP, ALogradouro, ANumero, AComplemento, ACidade, AUF: string); overload;
 
+    procedure Validar;
     function ValidarCEP: Boolean;
     function ValidarUF: Boolean;
     function ToString: string;
     function EstaVazio: Boolean;
     function Equals(OutroEndereco: TEndereco): Boolean;
+    function ObterErrosValidacao: TArray<string>;
 
     property CEP: string read FCEP write FCEP;
     property Logradouro: string read FLogradouro write FLogradouro;
@@ -61,12 +61,11 @@ begin
 end;
 
 procedure TEndereco.Validar;
+var Erros: TArray<string>;
 begin
-  if not ValidarCEP then
-    raise EEnderecoInvalidoException.Create('CEP inválido: ' + FCEP);
-
-  if not ValidarUF then
-    raise EEnderecoInvalidoException.Create('UF inválida: ' + FUF);
+  Erros := ObterErrosValidacao;
+  if Length(Erros) > 0 then
+    raise EEnderecoInvalidoException.Create(string.Join(sLineBreak, Erros));
 end;
 
 function TEndereco.ValidarCEP: Boolean;
@@ -87,6 +86,17 @@ end;
 function TEndereco.EstaVazio: Boolean;
 begin
   Result := (FCEP = '') and (FLogradouro = '') and (FCidade = '') and (FUF = '');
+end;
+
+function TEndereco.ObterErrosValidacao: TArray<string>;
+begin
+  Result := [];
+
+  if not ValidarCEP then
+    Result := Result + ['CEP inválido: ' + FCEP];
+
+  if not ValidarUF then
+    Result := Result + ['UF inválida: ' + FUF];
 end;
 
 function TEndereco.Equals(OutroEndereco: TEndereco): Boolean;

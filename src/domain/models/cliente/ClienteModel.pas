@@ -3,8 +3,8 @@ unit ClienteModel;
 interface
 
 uses
-  System.SysUtils, System.Generics.Collections, EnderecoValueObject, ContatoValueObject, DocumentoValueObject,
-  ClienteValidacoes;
+  System.SysUtils, System.Generics.Collections, EnderecoValueObject, ContatoValueObject,
+  DocumentoValueObject;
 
 type
   EClienteException = class(Exception);
@@ -16,71 +16,53 @@ type
     FDes_NomeFantasia: string;
     FDes_RazaoSocial: string;
     FDes_Contato: string;
-    FDes_Cep: string;
-    FDes_Logradouro: string;
-    FDes_Numero: string;
-    FDes_Complemento: string;
-    FDes_Cidade: string;
-    FDes_UF: string;
-    FDes_Cnpj: string;
-    FDes_Telefone: string;
-    FDes_Email: string;
 
+    // Value Objects
     FEndereco: TEndereco;
     FContato: TContato;
     FDocumento: TDocumento;
 
-    // Setters para propriedades que afetam os ValueObjects
-    procedure SetDes_Cep(const Value: string);
-    procedure SetDes_Logradouro(const Value: string);
-    procedure SetDes_Numero(const Value: string);
-    procedure SetDes_Complemento(const Value: string);
-    procedure SetDes_Cidade(const Value: string);
-    procedure SetDes_UF(const Value: string);
-    procedure SetDes_Cnpj(const Value: string);
-    procedure SetDes_Telefone(const Value: string);
-    procedure SetDes_Email(const Value: string);
+    // Métodos de validação
+    procedure ValidarNomeFantasia;
+    procedure ValidarRazaoSocial;
+    procedure ValidarCamposObrigatorios;
+    procedure SetDes_NomeFantasia(const Value: string);
+    procedure SetDes_RazaoSocial(const Value: string);
+    procedure SetDes_Contato(const Value: string);
 
   public
     constructor Create;
     destructor Destroy; override;
 
-    // Métodos de validação simplificados
-    procedure ValidarDados;
-    function ObterErrosValidacao: TArray<string>;
-
-    // Métodos de comportamento
+    // Comportamentos
+    procedure Validar;
     procedure Ativar;
     procedure Desativar;
     function EstaAtivo: Boolean;
+    function ObterErrosValidacao: TArray<string>;
 
-    // Properties para acesso direto
+    // Properties
     property Cod_Cliente: Integer read FCod_Cliente write FCod_Cliente;
     property Cod_Ativo: Integer read FCod_Ativo write FCod_Ativo;
-    property Des_NomeFantasia: string read FDes_NomeFantasia write FDes_NomeFantasia;
-    property Des_RazaoSocial: string read FDes_RazaoSocial write FDes_RazaoSocial;
-    property Des_Contato: string read FDes_Contato write FDes_Contato;
+    property Des_NomeFantasia: string read FDes_NomeFantasia write SetDes_NomeFantasia;
+    property Des_RazaoSocial: string read FDes_RazaoSocial write SetDes_RazaoSocial;
+    property Des_Contato: string read FDes_Contato write SetDes_Contato;
 
-    // Properties com setters que atualizam os VOs
-    property Des_Cep: string read FDes_Cep write FDes_Cep;
-    property Des_Logradouro: string read FDes_Logradouro write FDes_Logradouro;
-    property Des_Numero: string read FDes_Numero write FDes_Numero;
-    property Des_Complemento: string read FDes_Complemento write FDes_Complemento;
-    property Des_Cidade: string read FDes_Cidade write FDes_Cidade;
-    property Des_UF: string read FDes_UF write FDes_UF;
-    property Des_Telefone: string read FDes_Telefone write FDes_Telefone;
-    property Des_Cnpj: string read FDes_Cnpj write FDes_Cnpj;
-    property Des_Email: string read FDes_Email write FDes_Email;
-
+    // Value Objects properties
     property Endereco: TEndereco read FEndereco;
     property Contato: TContato read FContato;
     property Documento: TDocumento read FDocumento;
 
+    // Métodos para configurar VOs
+    procedure ConfigurarEndereco(const ACEP, ALogradouro, ANumero, AComplemento, ACidade, AUF: string);
+    procedure ConfigurarContato(const ATelefone, AEmail: string);
+    procedure ConfigurarDocumento(const ACNPJ: string);
   end;
 
 implementation
 
 { TCliente }
+
 
 constructor TCliente.Create;
 begin
@@ -96,8 +78,96 @@ begin
   FEndereco.Free;
   FContato.Free;
   FDocumento.Free;
-  inherited Destroy;
 
+  inherited Destroy;
+end;
+
+procedure TCliente.Validar;
+var  Erros: TArray<string>;
+begin
+  Erros := ObterErrosValidacao;
+  if Length(Erros) > 0 then
+    raise EClienteException.Create(string.Join(sLineBreak, Erros));
+
+end;
+
+procedure TCliente.ValidarCamposObrigatorios;
+begin
+  if FDes_NomeFantasia.Trim = '' then
+    raise EClienteException.Create('Nome fantasia é obrigatório!');
+
+  if FEndereco.Cidade.Trim = '' then
+    raise EClienteException.Create('Cidade é obrigatória!');
+
+  if FEndereco.UF.Trim = '' then
+    raise EClienteException.Create('UF é obrigatória!');
+
+  if FDocumento.CNPJ.Trim = '' then
+    raise EClienteException.Create('CNPJ é obrigatório!');
+
+end;
+
+procedure TCliente.ValidarNomeFantasia;
+begin
+  if Length(FDes_NomeFantasia) < 3 then
+    raise EClienteException.Create('Nome fantasia deve ter pelo menos 3 caracteres');
+
+  if Length(FDes_NomeFantasia) > 100 then
+    raise EClienteException.Create('Nome fantasia muito longo (máx. 100 caracteres)');
+end;
+
+procedure TCliente.ValidarRazaoSocial;
+begin
+  if (FDes_RazaoSocial <> '') and (Length(FDes_RazaoSocial) < 5) then
+    raise EClienteException.Create('Razão social deve ter pelo menos 5 caracteres');
+
+  if (FDes_RazaoSocial <> '') and (Length(FDes_RazaoSocial) > 100) then
+    raise EClienteException.Create('Razão social muito longa (máx. 100 caracteres)');
+end;
+
+procedure TCliente.SetDes_NomeFantasia(const Value: string);
+begin
+  if FDes_NomeFantasia <> Value then
+  begin
+    FDes_NomeFantasia := Value.Trim;
+    ValidarNomeFantasia;
+  end;
+end;
+
+procedure TCliente.SetDes_RazaoSocial(const Value: string);
+begin
+  if FDes_RazaoSocial <> Value then
+  begin
+    FDes_RazaoSocial := Value.Trim;
+    if FDes_RazaoSocial <> '' then
+      ValidarRazaoSocial;
+  end;
+end;
+
+procedure TCliente.SetDes_Contato(const Value: string);
+begin
+  FDes_Contato := Value.Trim;
+end;
+
+procedure TCliente.ConfigurarEndereco(const ACEP, ALogradouro, ANumero, AComplemento, ACidade, AUF: string);
+begin
+  FEndereco.CEP := ACEP;
+  FEndereco.Logradouro := ALogradouro;
+  FEndereco.Numero := ANumero;
+  FEndereco.Complemento := AComplemento;
+  FEndereco.Cidade := ACidade;
+  FEndereco.UF := AUF;
+end;
+
+procedure TCliente.ConfigurarContato(const ATelefone, AEmail: string);
+begin
+  FContato.Telefone := ATelefone;
+  FContato.Email := AEmail;
+end;
+
+procedure TCliente.ConfigurarDocumento(const ACNPJ: string);
+begin
+  FDocumento.CNPJ := ACNPJ;
 end;
 
 procedure TCliente.Ativar;
@@ -115,106 +185,32 @@ begin
   Result := FCod_Ativo = 1;
 end;
 
-procedure TCliente.ValidarDados;
-begin
-  TClienteValidacoes.ValidarCliente(FDes_NomeFantasia, FDes_Cidade, FDes_UF, FDes_Cnpj,
-    FDes_Telefone, FDes_Logradouro, FDes_Cep, FDes_Email, FDocumento, FContato, FEndereco);
-end;
-
 function TCliente.ObterErrosValidacao: TArray<string>;
 begin
-  Result := TClienteValidacoes.ObterErrosValidacao(FDes_NomeFantasia, FDes_Cidade, FDes_UF,
-    FDes_Cnpj, FDes_Telefone, FDes_Logradouro, FDes_Cep, FDes_Email, FDocumento, FContato, FEndereco);
+  // Validações básicas do cliente
+  if FDes_NomeFantasia.Trim = '' then
+    Result := Result + ['Nome do cliente é obrigatório!'];
+
+  if Length(FDes_NomeFantasia) < 3 then
+    Result := Result + ['Nome do cliente deve ter pelo menos 3 caracteres'];
+
+  if Length(FDes_NomeFantasia) > 100 then
+    Result := Result + ['Nome fantasia muito longo (máx. 100 caracteres)'];
+
+  if FEndereco.Cidade.Trim = '' then
+    Result := Result + ['Cidade é obrigatória!'];
+
+  if FEndereco.UF.Trim = '' then
+    Result := Result + ['UF é obrigatória!'];
+
+  // Validações dos Value Objects
+  Result := Result + FEndereco.ObterErrosValidacao;
+  Result := Result + FContato.ObterErrosValidacao;
+  Result := Result + FDocumento.ObterErrosValidacao;
+
+  if FDocumento.CNPJ.Trim = '' then
+    Result := Result + ['CNPJ é obrigatório!'];
 end;
 
-procedure TCliente.SetDes_Cep(const Value: string);
-begin
-  if FDes_Cep <> Value then
-  begin
-    FDes_Cep := Value;
-    FreeAndNil(FEndereco);
-    FEndereco := TEndereco.Create(FDes_Cep, FDes_Logradouro, FDes_Numero, FDes_Complemento, FDes_Cidade, FDes_UF);
-  end;
-end;
-
-procedure TCliente.SetDes_Logradouro(const Value: string);
-begin
-  if FDes_Logradouro <> Value then
-  begin
-    FDes_Logradouro := Value;
-    FreeAndNil(FEndereco);
-    FEndereco := TEndereco.Create(FDes_Cep, FDes_Logradouro, FDes_Numero, FDes_Complemento, FDes_Cidade, FDes_UF);
-  end;
-end;
-
-procedure TCliente.SetDes_Numero(const Value: string);
-begin
-  if FDes_Numero <> Value then
-  begin
-    FDes_Numero := Value;
-    FreeAndNil(FEndereco);
-    FEndereco := TEndereco.Create(FDes_Cep, FDes_Logradouro, FDes_Numero, FDes_Complemento, FDes_Cidade, FDes_UF);
-  end;
-end;
-
-procedure TCliente.SetDes_Complemento(const Value: string);
-begin
-  if FDes_Complemento <> Value then
-  begin
-    FDes_Complemento := Value;
-    FreeAndNil(FEndereco);
-    FEndereco := TEndereco.Create(FDes_Cep, FDes_Logradouro, FDes_Numero, FDes_Complemento, FDes_Cidade, FDes_UF);
-  end;
-end;
-
-procedure TCliente.SetDes_Cidade(const Value: string);
-begin
-  if FDes_Cidade <> Value then
-  begin
-    FDes_Cidade := Value;
-    FreeAndNil(FEndereco);
-    FEndereco := TEndereco.Create(FDes_Cep, FDes_Logradouro, FDes_Numero, FDes_Complemento, FDes_Cidade, FDes_UF);
-  end;
-end;
-
-procedure TCliente.SetDes_UF(const Value: string);
-begin
-  if FDes_UF <> Value then
-  begin
-    FDes_UF := Value;
-    FreeAndNil(FEndereco);
-    FEndereco := TEndereco.Create(FDes_Cep, FDes_Logradouro, FDes_Numero, FDes_Complemento, FDes_Cidade, FDes_UF);
-  end;
-end;
-
-procedure TCliente.SetDes_Telefone(const Value: string);
-begin
-  if FDes_Telefone <> Value then
-  begin
-    FDes_Telefone := Value;
-    FreeAndNil(FContato);
-    FContato := TContato.Create(FDes_Telefone, FDes_Email);
-  end;
-end;
-
-procedure TCliente.SetDes_Cnpj(const Value: string);
-begin
-  if FDes_Cnpj <> Value then
-  begin
-    FDes_Cnpj := Value;
-    FreeAndNil(FDocumento);
-    FDocumento := TDocumento.Create(FDes_Cnpj, '');
-  end;
-end;
-
-procedure TCliente.SetDes_Email(const Value: string);
-begin
-  if FDes_Email <> Value then
-  begin
-    FDes_Email := Value;
-    FreeAndNil(FContato);
-    FContato := TContato.Create(FDes_Telefone, FDes_Email);
-  end;
-end;
 
 end.

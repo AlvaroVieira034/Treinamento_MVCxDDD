@@ -55,17 +55,11 @@ end;
 
 procedure TClienteAppService.PreencheGridClientes(APesquisa, ACampo: string);
 begin
-  // Implementação específica para preencher grid
-  // Este método deveria ser movido para a camada de apresentação,
-  // mas mantendo conforme solicitado
   FClienteService.PreencheGridClientes(APesquisa, ACampo);
 end;
 
 procedure TClienteAppService.PreencherComboClientes(TblComboClientes: TFDQuery);
 begin
-  // Implementação específica para preencher combo
-  // Este método deveria ser movido para a camada de apresentação,
-  // mas mantendo conforme solicitado
   FClienteService.PreencherComboClientes(TblComboClientes);
 end;
 
@@ -96,7 +90,6 @@ end;
 
 function TClienteAppService.Excluir(ACodigo: Integer): Boolean;
 begin
-  // Verifica se pode excluir (regras de negócio)
   if not FClienteService.ClientePodeSerExcluido(ACodigo) then
     raise EClienteNaoPodeSerExcluidoException.Create(ACodigo);
 
@@ -135,15 +128,15 @@ begin
     Result.Des_RazaoSocial := ACliente.Des_RazaoSocial;
     Result.Des_NomeFantasia := ACliente.Des_NomeFantasia;
     Result.Des_Contato := ACliente.Des_Contato;
-    Result.Des_Cep := ACliente.Des_Cep;
-    Result.Des_Logradouro := ACliente.Des_Logradouro;
-    Result.Des_Numero := ACliente.Des_Numero;
-    Result.Des_Complemento := ACliente.Des_Complemento;
-    Result.Des_Cidade := ACliente.Des_Cidade;
-    Result.Des_UF := ACliente.Des_UF;
-    Result.Des_Cnpj := ACliente.Des_Cnpj;
-    Result.Des_Telefone := ACliente.Des_Telefone;
-    Result.Des_Email := ACliente.Des_Email;
+    Result.Des_Cep := ACliente.Endereco.CEP;
+    Result.Des_Logradouro := ACliente.Endereco.Logradouro;
+    Result.Des_Numero := ACliente.Endereco.Numero;
+    Result.Des_Complemento := ACliente.Endereco.Complemento;
+    Result.Des_Cidade := ACliente.Endereco.Cidade;
+    Result.Des_UF := ACliente.Endereco.UF;
+    Result.Des_Cnpj := ACliente.Documento.CNPJ;
+    Result.Des_Telefone := ACliente.Contato.Telefone;
+    Result.Des_Email := ACliente.Contato.Email;
   except
     Result.Free;
     raise;
@@ -158,15 +151,15 @@ begin
   Result.Des_RazaoSocial := AClienteDTO.Des_RazaoSocial;
   Result.Des_NomeFantasia := AClienteDTO.Des_NomeFantasia;
   Result.Des_Contato := AClienteDTO.Des_Contato;
-  Result.Des_Cep := AClienteDTO.Des_Cep;
-  Result.Des_Logradouro := AClienteDTO.Des_Logradouro;
-  Result.Des_Numero := AClienteDTO.Des_Numero;
-  Result.Des_Complemento := AClienteDTO.Des_Complemento;
-  Result.Des_Cidade := AClienteDTO.Des_Cidade;
-  Result.Des_UF := AClienteDTO.Des_UF;
-  Result.Des_Cnpj := AClienteDTO.Des_Cnpj;
-  Result.Des_Telefone := AClienteDTO.Des_Telefone;
-  Result.Des_Email := AClienteDTO.Des_Email;
+  Result.Endereco.CEP := AClienteDTO.Des_Cep;
+  Result.Endereco.Logradouro := AClienteDTO.Des_Logradouro;
+  Result.Endereco.Numero := AClienteDTO.Des_Numero;
+  Result.Endereco.Complemento := AClienteDTO.Des_Complemento;
+  Result.Endereco.Cidade := AClienteDTO.Des_Cidade;
+  Result.Endereco.UF := AClienteDTO.Des_UF;
+  Result.Documento.CNPJ := AClienteDTO.Des_Cnpj;
+  Result.Contato.Telefone := AClienteDTO.Des_Telefone;
+  Result.Contato.Email := AClienteDTO.Des_Email;
 end;
 
 end.

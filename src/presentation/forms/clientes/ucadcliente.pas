@@ -7,9 +7,9 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, ClienteModel, ICliente.Service,
   ICliente.Repository, ClienteService, ClienteDTO, ClienteAppService, ClienteRepository,
-  ClienteExceptions, ClienteMapper, ConexaoSingleton, ucadastropadrao, CEPService,
-  FormatUtil, Data.DB, Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids, Vcl.Buttons, Vcl.ExtCtrls,
-  FireDAC.Comp.Client;
+  ClienteExceptions, ConexaoSingleton, ucadastropadrao, CEPService, EnderecoValueObject,
+  ContatoValueObject, DocumentoValueObject,  FormatUtil, Data.DB, Vcl.StdCtrls, Vcl.Grids,
+  Vcl.DBGrids, Vcl.Buttons, Vcl.ExtCtrls, FireDAC.Comp.Client;
 
 {$ENDREGION}
 
@@ -57,32 +57,31 @@ type
 
 {$ENDREGION}
 
-    procedure BtnSairClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure CbxFiltroChange(Sender: TObject);
     procedure DbGridClientesCellClick(Column: TColumn);
     procedure DbGridClientesDblClick(Sender: TObject);
     procedure DbGridClientesKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure BtnInserirClick(Sender: TObject);
-    procedure BtnPesquisarCepClick(Sender: TObject);
-    procedure BtnPesquisarClick(Sender: TObject);
     procedure BtnAlterarClick(Sender: TObject);
-    procedure BtnCancelarClick(Sender: TObject);
     procedure BtnExcluirClick(Sender: TObject);
     procedure BtnGravarClick(Sender: TObject);
+    procedure BtnCancelarClick(Sender: TObject);
+    procedure BtnPesquisarCepClick(Sender: TObject);
     procedure EdtCepExit(Sender: TObject);
-    procedure EdtPesquisarKeyPress(Sender: TObject; var Key: Char);
     procedure EdtCnpjExit(Sender: TObject);
     procedure EdtCnpjKeyPress(Sender: TObject; var Key: Char);
+    procedure CbxFiltroChange(Sender: TObject);
+    procedure BtnPesquisarClick(Sender: TObject);
+    procedure EdtPesquisarKeyPress(Sender: TObject; var Key: Char);
+    procedure EdtPesquisarChange(Sender: TObject);
+    procedure BtnSairClick(Sender: TObject);
 
   private
     ValoresOriginais: array of string;
     FCliente: TCliente;
     FClienteAppService: TClienteAppService;
-    sErro: string;
-    Erros: TArray<string>;
 
     procedure PreencherGridClientes;
     procedure PreencherCamposForm;
@@ -136,6 +135,7 @@ begin
   if TConexaoSingleton.GetInstance.DatabaseConnection.TestarConexao then
   begin
     FCliente := TCliente.Create;
+    Connection := TFDConnection.Create(nil);
     Repository := TClienteRepository.Create(Connection);
     Service    := TClienteService.Create(Connection);
     FClienteAppService := TClienteAppService.Create(Repository, Service);
@@ -179,68 +179,123 @@ begin
   Application.ProcessMessages;
 end;
 
-procedure TFrmCadCliente.CbxFiltroChange(Sender: TObject);
+procedure TFrmCadCliente.PreencherCamposForm;
+var Cliente: TCliente;
+    ClienteDTO: TClienteDTO;
+    CodigoCliente: Integer;
 begin
-  inherited;
-  if CbxFiltro.Text = 'Todos' then
-    EdtPesquisar.Text := EmptyStr;
+  if not Assigned(DsClientes.DataSet) or DsClientes.DataSet.IsEmpty then
+    Exit;
 
-  BtnPesquisar.Click;
-  EdtPesquisar.SetFocus;
+  try
+    CodigoCliente := DsClientes.DataSet.FieldByName('COD_CLIENTE').AsInteger;
+    Cliente := FClienteAppService.BuscarClientePorCodigo(CodigoCliente);
+    try
+      ClienteDTO := TClienteDTO.FromEntity(Cliente);
+      try
+        RdgSituacao.ItemIndex := ClienteDTO.Cod_Ativo;
+        EdtCodigoCliente.Text := IntToStr(ClienteDTO.Cod_Cliente);
+        EdtNomeFantasia.Text := ClienteDTO.Des_NomeFantasia;
+        EdtRazaoSocial.Text := ClienteDTO.Des_RazaoSocial;
+        EdtContato.Text := ClienteDTO.Des_Contato;
+        EdtCep.Text := ClienteDTO.Des_Cep;
+        EdtLogradouro.Text := ClienteDTO.Des_Logradouro;
+        EdtNumero.Text := ClienteDTO.Des_Numero;
+        EdtComplemento.Text := ClienteDTO.Des_Complemento;
+        EdtCidade.Text := ClienteDTO.Des_Cidade;
+        EdtUF.Text := ClienteDTO.Des_UF;
+        EdtTelefone.Text := ClienteDTO.Des_Telefone;
+        EdtCnpj.Text := ClienteDTO.Des_Cnpj;
+        EdtEmail.Text := ClienteDTO.Des_Email;
+
+        SalvarValoresOriginais();
+      finally
+        ClienteDTO.Free;
+      end;
+    finally
+      Cliente.Free;
+    end;
+
+  except
+    on E: Exception do
+    begin
+      ShowMessage('Erro ao carregar dados do cliente: ' + E.Message);
+      // Limpa os campos em caso de erro
+      LimparCamposForm(Self);
+    end;
+  end;
 end;
 
-procedure TFrmCadCliente.DbGridClientesCellClick(Column: TColumn);
+procedure TFrmCadCliente.LimparCamposForm(Form: TForm);
+var i: Integer;
 begin
-  inherited;
-  FOperacao := opNavegar;
-  PreencherCamposForm();
-  VerificarBotoes(FOperacao);
-end;
-
-procedure TFrmCadCliente.DbGridClientesDblClick(Sender: TObject);
-begin
-  inherited;
-  FOperacao := opEditar;
-  PreencherCamposForm();
-  VerificarBotoes(FOperacao);
-end;
-
-procedure TFrmCadCliente.DbGridClientesKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-  inherited;
-  if Key = VK_RETURN then
+  for i := 0 to Form.ComponentCount - 1 do
   begin
-    PreencherCamposForm();
-    VerificarBotoes(FOperacao);
-    FOperacao := opEditar;
-    BtnAlterarClick(Sender);
-    EdtRazaoSocial.SetFocus;
-    Key := 0;
+    if Form.Components[i] is TEdit then
+    begin
+      TEdit(Form.Components[i]).Text := '';
+    end;
   end;
-
-  if Key = VK_DELETE then
-  begin
-    BtnExcluirClick(Sender);
-  end;
+  GrbDados.Enabled := FOperacao in [opNovo, opEditar];
+  DBGridClientes.Enabled := FOperacao in [opInicio, opNavegar];
 end;
 
-function TFrmCadCliente.GetDataSource: TDataSource;
+procedure TFrmCadCliente.VerificarBotoes(AOperacao: TOperacao);
 begin
-  DbGridClientes.DataSource := FClienteAppService.GetDataSource();
-  DsClientes := FClienteAppService.GetDataSource();
+  BtnInserir.Enabled := AOperacao in [opInicio, opNavegar];
+  BtnAlterar.Enabled := AOperacao = opNavegar;
+  BtnExcluir.Enabled := AOperacao = opNavegar;
+  BtnSair.Enabled := AOperacao in [opInicio, opNavegar];
+  BtnGravar.Enabled := AOperacao in [opNovo, opEditar];
+  BtnCancelar.Enabled := AOperacao in [opNovo, opEditar];
+  GrbDados.Enabled := AOperacao in [opNovo, opEditar];
+  DbGridClientes.Enabled := AOperacao in [opInicio, opNavegar];
+  PnlPesquisar.Enabled := AOperacao in [opInicio, opNavegar];
 end;
 
-function TFrmCadCliente.GetCampoFiltro: string;
+procedure TFrmCadCliente.PreencherCbxFiltro;
 begin
-  case Integer(CbxFiltro.Items.Objects[CbxFiltro.ItemIndex]) of
-    0: Result := 'cli.des_nomefantasia';
-    1: Result := 'cli.cod_cliente';
-    2: Result := 'cli.des_nomefantasia';
-    3: Result := 'cli.des_razaosocial';
-    4: Result := 'cli.des_cidade';
-  else
-    Result := 'cli.des_nomefantasia';
-  end;
+  CbxFiltro.Items.AddObject('Todos', TObject(0));
+  CbxFiltro.Items.AddObject('Código', TObject(1));
+  CbxFiltro.Items.AddObject('Nome Fantasia', TObject(2));
+  CbxFiltro.Items.AddObject('Razão Social', TObject(3));
+  CbxFiltro.Items.AddObject('Cidade', TObject(4));
+  CbxFiltro.ItemIndex := 0; // default = "Todos"
+end;
+
+procedure TFrmCadCliente.SalvarValoresOriginais;
+begin
+  SetLength(ValoresOriginais, 14);
+  ValoresOriginais[0] := EdtCodigoCliente.Text;
+  ValoresOriginais[1] := EdtNomeFantasia.Text;
+  ValoresOriginais[2] := EdtRazaoSocial.Text;
+  ValoresOriginais[3] := EdtContato.Text;
+  ValoresOriginais[4] := EdtCep.Text;
+  ValoresOriginais[5] := EdtLogradouro.Text;
+  ValoresOriginais[6] := EdtNumero.Text;
+  ValoresOriginais[7] := EdtComplemento.Text;
+  ValoresOriginais[8] := EdtCidade.Text;
+  ValoresOriginais[9] := EdtUF.Text;
+  ValoresOriginais[10] := EdtTelefone.Text;
+  ValoresOriginais[11] := EdtCnpj.Text;
+  ValoresOriginais[12] := EdtEmail.Text;
+end;
+
+procedure TFrmCadCliente.RestaurarValoresOriginais;
+begin
+  EdtCodigoCliente.Text := ValoresOriginais[0];
+  EdtNomeFantasia.Text := ValoresOriginais[1];
+  EdtRazaoSocial.Text := ValoresOriginais[2];
+  EdtContato.Text := ValoresOriginais[3];
+  EdtCep.Text := ValoresOriginais[4];
+  EdtLogradouro.Text := ValoresOriginais[5];
+  EdtNumero.Text := ValoresOriginais[6];
+  EdtComplemento.Text := ValoresOriginais[7];
+  EdtCidade.Text := ValoresOriginais[8];
+  EdtUF.Text := ValoresOriginais[9];
+  EdtTelefone.Text := ValoresOriginais[10];
+  EdtCnpj.Text := ValoresOriginais[11];
+  EdtEmail.Text := ValoresOriginais[12];
 end;
 
 function TFrmCadCliente.GravarDados: Boolean;
@@ -279,105 +334,120 @@ begin
       PreencherGridClientes();
     except
       on E: EClienteException do
-        ShowMessage('Erro de validação: ' + E.Message);
+        MessageDlg('Erro de validação: ' + E.Message, mtError, [mbOK], 0);
+
+      on E: EEnderecoInvalidoException do
+        MessageDlg('Erro de endereço: ' + E.Message, mtError, [mbOK], 0);
+
+      on E: EContatoInvalidoException do
+        MessageDlg('Erro de contato: ' + E.Message, mtError, [mbOK], 0);
+
+      on E: EDocumentoInvalidoException do
+        MessageDlg('Erro de documento: ' + E.Message, mtError, [mbOK], 0);
 
       on E: ECNPJDuplicadoException do
-        ShowMessage('Erro de negócio: ' + E.Message);
+        MessageDlg('Erro de negócio: ' + E.Message, mtError, [mbOK], 0);
 
       on E: Exception do
-        ShowMessage('Erro inesperado: ' + E.Message);
+        MessageDlg('Erro inesperado: ' + E.Message, mtError, [mbOK], 0);
     end;
-
   finally
     Cliente.Free;
   end;
 end;
 
-procedure TFrmCadCliente.LimparCamposForm(Form: TForm);
-var i: Integer;
+function TFrmCadCliente.ObterDadosFormulario: TCliente;
+var ClienteDTO: TClienteDTO;
 begin
-  for i := 0 to Form.ComponentCount - 1 do
-  begin
-    if Form.Components[i] is TEdit then
-    begin
-      TEdit(Form.Components[i]).Text := '';
-    end;
-  end;
-  GrbDados.Enabled := FOperacao in [opNovo, opEditar];
-  DBGridClientes.Enabled := FOperacao in [opInicio, opNavegar];
-end;
-
-procedure TFrmCadCliente.PreencherCamposForm;
-var Cliente: TCliente;
-    ClienteDTO: TClienteDTO;
-    CodigoCliente: Integer;
-begin
-  if not Assigned(DsClientes.DataSet) or DsClientes.DataSet.IsEmpty then
-    Exit;
-
+  ClienteDTO := TClienteDTO.Create;
   try
-    CodigoCliente := DsClientes.DataSet.FieldByName('COD_CLIENTE').AsInteger;
-    Cliente := FClienteAppService.BuscarClientePorCodigo(CodigoCliente);
-    try
-      // Converte Entity para DTO usando o Mapper
-      ClienteDTO := TClienteMapper.EntityToDTO(Cliente);
-      try
-        // Preenche os campos do formulário com DTO
-        RdgSituacao.ItemIndex := ClienteDTO.Cod_Ativo;
-        EdtCodigoCliente.Text := IntToStr(ClienteDTO.Cod_Cliente);
-        EdtNomeFantasia.Text := ClienteDTO.Des_NomeFantasia;
-        EdtRazaoSocial.Text := ClienteDTO.Des_RazaoSocial;
-        EdtContato.Text := ClienteDTO.Des_Contato;
-        EdtCep.Text := ClienteDTO.Des_Cep;
-        EdtLogradouro.Text := ClienteDTO.Des_Logradouro;
-        EdtNumero.Text := ClienteDTO.Des_Numero;
-        EdtComplemento.Text := ClienteDTO.Des_Complemento;
-        EdtCidade.Text := ClienteDTO.Des_Cidade;
-        EdtUF.Text := ClienteDTO.Des_UF;
-        EdtTelefone.Text := ClienteDTO.Des_Telefone;
-        EdtCnpj.Text := ClienteDTO.Des_Cnpj;
-        EdtEmail.Text := ClienteDTO.Des_Email;
-
-        // Salva valores originais para possível cancelamento
-        SalvarValoresOriginais();
-      finally
-        ClienteDTO.Free;
-      end;
-    finally
-      Cliente.Free;
-    end;
-
-  except
-    on E: Exception do
+    with ClienteDTO do
     begin
-      ShowMessage('Erro ao carregar dados do cliente: ' + E.Message);
-      // Limpa os campos em caso de erro
-      LimparCamposForm(Self);
+      Cod_Ativo := RdgSituacao.ItemIndex;
+      Cod_Cliente := StrToIntDef(EdtCodigoCliente.Text, 0);
+      Des_NomeFantasia := EdtNomeFantasia.Text;
+      Des_RazaoSocial := EdtRazaoSocial.Text;
+      Des_Contato := EdtContato.Text;
+      Des_Cep := EdtCep.Text;
+      Des_Logradouro := EdtLogradouro.Text;
+      Des_Numero := EdtNumero.Text;
+      Des_Complemento := EdtComplemento.Text;
+      Des_Cidade := EdtCidade.Text;
+      Des_UF := EdtUF.Text;
+      Des_Telefone := EdtTelefone.Text;
+      Des_Cnpj := EdtCnpj.Text;
+      Des_Email := EdtEmail.Text;
     end;
+
+    Result := TCliente.Create;
+    ClienteDTO.ToEntity(Result);
+  finally
+    ClienteDTO.Free;
   end;
 end;
 
-procedure TFrmCadCliente.PreencherCbxFiltro;
+function TFrmCadCliente.GetCampoFiltro: string;
 begin
-  CbxFiltro.Items.AddObject('Todos', TObject(0));
-  CbxFiltro.Items.AddObject('Código', TObject(1));
-  CbxFiltro.Items.AddObject('Nome Fantasia', TObject(2));
-  CbxFiltro.Items.AddObject('Razão Social', TObject(3));
-  CbxFiltro.Items.AddObject('Cidade', TObject(4));
-  CbxFiltro.ItemIndex := 0; // default = "Todos"
+  case Integer(CbxFiltro.Items.Objects[CbxFiltro.ItemIndex]) of
+    0: Result := 'cli.des_nomefantasia';
+    1: Result := 'cli.cod_cliente';
+    2: Result := 'cli.des_nomefantasia';
+    3: Result := 'cli.des_razaosocial';
+    4: Result := 'cli.des_cidade';
+  else
+    Result := 'cli.des_nomefantasia';
+  end;
 end;
 
-procedure TFrmCadCliente.VerificarBotoes(AOperacao: TOperacao);
+function TFrmCadCliente.GetDataSource: TDataSource;
 begin
-  BtnInserir.Enabled := AOperacao in [opInicio, opNavegar];
-  BtnAlterar.Enabled := AOperacao = opNavegar;
-  BtnExcluir.Enabled := AOperacao = opNavegar;
-  BtnSair.Enabled := AOperacao in [opInicio, opNavegar];
-  BtnGravar.Enabled := AOperacao in [opNovo, opEditar];
-  BtnCancelar.Enabled := AOperacao in [opNovo, opEditar];
-  GrbDados.Enabled := AOperacao in [opNovo, opEditar];
-  DbGridClientes.Enabled := AOperacao in [opInicio, opNavegar];
-  PnlPesquisar.Enabled := AOperacao in [opInicio, opNavegar];
+  DbGridClientes.DataSource := FClienteAppService.GetDataSource();
+  DsClientes := FClienteAppService.GetDataSource();
+end;
+
+procedure TFrmCadCliente.DbGridClientesCellClick(Column: TColumn);
+begin
+  inherited;
+  FOperacao := opNavegar;
+  PreencherCamposForm();
+  VerificarBotoes(FOperacao);
+end;
+
+procedure TFrmCadCliente.DbGridClientesDblClick(Sender: TObject);
+begin
+  inherited;
+  FOperacao := opEditar;
+  PreencherCamposForm();
+  VerificarBotoes(FOperacao);
+end;
+
+procedure TFrmCadCliente.DbGridClientesKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  inherited;
+  if Key = VK_RETURN then
+  begin
+    PreencherCamposForm();
+    VerificarBotoes(FOperacao);
+    FOperacao := opEditar;
+    BtnAlterarClick(Sender);
+    EdtRazaoSocial.SetFocus;
+    Key := 0;
+  end;
+
+  if Key = VK_DELETE then
+  begin
+    BtnExcluirClick(Sender);
+  end;
+end;
+
+procedure TFrmCadCliente.CbxFiltroChange(Sender: TObject);
+begin
+  inherited;
+  if CbxFiltro.Text = 'Todos' then
+    EdtPesquisar.Text := EmptyStr;
+
+  BtnPesquisar.Click;
+  EdtPesquisar.SetFocus;
 end;
 
 procedure TFrmCadCliente.BtnInserirClick(Sender: TObject);
@@ -387,6 +457,66 @@ begin
   VerificarBotoes(FOperacao);
   LimparCamposForm(Self);
   EdtNomeFantasia.SetFocus;
+end;
+
+procedure TFrmCadCliente.BtnAlterarClick(Sender: TObject);
+begin
+  inherited;
+  FOperacao := opEditar;
+  PreencherCamposForm();
+  VerificarBotoes(FOperacao);
+  EdtNomeFantasia.SetFocus;
+end;
+
+procedure TFrmCadCliente.BtnGravarClick(Sender: TObject);
+begin
+  inherited;
+  if GravarDados() then
+  begin
+    FOperacao := opNavegar;
+    VerificarBotoes(FOperacao);
+    LimparCamposForm(Self);
+    BtnPesquisar.Click;
+  end;
+end;
+
+procedure TFrmCadCliente.BtnCancelarClick(Sender: TObject);
+begin
+  inherited;
+  if FOperacao = opNovo then
+  begin
+    FOperacao := opInicio;
+    LimparCamposForm(Self);
+    EdtPesquisar.Text := EmptyStr;
+  end;
+
+  if FOperacao = opEditar then
+  begin
+    FOperacao := opNavegar;
+    RestaurarValoresOriginais();
+  end;
+
+  VerificarBotoes(FOperacao);
+  PreencherGridClientes;
+  EdtPesquisar.SetFocus;
+end;
+
+procedure TFrmCadCliente.BtnExcluirClick(Sender: TObject);
+begin
+  inherited;
+  if MessageDlg('Deseja realmente excluir o cliente selecionado ?',mtConfirmation, [mbYes, mbNo],0) = IDYES then
+  begin
+    try
+      FClienteAppService.Excluir(StrToInt(EdtCodigoCliente.Text));
+      MessageDlg('Cliente excluído com sucesso!', mtInformation, [mbOk], 0);
+      LimparCamposForm(Self);
+    except
+      on E: Exception do
+        MessageDlg('Erro ao excluir o cliente: ' + E.Message, mtError, [mbOk], 0);
+    end;
+
+    PreencherGridClientes();
+  end;
 end;
 
 procedure TFrmCadCliente.BtnPesquisarCepClick(Sender: TObject);
@@ -435,135 +565,16 @@ begin
   PreencherGridClientes();
 end;
 
-procedure TFrmCadCliente.BtnAlterarClick(Sender: TObject);
-begin
-  inherited;
-  FOperacao := opEditar;
-  PreencherCamposForm();
-  VerificarBotoes(FOperacao);
-  EdtNomeFantasia.SetFocus;
-end;
-
-procedure TFrmCadCliente.BtnCancelarClick(Sender: TObject);
-begin
-  inherited;
-  if FOperacao = opNovo then
-  begin
-    FOperacao := opInicio;
-    LimparCamposForm(Self);
-    EdtPesquisar.Text := EmptyStr;
-  end;
-
-  if FOperacao = opEditar then
-  begin
-    FOperacao := opNavegar;
-    RestaurarValoresOriginais();
-  end;
-
-  VerificarBotoes(FOperacao);
-  PreencherGridClientes;
-  EdtPesquisar.SetFocus;
-end;
-
-procedure TFrmCadCliente.BtnExcluirClick(Sender: TObject);
-begin
-  inherited;
-  if MessageDlg('Deseja realmente excluir o cliente selecionado ?',mtConfirmation, [mbYes, mbNo],0) = IDYES then
-  begin
-    try
-      FClienteAppService.Excluir(StrToInt(EdtCodigoCliente.Text));
-      MessageDlg('Cliente excluído com sucesso!', mtInformation, [mbOk], 0);
-      LimparCamposForm(Self);
-    except
-      on E: Exception do
-        MessageDlg('Erro ao excluir o cliente: ' + E.Message, mtError, [mbOk], 0);
-    end;
-
-    PreencherGridClientes();
-  end;
-end;
-
-procedure TFrmCadCliente.BtnGravarClick(Sender: TObject);
-begin
-  inherited;
-  if GravarDados() then
-  begin
-    FOperacao := opNavegar;
-    VerificarBotoes(FOperacao);
-    LimparCamposForm(Self);
-    BtnPesquisar.Click;
-  end;
-end;
-
-function TFrmCadCliente.ObterDadosFormulario: TCliente;
-var ClienteDTO: TClienteDTO;
-begin
-  ClienteDTO := TClienteDTO.Create;
-  try
-    with ClienteDTO do
-    begin
-      Cod_Ativo := RdgSituacao.ItemIndex;
-      Cod_Cliente := StrToIntDef(EdtCodigoCliente.Text, 0);
-      Des_NomeFantasia := EdtNomeFantasia.Text;
-      Des_RazaoSocial := EdtRazaoSocial.Text;
-      Des_Contato := EdtContato.Text;
-      Des_Cep := EdtCep.Text;
-      Des_Logradouro := EdtLogradouro.Text;
-      Des_Numero := EdtNumero.Text;
-      Des_Complemento := EdtComplemento.Text;
-      Des_Cidade := EdtCidade.Text;
-      Des_UF := EdtUF.Text;
-      Des_Telefone := EdtTelefone.Text;
-      Des_Cnpj := EdtCnpj.Text;
-      Des_Email := EdtEmail.Text;
-    end;
-
-    Result := TCliente.Create;
-    TClienteMapper.DTOToEntity(ClienteDTO, Result);
-  finally
-    ClienteDTO.Free;
-  end;
-end;
-
-procedure TFrmCadCliente.SalvarValoresOriginais;
-begin
-  SetLength(ValoresOriginais, 14);
-  ValoresOriginais[0] := EdtCodigoCliente.Text;
-  ValoresOriginais[1] := EdtNomeFantasia.Text;
-  ValoresOriginais[2] := EdtRazaoSocial.Text;
-  ValoresOriginais[3] := EdtContato.Text;
-  ValoresOriginais[4] := EdtCep.Text;
-  ValoresOriginais[5] := EdtLogradouro.Text;
-  ValoresOriginais[6] := EdtNumero.Text;
-  ValoresOriginais[7] := EdtComplemento.Text;
-  ValoresOriginais[8] := EdtCidade.Text;
-  ValoresOriginais[9] := EdtUF.Text;
-  ValoresOriginais[10] := EdtTelefone.Text;
-  ValoresOriginais[11] := EdtCnpj.Text;
-  ValoresOriginais[12] := EdtEmail.Text;
-end;
-
-procedure TFrmCadCliente.RestaurarValoresOriginais;
-begin
-  EdtCodigoCliente.Text := ValoresOriginais[0];
-  EdtNomeFantasia.Text := ValoresOriginais[1];
-  EdtRazaoSocial.Text := ValoresOriginais[2];
-  EdtContato.Text := ValoresOriginais[3];
-  EdtCep.Text := ValoresOriginais[4];
-  EdtLogradouro.Text := ValoresOriginais[5];
-  EdtNumero.Text := ValoresOriginais[6];
-  EdtComplemento.Text := ValoresOriginais[7];
-  EdtCidade.Text := ValoresOriginais[8];
-  EdtUF.Text := ValoresOriginais[9];
-  EdtTelefone.Text := ValoresOriginais[10];
-  EdtCnpj.Text := ValoresOriginais[11];
-  EdtEmail.Text := ValoresOriginais[12];
-end;
-
 procedure TFrmCadCliente.EdtCepExit(Sender: TObject);
 begin
   inherited;
   Formatar(EdtCep, TFormato.CEP);
+end;
+
+procedure TFrmCadCliente.EdtPesquisarChange(Sender: TObject);
+begin
+  inherited;
+  PreencherGridClientes();
 end;
 
 procedure TFrmCadCliente.EdtPesquisarKeyPress(Sender: TObject; var Key: Char);

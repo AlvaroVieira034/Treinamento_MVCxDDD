@@ -12,17 +12,17 @@ type
     FCNPJ: string;
     FCPF: string;
 
-    procedure Validar;
-
   public
     constructor Create; overload;
     constructor Create(const ACNPJ, ACPF: string); overload;
 
+    procedure Validar;
     function ValidarCNPJ: Boolean;
     function ValidarCPF: Boolean;
     function LimparFormatacao(const AValor: string): string;
     function ToString: string; override;
     function Equals(OutroDocumento: TDocumento): Boolean;
+    function ObterErrosValidacao: TArray<string>;
 
     property CNPJ: string read FCNPJ write FCNPJ;
     property CPF: string read FCPF write FCPF;
@@ -87,6 +87,14 @@ end;
 function TDocumento.LimparFormatacao(const AValor: string): string;
 begin
   Result := AValor.Replace('.', '').Replace('-', '').Replace('/', '');
+end;
+
+function TDocumento.ObterErrosValidacao: TArray<string>;
+begin
+  Result := [];
+  if not ValidarCNPJ then
+    Result := Result + ['CNPJ inválido: ' + FCNPJ];
+
 end;
 
 end.

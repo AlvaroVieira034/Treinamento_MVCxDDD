@@ -22,7 +22,15 @@ uses
   ICliente.Service in 'src\domain\services\ICliente.Service.pas',
   ICliente.Repository in 'src\domain\repositories\ICliente.Repository.pas',
   ClienteExceptions in 'src\domain\exceptions\ClienteExceptions.pas',
-  ClienteService in 'src\infrastructure\persistence\services\ClienteService.pas';
+  ClienteService in 'src\infrastructure\persistence\services\ClienteService.pas',
+  ProdutoModel in 'src\domain\models\produto\ProdutoModel.pas',
+  ProdutoDTO in 'src\application\dtos\ProdutoDTO.pas',
+  ProdutoRepository in 'src\infrastructure\persistence\repositories\ProdutoRepository.pas',
+  ProdutoService in 'src\infrastructure\persistence\services\ProdutoService.pas',
+  ProdutoAppSevice in 'src\application\services\ProdutoAppSevice.pas',
+  IProdutoService in 'src\domain\services\IProdutoService.pas',
+  IProdutoRepository in 'src\domain\repositories\IProdutoRepository.pas',
+  ProdutoExceptions in 'src\domain\exceptions\ProdutoExceptions.pas';
 
 {$R *.res}
 

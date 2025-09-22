@@ -382,6 +382,7 @@ object FrmMain: TFrmMain
         16B78116B78116B78116B78116B78116B78116B78116B78116B78116B78116B7
         8116B78116B78116B78116B78116B78116B88317CBA75EFBFBFB}
       Layout = blGlyphTop
+      OnClick = BtnProdutosClick
     end
     object BtnClientes: TSpeedButton
       Left = 1

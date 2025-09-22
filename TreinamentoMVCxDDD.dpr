@@ -31,7 +31,8 @@ uses
   ProdutoModel in 'src\domain\models\ProdutoModel.pas',
   ProdutoValueObject in 'src\domain\valueobjects\ProdutoValueObject.pas',
   IProduto.Repository in 'src\domain\repositories\IProduto.Repository.pas',
-  IProduto.Service in 'src\domain\services\IProduto.Service.pas';
+  IProduto.Service in 'src\domain\services\IProduto.Service.pas',
+  ucadproduto in 'src\presentation\forms\produtos\ucadproduto.pas' {FrmCadProduto};
 
 {$R *.res}
 

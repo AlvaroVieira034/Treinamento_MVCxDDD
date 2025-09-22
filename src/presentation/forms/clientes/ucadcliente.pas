@@ -430,7 +430,7 @@ begin
     VerificarBotoes(FOperacao);
     FOperacao := opEditar;
     BtnAlterarClick(Sender);
-    EdtRazaoSocial.SetFocus;
+    EdtNomeFantasia.SetFocus;
     Key := 0;
   end;
 

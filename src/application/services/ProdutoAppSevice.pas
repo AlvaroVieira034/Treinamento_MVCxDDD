@@ -9,7 +9,7 @@ uses
 
 type
   IProdutoAppService = interface
-    ['{E9F9AF75-8494-4111-8BC0-12D0BA0E1FB3}']
+    ['{8A01A606-9CED-4455-9B78-3FC3F64DAD69}']
     procedure PreencheGridProdutos(APesquisa, ACampo: string);
     procedure PreencherComboProdutos(TblComboProdutos: TFDQuery);
     function BuscarProdutoPorCodigo(AId: Integer): TProduto;

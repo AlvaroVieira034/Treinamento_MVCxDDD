@@ -130,7 +130,7 @@ begin
       begin
         Close;
         SQL.Clear;
-        SQL.Add('select prd.cod_cliente,  ');
+        SQL.Add('select prd.cod_produto,  ');
         SQL.Add('prd.des_descricao, ');
         SQL.Add('prd.des_marca, ');
         SQL.Add('prd.val_preco ');

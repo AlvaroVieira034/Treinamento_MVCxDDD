@@ -19,6 +19,7 @@ type
     ImageList: TImageList;
     procedure BtnClientesClick(Sender: TObject);
     procedure BtnSairClick(Sender: TObject);
+    procedure BtnProdutosClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -31,7 +32,7 @@ var
 
 implementation
 
-uses ucadcliente;
+uses ucadcliente, ucadproduto;
 
 {$R *.dfm}
 
@@ -43,6 +44,16 @@ begin
   FrmCadCliente.ShowModal;
   FrmCadCliente.Free;
   FrmCadCliente := nil;
+end;
+
+procedure TFrmMain.BtnProdutosClick(Sender: TObject);
+begin
+  if not Assigned(FrmCadProduto) then
+    FrmCadProduto := TFrmCadProduto.Create(Self);
+
+  FrmCadProduto.ShowModal;
+  FrmCadProduto.Free;
+  FrmCadProduto := nil;
 end;
 
 procedure TFrmMain.BtnSairClick(Sender: TObject);

@@ -2,77 +2,84 @@ inherited FrmCadProduto: TFrmCadProduto
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'Cadastro de Produtos'
-  ClientHeight = 492
-  ClientWidth = 709
+  ClientHeight = 532
+  ClientWidth = 724
   Position = poMainFormCenter
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnShow = FormShow
-  ExplicitWidth = 715
-  ExplicitHeight = 521
+  ExplicitWidth = 730
+  ExplicitHeight = 561
   PixelsPerInch = 96
   TextHeight = 13
   inherited PnlTopo: TPanel
-    Width = 709
+    Width = 724
+    ExplicitLeft = 24
+    ExplicitTop = 8
+    ExplicitWidth = 724
     inherited BtnInserir: TSpeedButton
-      Left = 22
+      Left = 25
       Width = 110
       OnClick = BtnInserirClick
-      ExplicitLeft = 22
+      ExplicitLeft = 25
       ExplicitWidth = 110
     end
     inherited BtnAlterar: TSpeedButton
-      Left = 132
+      Left = 137
       Width = 110
       OnClick = BtnAlterarClick
-      ExplicitLeft = 132
+      ExplicitLeft = 137
       ExplicitWidth = 110
     end
     inherited BtnExcluir: TSpeedButton
-      Left = 243
+      Left = 249
       Width = 110
       OnClick = BtnExcluirClick
-      ExplicitLeft = 243
+      ExplicitLeft = 249
       ExplicitWidth = 110
     end
     inherited BtnGravar: TSpeedButton
-      Left = 354
+      Left = 361
       Width = 110
       OnClick = BtnGravarClick
-      ExplicitLeft = 354
+      ExplicitLeft = 361
       ExplicitWidth = 110
     end
     inherited BtnCancelar: TSpeedButton
-      Left = 465
+      Left = 473
       Width = 110
       OnClick = BtnCancelarClick
-      ExplicitLeft = 465
+      ExplicitLeft = 473
       ExplicitWidth = 110
     end
     inherited BtnSair: TSpeedButton
-      Left = 576
+      Left = 584
+      Top = 9
       Width = 110
       OnClick = BtnSairClick
-      ExplicitLeft = 576
+      ExplicitLeft = 584
+      ExplicitTop = 9
       ExplicitWidth = 110
     end
   end
   inherited PnlDados: TPanel
     Left = 0
     Top = 65
-    Width = 709
+    Width = 724
     Align = alTop
-    ExplicitLeft = 8
+    ExplicitLeft = 0
+    ExplicitTop = 65
+    ExplicitWidth = 709
     inherited GrbDados: TGroupBox
       Left = 8
       Top = 6
-      Width = 688
+      Width = 703
       Height = 142
       Anchors = [akLeft, akRight, akBottom]
       Caption = ' Dados do Produto '
       ExplicitLeft = 8
       ExplicitTop = 6
-      ExplicitWidth = 733
+      ExplicitWidth = 688
       ExplicitHeight = 142
       object Label1: TLabel
         Left = 69
@@ -146,37 +153,36 @@ inherited FrmCadProduto: TFrmCadProduto
   inherited PnlGrid: TPanel
     Left = 0
     Top = 225
-    Width = 709
-    Height = 220
+    Width = 724
+    Height = 260
     Align = alClient
     ExplicitLeft = 0
-    ExplicitTop = 229
-    ExplicitWidth = 725
-    ExplicitHeight = 247
+    ExplicitTop = 225
+    ExplicitWidth = 709
+    ExplicitHeight = 220
     inherited LblTotRegistros: TLabel
-      Left = 606
-      Top = 199
-      Width = 70
+      Left = 621
+      Top = 239
       Anchors = [akRight, akBottom]
-      ExplicitLeft = 678
-      ExplicitTop = 209
+      ExplicitLeft = 606
+      ExplicitTop = 199
     end
     inherited GrbGrid: TGroupBox
       Left = 8
       Top = 6
-      Width = 684
-      Height = 187
+      Width = 699
+      Height = 227
       Anchors = [akLeft, akTop, akRight, akBottom]
       Caption = ' Produtos Cadastrados '
       ExplicitLeft = 8
       ExplicitTop = 6
-      ExplicitWidth = 700
+      ExplicitWidth = 684
       ExplicitHeight = 187
       object DBGridProdutos: TDBGrid
-        Left = 9
-        Top = 19
-        Width = 659
-        Height = 155
+        Left = 12
+        Top = 20
+        Width = 674
+        Height = 195
         Anchors = [akLeft, akTop, akRight, akBottom]
         Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgTitleHotTrack]
         TabOrder = 0
@@ -224,20 +230,20 @@ inherited FrmCadProduto: TFrmCadProduto
   end
   object PnlPesquisar: TPanel
     Left = 0
-    Top = 445
-    Width = 709
+    Top = 485
+    Width = 724
     Height = 47
     Align = alBottom
     BevelOuter = bvNone
     ParentBackground = False
     TabOrder = 3
-    ExplicitTop = 447
-    ExplicitWidth = 755
+    ExplicitTop = 445
+    ExplicitWidth = 709
     DesignSize = (
-      709
+      724
       47)
     object BtnPesquisar: TSpeedButton
-      Left = 602
+      Left = 617
       Top = 10
       Width = 96
       Height = 27
@@ -271,6 +277,7 @@ inherited FrmCadProduto: TFrmCadProduto
         FFB67E0EFFFFFFFFFFFFBD8C27B67E0EB67C09B67B08B57B08B67B08B67B08B5
         7B08B67B08B67B08B57B08B67C09B67E0EBD8C27FFFFFFFFFFFF}
       OnClick = BtnPesquisarClick
+      ExplicitLeft = 602
     end
     object Label12: TLabel
       Left = 12

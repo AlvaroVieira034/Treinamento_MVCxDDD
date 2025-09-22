@@ -48,13 +48,18 @@ implementation
 
 constructor TProdutoRepository.Create(AConnection: TFDConnection);
 begin
+  inherited Create();
   FConexao := AConnection;
   CriarTabelas();
 end;
 
 destructor TProdutoRepository.Destroy;
 begin
-  QryProdutos.Free;
+  if Assigned(QryProdutos) then
+    QryProdutos.Free;
+
+  if Assigned(Transacao) then
+    Transacao.Free;
 
   inherited;
 end;
@@ -96,6 +101,7 @@ begin
           SQL.Clear;
           SQL.Text := SQL_UPDATE;
           DTO.MapearParaQuery(QryProdutos);
+          ParamByName('COD_PRODUTO').AsInteger := AId;
           ExecSQL;
         end;
       end);

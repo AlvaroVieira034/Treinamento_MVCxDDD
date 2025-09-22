@@ -84,10 +84,9 @@ procedure TProdutoDTO.MapearParaQuery(AQuery: TFDQuery);
 begin
   with AQuery do
   begin
-    ParamByName('COD_PRODUTO').AsInteger;
-    ParamByName('DES_DESCRICAO').AsString;
-    ParamByName('DES_MARCA').AsString;
-    ParamByName('VAL_PRECO').AsFloat;
+    ParamByName('DES_DESCRICAO').AsString := FDes_Descricao;
+    ParamByName('DES_MARCA').AsString := FDes_Marca;
+    ParamByName('VAL_PRECO').AsFloat := FVal_Preco;
   end;
 end;
 

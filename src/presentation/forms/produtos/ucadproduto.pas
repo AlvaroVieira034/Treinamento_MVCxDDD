@@ -300,7 +300,7 @@ begin
       Cod_Produto := StrToIntDef(EdtCodProduto.Text, 0);
       Des_Descricao := EdtDescricao.Text;
       Des_Marca := EdtMarca.Text;
-      Val_Preco := StrToFloat(EdtPrecoUnitario.Text);
+      Val_Preco := StrToFloatDef(EdtPrecoUnitario.Text, 0);
     end;
     Result := TProduto.Create;
     ProdutoDTO.ToEntity(Result);
@@ -340,6 +340,7 @@ begin
   inherited;
   FOperacao := opNavegar;
   PreencherCamposForm();
+  EdtPrecoUnitarioExit(Self);
   VerificarBotoes(FOperacao);
 end;
 

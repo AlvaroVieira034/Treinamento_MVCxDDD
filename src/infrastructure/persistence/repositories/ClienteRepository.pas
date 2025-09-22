@@ -110,6 +110,7 @@ begin
           SQL.Clear;
           SQL.Text := SQL_UPDATE;
           DTO.MapearParaQuery(QryClientes);
+          ParamByName('COD_CLIENTE').AsInteger := AId;
           ExecSQL;
         end;
       end);

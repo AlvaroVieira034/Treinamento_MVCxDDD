@@ -34,6 +34,7 @@ type
 
     // Metodos de criação de DataSets
     procedure CriarTabelas;
+    procedure CriarCamposTabelas;
     function GetDataSource: TDataSource;
 
   end;
@@ -115,7 +116,6 @@ begin
       raise Exception.Create('Produto não encontrado com ID: ' + IntToStr(AId));
 
   end;
-
 end;
 
 function TProdutoService.BuscarProdutoPorCodigo(AId: Integer): TProduto;
@@ -200,7 +200,7 @@ begin
     Exit(False);
 
   QryTemp.Close;
-  QryTemp.SQL.Text := ('select count(*) as quant from tab_pedido where cod_produto = :cod_produto');
+  QryTemp.SQL.Text := ('select count(*) as quant from tab_pedido_item where cod_produto = :cod_produto');
   QryTemp.ParamByName('COD_PRODUTO').AsInteger := AProdutoId;
   QryTemp.Open;
 
@@ -213,7 +213,44 @@ begin
   QryTemp := Conexao.CriarQuery;
   DsProdutos := Conexao.CriarDataSource;
   DsProdutos.DataSet := TblProdutos;
+  CriarCamposTabelas();
 end;
+
+procedure TProdutoService.CriarCamposTabelas;
+var
+  FloatField: TFloatField;
+  StringField: TStringField;
+  IntegerField: TIntegerField;
+begin
+  // Criando o campo COD_PRODUTO
+  IntegerField := TIntegerField.Create(TblProdutos);
+  IntegerField.FieldName := 'COD_PRODUTO';
+  IntegerField.DataSet := TblProdutos;
+  IntegerField.Name := 'TblProdutosCOD_PRODUTO';
+
+  // Criando o campo DES_DESCRICAO
+  StringField := TStringField.Create(TblProdutos);
+  StringField.FieldName := 'DES_DESCRICAO';
+  StringField.Size := 100;
+  StringField.DataSet := TblProdutos;
+  StringField.Name := 'TblProdutosDES_DESCRICAO';
+
+  // Criando o campo DES_MARCA
+  StringField := TStringField.Create(TblProdutos);
+  StringField.FieldName := 'DES_MARCA';
+  StringField.Size := 50;
+  StringField.DataSet := TblProdutos;
+  StringField.Name := 'TblProdutosDES_MARCA';
+
+  // Criando o campo VAL_PRECO
+  FloatField := TFloatField.Create(TblProdutos);
+  FloatField.FieldName := 'VAL_PRECO';
+  FloatField.DataSet := TblProdutos;
+  FloatField.Name := 'TblProdutosVAL_PRECO';
+  FloatField.DisplayFormat := '#,###,##0.00';
+
+end;
+
 
 function TProdutoService.GetDataSource: TDataSource;
 begin

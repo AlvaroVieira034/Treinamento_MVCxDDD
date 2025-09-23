@@ -20,6 +20,7 @@ type
     procedure BtnClientesClick(Sender: TObject);
     procedure BtnSairClick(Sender: TObject);
     procedure BtnProdutosClick(Sender: TObject);
+    procedure BtnVendasClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -32,7 +33,7 @@ var
 
 implementation
 
-uses ucadcliente, ucadproduto;
+uses ucadcliente, ucadproduto, ucadpedido;
 
 {$R *.dfm}
 
@@ -56,9 +57,20 @@ begin
   FrmCadProduto := nil;
 end;
 
+procedure TFrmMain.BtnVendasClick(Sender: TObject);
+begin
+  if not Assigned(FrmCadPedido) then
+    FrmCadPedido := TFrmCadPedido.Create(Self);
+
+  FrmCadPedido.ShowModal;
+  FrmCadPedido.Free;
+  FrmCadPedido := nil;
+end;
+
 procedure TFrmMain.BtnSairClick(Sender: TObject);
 begin
   Close;
 end;
+
 
 end.

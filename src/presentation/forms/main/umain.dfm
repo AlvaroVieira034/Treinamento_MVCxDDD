@@ -274,6 +274,7 @@ object FrmMain: TFrmMain
         9999757575756666666633333333212121210000000000000000000000000000
         0000000000000000000000000000000000000000000000000000}
       Layout = blGlyphTop
+      OnClick = BtnVendasClick
     end
     object BtnProdutos: TSpeedButton
       Left = 87

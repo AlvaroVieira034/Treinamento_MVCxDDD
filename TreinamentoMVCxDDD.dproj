@@ -133,6 +133,26 @@
             <Form>FrmCadProduto</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="src\domain\models\PedidoModel.pas"/>
+        <DCCReference Include="src\presentation\forms\pedidos\ucadpedido.pas">
+            <Form>FrmCadPedido</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="src\infrastructure\persistence\repositories\PedidoItemRepository.pas"/>
+        <DCCReference Include="src\domain\repositories\IPedidoItem.Repository.pas"/>
+        <DCCReference Include="src\application\services\PedidoItemAppService.pas"/>
+        <DCCReference Include="src\domain\models\PedidoItemModel.pas"/>
+        <DCCReference Include="src\application\dtos\PedidoItemDTO.pas"/>
+        <DCCReference Include="src\domain\valueobjects\PedidoItemValueObject.pas"/>
+        <DCCReference Include="src\domain\exceptions\PedidoItemExceptions.pas"/>
+        <DCCReference Include="src\infrastructure\persistence\services\PedidoService.pas"/>
+        <DCCReference Include="src\domain\services\IPedido.Service.pas"/>
+        <DCCReference Include="src\infrastructure\persistence\repositories\PedidoRepository.pas"/>
+        <DCCReference Include="src\domain\repositories\IPedido.Repository.pas"/>
+        <DCCReference Include="src\application\services\PedidoAppService.pas"/>
+        <DCCReference Include="src\application\dtos\PedidoDTO.pas"/>
+        <DCCReference Include="src\domain\valueobjects\PedidoValueObject.pas"/>
+        <DCCReference Include="src\domain\exceptions\PedidoExceptions.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

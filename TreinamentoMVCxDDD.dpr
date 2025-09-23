@@ -32,7 +32,24 @@ uses
   ProdutoValueObject in 'src\domain\valueobjects\ProdutoValueObject.pas',
   IProduto.Repository in 'src\domain\repositories\IProduto.Repository.pas',
   IProduto.Service in 'src\domain\services\IProduto.Service.pas',
-  ucadproduto in 'src\presentation\forms\produtos\ucadproduto.pas' {FrmCadProduto};
+  ucadproduto in 'src\presentation\forms\produtos\ucadproduto.pas' {FrmCadProduto},
+  PedidoModel in 'src\domain\models\PedidoModel.pas',
+  ucadpedido in 'src\presentation\forms\pedidos\ucadpedido.pas' {FrmCadPedido},
+  PedidoItemRepository in 'src\infrastructure\persistence\repositories\PedidoItemRepository.pas',
+  IPedidoItem.Repository in 'src\domain\repositories\IPedidoItem.Repository.pas',
+  PedidoItemAppService in 'src\application\services\PedidoItemAppService.pas',
+  PedidoItemModel in 'src\domain\models\PedidoItemModel.pas',
+  PedidoItemDTO in 'src\application\dtos\PedidoItemDTO.pas',
+  PedidoItemValueObject in 'src\domain\valueobjects\PedidoItemValueObject.pas',
+  PedidoItemExceptions in 'src\domain\exceptions\PedidoItemExceptions.pas',
+  PedidoService in 'src\infrastructure\persistence\services\PedidoService.pas',
+  IPedido.Service in 'src\domain\services\IPedido.Service.pas',
+  PedidoRepository in 'src\infrastructure\persistence\repositories\PedidoRepository.pas',
+  IPedido.Repository in 'src\domain\repositories\IPedido.Repository.pas',
+  PedidoAppService in 'src\application\services\PedidoAppService.pas',
+  PedidoDTO in 'src\application\dtos\PedidoDTO.pas',
+  PedidoValueObject in 'src\domain\valueobjects\PedidoValueObject.pas',
+  PedidoExceptions in 'src\domain\exceptions\PedidoExceptions.pas';
 
 {$R *.res}
 

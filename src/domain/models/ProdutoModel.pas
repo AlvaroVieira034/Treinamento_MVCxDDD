@@ -3,9 +3,7 @@ unit ProdutoModel;
 interface
 
 uses
-  System.SysUtils,
-  ProdutoValueObject,
-  ProdutoExceptions;
+  System.SysUtils, ProdutoValueObject, ProdutoExceptions;
 
 type
   EProdutoException = class(Exception);

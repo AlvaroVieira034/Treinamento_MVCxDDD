@@ -1,98 +1,116 @@
 inherited FrmCadPedido: TFrmCadPedido
   BorderIcons = [biSystemMenu]
+  BorderStyle = bsSingle
   Caption = 'Cadastro de Pedidos'
-  ClientHeight = 507
-  ClientWidth = 691
+  ClientHeight = 536
+  ClientWidth = 705
   Position = poMainFormCenter
-  ExplicitWidth = 707
-  ExplicitHeight = 546
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
+  OnShow = FormShow
+  ExplicitWidth = 711
+  ExplicitHeight = 565
   PixelsPerInch = 96
   TextHeight = 13
   inherited PnlTopo: TPanel
-    Width = 691
+    Width = 705
+    ExplicitWidth = 705
     inherited BtnInserir: TSpeedButton
+      Left = 16
       Width = 110
+      OnClick = BtnInserirClick
+      ExplicitLeft = 16
       ExplicitWidth = 110
     end
     inherited BtnAlterar: TSpeedButton
-      Left = 124
-      Width = 109
-      ExplicitLeft = 124
-      ExplicitWidth = 109
+      Left = 127
+      Width = 110
+      OnClick = BtnAlterarClick
+      ExplicitLeft = 127
+      ExplicitWidth = 110
     end
     inherited BtnExcluir: TSpeedButton
-      Left = 235
-      Width = 109
-      ExplicitLeft = 235
-      ExplicitWidth = 109
+      Left = 239
+      Width = 110
+      OnClick = BtnExcluirClick
+      ExplicitLeft = 239
+      ExplicitWidth = 110
     end
     inherited BtnGravar: TSpeedButton
-      Left = 346
-      Top = 9
-      Width = 109
-      ExplicitLeft = 346
-      ExplicitTop = 9
-      ExplicitWidth = 109
+      Left = 351
+      Width = 110
+      OnClick = BtnGravarClick
+      ExplicitLeft = 351
+      ExplicitWidth = 110
     end
     inherited BtnCancelar: TSpeedButton
-      Left = 457
-      Width = 109
-      ExplicitLeft = 457
-      ExplicitWidth = 109
+      Left = 463
+      Width = 110
+      OnClick = BtnCancelarClick
+      ExplicitLeft = 463
+      ExplicitWidth = 110
     end
     inherited BtnSair: TSpeedButton
-      Left = 567
-      Width = 109
-      ExplicitLeft = 567
-      ExplicitWidth = 109
+      Left = 575
+      Width = 110
+      OnClick = BtnSairClick
+      ExplicitLeft = 575
+      ExplicitWidth = 110
     end
   end
   inherited PnlDados: TPanel
     Left = 0
     Top = 65
-    Width = 691
-    Height = 169
-    Align = alClient
+    Width = 705
+    Height = 184
+    Align = alTop
+    ExplicitLeft = 0
+    ExplicitTop = 65
+    ExplicitWidth = 705
+    ExplicitHeight = 184
     inherited GrbDados: TGroupBox
       Left = 9
-      Top = 8
-      Width = 670
-      Height = 152
+      Top = 6
+      Width = 685
+      Height = 168
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      Caption = ' Dados do Pedido '
       ExplicitLeft = 9
-      ExplicitTop = 8
-      ExplicitWidth = 670
-      ExplicitHeight = 152
+      ExplicitTop = 6
+      ExplicitWidth = 685
+      ExplicitHeight = 168
       object Label1: TLabel
         Left = 41
-        Top = 18
+        Top = 27
         Width = 87
         Height = 13
         Caption = '&C'#243'digo do Pedido:'
       end
       object Label2: TLabel
         Left = 51
-        Top = 46
+        Top = 55
         Width = 77
         Height = 13
         Caption = '&Data do Pedido:'
       end
       object Label4: TLabel
         Left = 23
-        Top = 102
+        Top = 111
         Width = 105
         Height = 13
         Caption = '&Valor Total do Pedido:'
       end
       object Label3: TLabel
         Left = 40
-        Top = 74
+        Top = 83
         Width = 88
         Height = 13
         Caption = 'C'#243'digo do C&liente:'
       end
       object BtnPesquisar: TSpeedButton
         Left = 210
-        Top = 14
+        Top = 23
         Width = 29
         Height = 23
         Hint = 'Pesquisar'
@@ -131,10 +149,11 @@ inherited FrmCadPedido: TFrmCadPedido
         ParentFont = False
         ParentShowHint = False
         ShowHint = True
+        OnClick = BtnPesquisarClick
       end
       object BtnLimpaCampos: TSpeedButton
-        Left = 633
-        Top = 117
+        Left = 650
+        Top = 133
         Width = 28
         Height = 28
         Hint = 'Limpa os campos do dados da venda'
@@ -199,11 +218,13 @@ inherited FrmCadPedido: TFrmCadPedido
         ParentShowHint = False
         ParentBiDiMode = False
         ShowHint = True
-        ExplicitLeft = 642
+        OnClick = BtnLimpaCamposClick
+        ExplicitLeft = 764
+        ExplicitTop = 171
       end
       object EdtCodPedido: TEdit
         Left = 134
-        Top = 15
+        Top = 24
         Width = 74
         Height = 21
         Hint = 
@@ -213,20 +234,22 @@ inherited FrmCadPedido: TFrmCadPedido
         ParentShowHint = False
         ShowHint = True
         TabOrder = 0
+        OnKeyPress = EdtCodPedidoKeyPress
       end
       object EdtDataPedido: TEdit
         Left = 134
-        Top = 43
+        Top = 52
         Width = 74
         Height = 21
         Alignment = taRightJustify
         CharCase = ecUpperCase
         MaxLength = 10
         TabOrder = 1
+        OnChange = EdtDataPedidoChange
       end
       object EdtTotalPedido: TEdit
         Left = 134
-        Top = 99
+        Top = 108
         Width = 76
         Height = 21
         Alignment = taRightJustify
@@ -235,161 +258,180 @@ inherited FrmCadPedido: TFrmCadPedido
       end
       object EdtCodCliente: TEdit
         Left = 134
-        Top = 71
+        Top = 80
         Width = 76
         Height = 21
         Alignment = taRightJustify
         TabOrder = 3
+        OnChange = EdtCodClienteChange
+        OnExit = EdtCodClienteExit
+        OnKeyPress = EdtCodClienteKeyPress
       end
       object LcbxNomeCliente: TDBLookupComboBox
         Left = 214
-        Top = 71
+        Top = 79
         Width = 284
         Height = 21
         KeyField = 'COD_CLIENTE'
         ListField = 'DES_RAZAOSOCIAL'
         TabOrder = 4
+        OnClick = LcbxNomeClienteClick
       end
       object BtnInserirItens: TButton
-        Left = 291
-        Top = 115
+        Left = 294
+        Top = 131
         Width = 121
         Height = 30
+        Anchors = [akRight, akBottom]
         Caption = 'In&serir Itens'
         Enabled = False
         ImageIndex = 14
         ImageMargins.Left = 12
         Images = FrmMain.ImageList
         TabOrder = 5
+        OnClick = BtnInserirItensClick
       end
     end
   end
   inherited PnlGrid: TPanel
     Left = 0
-    Top = 234
-    Width = 691
-    Height = 273
-    Align = alBottom
-    Anchors = [akLeft, akRight]
+    Top = 249
+    Width = 705
+    Height = 287
+    Align = alClient
     ExplicitLeft = 0
-    ExplicitTop = 256
-    ExplicitWidth = 698
-    ExplicitHeight = 273
+    ExplicitTop = 249
+    ExplicitWidth = 705
+    ExplicitHeight = 287
     inherited LblTotRegistros: TLabel
-      Left = 463
-      Top = 142
-      ExplicitLeft = 521
-      ExplicitTop = 142
+      Left = 260
+      Top = 78
+      ExplicitLeft = 388
+      ExplicitTop = 78
     end
     inherited GrbGrid: TGroupBox
       Left = 9
       Top = 6
-      Width = 670
-      Height = 258
+      Width = 685
+      Height = 267
       Anchors = [akLeft, akTop, akRight, akBottom]
       Caption = ' Itens do Pedido '
+      Enabled = False
       ExplicitLeft = 9
       ExplicitTop = 6
-      ExplicitWidth = 670
-      ExplicitHeight = 258
+      ExplicitWidth = 685
+      ExplicitHeight = 267
       object Label10: TLabel
-        Left = 12
-        Top = 17
+        Left = 10
+        Top = 20
         Width = 38
         Height = 13
         Caption = 'Produto'
       end
       object Label12: TLabel
-        Left = 253
-        Top = 17
+        Left = 251
+        Top = 20
         Width = 56
         Height = 13
         Caption = 'Quantidade'
       end
       object Label13: TLabel
-        Left = 328
-        Top = 17
+        Left = 326
+        Top = 20
         Width = 67
         Height = 13
         Caption = 'Pre'#231'o Unit'#225'rio'
       end
       object Label14: TLabel
-        Left = 440
-        Top = 17
+        Left = 438
+        Top = 20
         Width = 54
         Height = 13
         Caption = 'Pre'#231'o Total'
       end
       object EdtQuantidade: TEdit
-        Left = 250
-        Top = 34
+        Left = 249
+        Top = 36
         Width = 61
         Height = 21
         Alignment = taRightJustify
         TabOrder = 0
+        OnExit = EdtQuantidadeExit
+        OnKeyPress = EdtQuantidadeKeyPress
       end
       object EdtPrecoUnit: TEdit
-        Left = 318
-        Top = 33
+        Left = 316
+        Top = 36
         Width = 100
         Height = 21
         Alignment = taRightJustify
         TabOrder = 1
+        OnExit = EdtPrecoUnitExit
+        OnKeyPress = EdtPrecoUnitKeyPress
       end
       object EdtPrecoTotal: TEdit
-        Left = 437
-        Top = 33
+        Left = 435
+        Top = 36
         Width = 100
         Height = 21
         Alignment = taRightJustify
         TabOrder = 2
+        OnExit = EdtPrecoTotalExit
+        OnKeyPress = EdtPrecoTotalKeyPress
       end
       object LCbxProdutos: TDBLookupComboBox
-        Left = 11
-        Top = 33
+        Left = 9
+        Top = 36
         Width = 230
         Height = 21
         KeyField = 'COD_PRODUTO'
         ListField = 'DES_NOMEPRODUTO'
         ListFieldIndex = 1
         TabOrder = 3
+        OnClick = LCbxProdutosClick
       end
       object BtnAddItemGrid: TButton
-        Left = 545
-        Top = 32
+        Left = 543
+        Top = 35
         Width = 24
         Height = 24
+        ImageAlignment = iaCenter
         ImageIndex = 0
         Images = FrmMain.ImageList
         TabOrder = 4
+        OnClick = BtnAddItemGridClick
       end
       object BtnDelItemGrid: TButton
-        Left = 575
-        Top = 32
+        Left = 573
+        Top = 35
         Width = 24
         Height = 24
+        ImageAlignment = iaCenter
         ImageIndex = 1
         Images = FrmMain.ImageList
         TabOrder = 5
+        OnClick = BtnDelItemGridClick
       end
       object DbGridItensPedido: TDBGrid
-        Left = 12
-        Top = 61
-        Width = 646
-        Height = 185
+        Left = 10
+        Top = 65
+        Width = 667
+        Height = 192
         Anchors = [akLeft, akTop, akRight, akBottom]
+        DataSource = DsPedidoItem
         TabOrder = 6
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = clWindowText
         TitleFont.Height = -11
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        OnKeyDown = DbGridItensPedidoKeyDown
         Columns = <
           item
             Expanded = False
             FieldName = 'DES_DESCRICAO'
             Title.Caption = 'Produto'
-            Width = 249
+            Width = 326
             Visible = True
           end
           item
@@ -434,5 +476,50 @@ inherited FrmCadPedido: TFrmCadPedido
           end>
       end
     end
+  end
+  object MTblPedidoItem: TFDMemTable
+    FieldDefs = <>
+    IndexDefs = <>
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    StoreDefs = True
+    Left = 608
+    Top = 380
+    object MTblPedidoItemID_PEDIDO: TIntegerField
+      FieldName = 'ID_PEDIDO'
+    end
+    object MTblPedidoItemCOD_PEDIDO: TIntegerField
+      FieldName = 'COD_PEDIDO'
+    end
+    object MTblPedidoItemCOD_PRODUTO: TIntegerField
+      FieldName = 'COD_PRODUTO'
+      Required = True
+    end
+    object MTblPedidoItemDES_DESCRICAO: TStringField
+      FieldName = 'DES_DESCRICAO'
+      Size = 100
+    end
+    object MTblPedidoItemVAL_QUANTIDADE: TIntegerField
+      FieldName = 'VAL_QUANTIDADE'
+      Required = True
+    end
+    object MTblPedidoItemVAL_PRECOUNITARIO: TFloatField
+      FieldName = 'VAL_PRECOUNITARIO'
+      DisplayFormat = '##,###,##0.00'
+    end
+    object MTblPedidoItemVAL_TOTALITEM: TFloatField
+      FieldName = 'VAL_TOTALITEM'
+      DisplayFormat = '##,###,##0.00'
+    end
+  end
+  object DsPedidoItem: TDataSource
+    DataSet = MTblPedidoItem
+    Left = 613
+    Top = 434
   end
 end

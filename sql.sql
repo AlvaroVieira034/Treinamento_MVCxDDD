@@ -16,21 +16,5 @@ update bdtestedguarani.dbo.tab_cliente set des_logradouro = des_endereco
 
 alter table bdtestedguarani.dbo.tab_cliente drop column des_endereco
 
-select * from bdtestedguarani.dbo.tab_pedido
-
 
 select * from bdtestedguarani.dbo.tab_cliente
-
-select * from bdtestedguarani.dbo.tab_pedido
-
-
-sp_help tab_produto
-
-
-select * from tab_produto
-
-select * from bdtestedguarani.dbo.tab_pedido_item
-
-select count(*) as quant from tab_pedido_item where cod_produto = 17
-
-select count(*) as quant from tab_produto where des_descricao = 'BBBB' and cod_produto <> 34

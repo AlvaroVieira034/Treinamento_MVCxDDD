@@ -34,7 +34,6 @@ uses
   IProduto.Service in 'src\domain\services\IProduto.Service.pas',
   ucadproduto in 'src\presentation\forms\produtos\ucadproduto.pas' {FrmCadProduto},
   PedidoModel in 'src\domain\models\PedidoModel.pas',
-  ucadpedido in 'src\presentation\forms\pedidos\ucadpedido.pas' {FrmCadPedido},
   PedidoItemRepository in 'src\infrastructure\persistence\repositories\PedidoItemRepository.pas',
   IPedidoItem.Repository in 'src\domain\repositories\IPedidoItem.Repository.pas',
   PedidoItemAppService in 'src\application\services\PedidoItemAppService.pas',
@@ -49,7 +48,10 @@ uses
   PedidoAppService in 'src\application\services\PedidoAppService.pas',
   PedidoDTO in 'src\application\dtos\PedidoDTO.pas',
   PedidoValueObject in 'src\domain\valueobjects\PedidoValueObject.pas',
-  PedidoExceptions in 'src\domain\exceptions\PedidoExceptions.pas';
+  PedidoExceptions in 'src\domain\exceptions\PedidoExceptions.pas',
+  upesqpedidos in 'src\presentation\forms\pedidos\upesqpedidos.pas' {FrmPesquisaPedidos},
+  ucadpedido in 'src\presentation\forms\pedidos\ucadpedido.pas' {FrmCadPedido},
+  umostrapedido in 'src\presentation\forms\pedidos\umostrapedido.pas' {FrmMostraPedido};
 
 {$R *.res}
 

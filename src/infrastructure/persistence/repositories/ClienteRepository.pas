@@ -92,7 +92,7 @@ begin
         end;
       end);
   finally
-    DTO.Free
+    DTO.Free;
   end;
 end;
 
@@ -115,7 +115,7 @@ begin
         end;
       end);
   finally
-    DTO.Free
+    DTO.Free;
   end;
 end;
 

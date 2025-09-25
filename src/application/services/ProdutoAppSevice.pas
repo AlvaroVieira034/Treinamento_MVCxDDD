@@ -38,6 +38,7 @@ type
     function Inserir(AProduto: TProduto): Boolean;
     function Alterar(AProduto: TProduto; ACodigo: Integer): Boolean;
     function Excluir(ACodigo: Integer): Boolean;
+    function GetValorUnitario(ACodigo: Integer): Double;
     function ValidarProduto(AProduto: TProduto): Boolean;
     function GetDataSource: TDataSource;
   end;
@@ -109,6 +110,11 @@ end;
 function TProdutoAppService.GetDataSource: TDataSource;
 begin
   Result := FProdutoService.GetDataSource();
+end;
+
+function TProdutoAppService.GetValorUnitario(ACodigo: Integer): Double;
+begin
+  Result := (FProdutoService as TProdutoService).GetValorUnitario(ACodigo);
 end;
 
 function TProdutoAppService.EntityToDTO(AProduto: TProduto): TProdutoDTO;

@@ -11,6 +11,7 @@ type
   IClienteAppService = interface
     ['{BCFF5BF5-B916-48EB-A803-007F2AF482C9}']
     procedure PreencheGridClientes(APesquisa, ACampo: string);
+    procedure PreencherCamposForm(ACliente: TCliente; ACodigo: Integer);
     procedure PreencherComboClientes(TblComboClientes: TFDQuery);
     function BuscarClientePorCodigo(AId: Integer): TCliente;
     function Inserir(ACliente: TCliente): Boolean;
@@ -33,6 +34,7 @@ type
     constructor Create(AClienteRepository: IClienteRepository; AClienteService: IClienteService);
 
     procedure PreencheGridClientes(APesquisa, ACampo: string);
+    procedure PreencherCamposForm(ACliente: TCliente; ACodigo: Integer);
     procedure PreencherComboClientes(TblComboClientes: TFDQuery);
     function BuscarClientePorCodigo(AId: Integer): TCliente;
     function Inserir(ACliente: TCliente): Boolean;
@@ -56,6 +58,11 @@ end;
 procedure TClienteAppService.PreencheGridClientes(APesquisa, ACampo: string);
 begin
   FClienteService.PreencheGridClientes(APesquisa, ACampo);
+end;
+
+procedure TClienteAppService.PreencherCamposForm(ACliente: TCliente; ACodigo: Integer);
+begin
+  FClienteService.PreencherCamposForm(ACliente, ACodigo);
 end;
 
 procedure TClienteAppService.PreencherComboClientes(TblComboClientes: TFDQuery);

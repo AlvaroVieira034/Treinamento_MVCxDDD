@@ -31,6 +31,7 @@ type
     procedure ValidarDescricaoUnica(const ADescricao: string; ACodigoProduto: Integer);
     function VerificarDescricaoExistente(const ADescricao: string; ACodigoProduto: Integer): Boolean;
     function ProdutoPodeSerExcluido(AProdutoId: Integer): Boolean;
+    function GetValorUnitario(ACodigo: Integer): Double;
 
     // Metodos de criação de DataSets
     procedure CriarTabelas;
@@ -82,7 +83,7 @@ begin
   begin
     Close;
     SQL.Clear;
-    SQL.Add('select prd.des_descricao from tab_produto prd order by prd.des_descricao ');
+    SQL.Add('select prd.cod_produto, prd.des_descricao from tab_produto prd order by prd.des_descricao ');
     Open();
   end;
 end;
@@ -251,11 +252,26 @@ begin
 
 end;
 
-
 function TProdutoService.GetDataSource: TDataSource;
 begin
   Result := DsProdutos;
 end;
 
+function TProdutoService.GetValorUnitario(ACodigo: Integer): Double;
+begin
+  Result := 0;
+  with QryTemp do
+  begin
+    SQL.Clear;
+    SQL.Add('select cod_produto, ');
+    SQL.Add('val_preco');
+    SQL.Add('from tab_produto');
+    SQL.Add('where cod_produto = :cod_produto');
+
+    ParamByName('COD_PRODUTO').AsInteger := ACodigo;
+    Open;
+    Result := FieldByName('val_preco').AsFloat
+  end;
+end;
 
 end.

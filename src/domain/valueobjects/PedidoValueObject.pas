@@ -49,6 +49,9 @@ end;
 
 procedure TDataPedido.Validar;
 begin
+  if FValor = 0 then
+    raise EDataPedidoException.Create('Data do pedido deve ser preenchida.');
+
   if FValor > Now then
     raise EDataPedidoException.Create('Data do pedido não pode ser futura.');
 end;
@@ -64,7 +67,7 @@ end;
 procedure TClientePedido.Validar;
 begin
   if FValor <= 0 then
-    raise EClientePedidoException.Create('Código do cliente deve ser maior que zero.');
+    raise EClientePedidoException.Create('O cliente do pedido deve ser informado!');
 end;
 
 { TValorPedido }
@@ -77,8 +80,8 @@ end;
 
 procedure TValorPedido.Validar;
 begin
-  if FValor < 0 then
-    raise EValorPedidoException.Create('Valor do pedido não pode ser negativo.');
+  //if FValor <= 0 then
+  //  raise EValorPedidoException.Create('Valor do pedido não pode ser menor ou igual a 0!');
 end;
 
 end.

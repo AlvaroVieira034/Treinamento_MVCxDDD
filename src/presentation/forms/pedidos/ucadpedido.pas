@@ -6,14 +6,14 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Forms, Vcl.Dialogs, UCadastroPadrao, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Data.DB,
-  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, Vcl.DBCtrls,
-  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.Grids, Vcl.DBGrids,
-  Vcl.Controls, ConexaoSingleton, ConexaoAdapter, ProdutoModel, ProdutoAppSevice, IProduto.Repository,
-  ProdutoRepository, IProduto.Service, ProdutoService, ClienteModel, ClienteAppService, PedidoModel, PedidoDTO,
-  PedidoItemModel, PedidoAppService, IPedido.Repository, PedidoRepository, IPedido.Service, PedidoService,
-  PedidoItemAppService, ICliente.Repository, ClienteRepository, ICliente.Service , ClienteService, FormatUtil,
-  upesqpedidos, System.Generics.Collections;
+  Vcl.Forms, Vcl.Dialogs, UCadastroPadrao, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Data.DB, FireDAC.Stan.Intf,
+  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, Vcl.DBCtrls, FireDAC.Phys.Intf,
+  FireDAC.DApt.Intf, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.Grids, Vcl.DBGrids, Vcl.Controls, ConexaoSingleton,
+  ConexaoAdapter, ProdutoModel, ProdutoAppSevice, IProduto.Repository, ProdutoRepository, IProduto.Service, ProdutoService,
+  ClienteModel, ClienteAppService, PedidoModel, PedidoDTO, PedidoItemModel, PedidoAppService, IPedido.Repository,
+  PedidoRepository, IPedido.Service, PedidoService, PedidoItemAppService, ICliente.Repository, ClienteRepository,
+  PedidoValueObject, ICliente.Service , ClienteService, PedidoItemValidator, PedidoExceptions, FormatUtil, upesqpedidos,
+  System.Generics.Collections;
 
 {$ENDREGION}
 
@@ -100,6 +100,8 @@ type
     FPedidoAppService: TPedidoAppService;
     FPedidoItem: TPedidoItem;
     FPedidoItemAppService: TPedidoItemAppService;
+    Conexao: TConexao;
+    FConexao: TFDConnection;
     TransacaoPedidos : TFDTransaction;
     totPedido, totPedidoAnt: Double;
     idItem: Integer;
@@ -118,6 +120,7 @@ type
     procedure VerificaBotoes(AOperacao: TOperacao);
     procedure HabilitarBotaoIncluirItens;
     procedure DefinirConfiguracaoDbLookup;
+    procedure CriarTabelas;
 
 
   public
@@ -178,20 +181,6 @@ begin
   inherited Destroy;
 end;
 
-procedure TFrmCadPedido.DefinirConfiguracaoDbLookup;
-begin
-  // Define configuração DbLookupComboBox
-  // Clientes
-  LcbxNomeCliente.KeyField := 'cod_cliente';
-  LcbxNomeCliente.ListField := 'des_nomefantasia';
-  LcbxNomeCliente.ListSource := DsClientes;
-
-  // Produtos
-  LCbxProdutos.KeyField := 'cod_produto';
-  LCbxProdutos.ListField := 'des_descricao';
-  LCbxProdutos.ListSource := DsProdutos;
-end;
-
 procedure TFrmCadPedido.FormCreate(Sender: TObject);
 var ProdutoRepository: IProdutoRepository;
     ProdutoService: IProdutoService;
@@ -205,16 +194,9 @@ begin
   if TConexaoSingleton.GetInstance.DatabaseConnection.TestarConexao then
   begin
     // Define Transacao pra Pedidos
-    TConexaoSingleton.GetInstance.DatabaseConnection.InciarTransacao;
-    TransacaoPedidos := TConexaoSingleton.GetInstance.DatabaseConnection.CriarTransaction;
-
-    // Cria Tabelas
-    TblProdutos := TConexaoSingleton.GetInstance.DatabaseConnection.CriarQuery;
-    TblClientes := TConexaoSingleton.GetInstance.DatabaseConnection.CriarQuery;
-
-    // Atribui DataSet às tabelas
-    DsClientes.DataSet := TblClientes;
-    DsProdutos.DataSet := TblProdutos;
+    CriarTabelas();
+    //Conexao.IniciarTransacao;
+    TransacaoPedidos := Conexao.CriarTransaction;
 
     //Instancias Classes
     Connection := TFDConnection.Create(nil);
@@ -289,7 +271,7 @@ begin
     EdtTotalPedido.Text := FormatFloat('######0.00', Val_Pedido);
   end;
 
-  // Carregar os itens do Pedido usando a controller
+  // Carregar os itens do Pedido usando a AppService
   ItensPedido := FPedidoItemAppService.CarregarItensPedido(codigoPedido);
   try
     for Item in ItensPedido do
@@ -348,116 +330,107 @@ begin
 end;
 
 function TFrmCadPedido.ValidarDados(ATipoDados: string): Boolean;
-var AErro: TCampoInvalido;
+var Erros: TArray<string>;
     LPrecoUnitario, LPrecoTotal: Double;
+    LCodProduto, LQuantidade: Integer;
+    LPedido: TPedido;
 begin
   Result := False;
   if ATipoDados = 'Pedido' then
   begin
-    if EdtDataPedido.Text = EmptyStr then
-    begin
-      MessageDlg('A data do pedido deve ser preenchida!', mtInformation, [mbOK], 0);
-      EdtDataPedido.SetFocus;
-      Exit;
+    try
+      // Criar um pedido temporário para validação
+      LPedido := TPedido.Create;
+      try
+        LPedido.Dta_Pedido := StrToDateDef(EdtDataPedido.Text, 0);
+        LPedido.Cod_Cliente := StrToIntDef(EdtCodCliente.Text, 0);
+        LPedido.Val_Pedido := StrToFloatDef(StringReplace(StringReplace(EdtTotalPedido.Text, '.', '', [rfReplaceAll]),',',
+                                            FormatSettings.DecimalSeparator, [rfReplaceAll]), 0);
+        LPedido.Validar;
+        Result := True;
+      finally
+        LPedido.Free;
+      end;
+    except
+      on E: EPedidoException do
+      begin
+        MessageDlg(E.Message, mtError, [mbOK], 0);
+        Exit;
+      end;
+      on E: Exception do
+      begin
+        MessageDlg('Erro na validação: ' + E.Message, mtError, [mbOK], 0);
+        Exit;
+      end;
     end;
-
-    if EdtCodCliente.Text = EmptyStr then
-    begin
-      MessageDlg('O código do cliente deve ser preenchido!', mtInformation, [mbOK], 0);
-      EdtCodCliente.SetFocus;
-      Exit;
-    end;
-  end;
-
-  if ATipoDados = 'Item' then
+  end
+  else if ATipoDados = 'Item' then
   begin
-    if LCbxProdutos.KeyValue = Null then
+    // Converter valores
+    LCodProduto := 0;
+    if LCbxProdutos.KeyValue <> Null then
+      LCodProduto := LCbxProdutos.KeyValue;
+
+    LQuantidade := StrToIntDef(EdtQuantidade.Text, 0);
+    LPrecoUnitario := StrToFloatDef(StringReplace(StringReplace(EdtPrecoUnit.Text, '.', '', [rfReplaceAll]),',',
+                                                  FormatSettings.DecimalSeparator, [rfReplaceAll]), 0);
+    LPrecoTotal := StrToFloatDef(StringReplace(StringReplace(EdtPrecoTotal.Text, '.', '', [rfReplaceAll]),',',
+                                               FormatSettings.DecimalSeparator, [rfReplaceAll]), 0);
+    // Validar usando o validador
+    Erros := TPedidoItemValidator.ValidarItem(LCodProduto, LQuantidade, LPrecoUnitario, LPrecoTotal);
+    if Length(Erros) > 0 then
     begin
-      MessageDlg('O produto precisa ser informado!', mtInformation, [mbOK], 0);
-      LCbxProdutos.SetFocus;
+      MessageDlg('Erros no item:' + sLineBreak + string.Join(sLineBreak, Erros), mtError, [mbOK], 0);
       Exit;
     end;
 
-    if EdtQuantidade.Text = '' then
-    begin
-      MessageDlg('A quantidade deve ser preenchida!', mtInformation, [mbOK], 0);
-      EdtQuantidade.SetFocus;
-      Exit;
-    end;
-
-    if StrToFloat(EdtQuantidade.Text) = 0 then
-    begin
-      MessageDlg('A quantidade não pode ser igual a 0!', mtInformation, [mbOK], 0);
-      EdtQuantidade.SetFocus;
-      Exit;
-    end;
-
-    if EdtPrecoUnit.Text = '' then
-    begin
-      MessageDlg('o preço unitário deve ser preenchido!', mtInformation, [mbOK], 0);
-      EdtPrecoUnit.SetFocus;
-      Exit;
-    end;
-
-    LPrecoUnitario := StrToFloat(
-    StringReplace(StringReplace(EdtPrecoUnit.Text, '.', '', [rfReplaceAll]), ',', FormatSettings.DecimalSeparator, [rfReplaceAll]));
-
-    if LPrecoUnitario = 0 then
-    begin
-      MessageDlg('O preço unitário não pode ser igual a 0!', mtInformation, [mbOK], 0);
-      EdtPrecoUnit.SetFocus;
-      Exit;
-    end;
-
-    if EdtPrecoTotal.Text = '' then
-    begin
-      MessageDlg('o preço total deve ser preenchido!', mtInformation, [mbOK], 0);
-      EdtPrecoTotal.SetFocus;
-      Exit;
-    end;
-
-    LPrecoTotal := StrToFloat(
-    StringReplace(StringReplace(EdtPrecoTotal.Text, '.', '', [rfReplaceAll]), ',', FormatSettings.DecimalSeparator, [rfReplaceAll]));
-
-    if LPrecoTotal = 0 then
-    begin
-      MessageDlg('O preço total não pode ser igual a 0!', mtInformation, [mbOK], 0);
-      EdtPrecoTotal.SetFocus;
-      Exit;
-    end;
+    Result := True;
   end;
-  Result := True;
 end;
 
 function TFrmCadPedido.GravarDados: Boolean;
 var Item: TPedidoItem;
     ItemPedido: TList<TPedidoItem>;
+    Erros: TArray<string>;
+    LPedido: TPedido;
 begin
   Result := False;
-  if not ValidarDados('Pedido') then
-    Exit;
+  LPedido := TPedido.Create;
+  try
+    try
+      LPedido.Dta_Pedido := StrToDateDef(EdtDataPedido.Text, 0);
+      LPedido.Cod_Cliente := StrToIntDef(EdtCodCliente.Text, 0);
+      LPedido.Val_Pedido := StrToFloatDef(StringReplace(StringReplace(EdtTotalPedido.Text, '.', '', [rfReplaceAll]),',',
+                                          FormatSettings.DecimalSeparator, [rfReplaceAll]), 0);
+      Erros := LPedido.ObterErrosValidacao;
+      if Length(Erros) > 0 then
+      begin
+        MessageDlg('Erros no pedido:' + sLineBreak + string.Join(sLineBreak, Erros), mtError, [mbOK], 0);
+        Exit;
+      end;
+    except
+      on E: Exception do
+      begin
+        MessageDlg('Erro na validação: ' + E.Message, mtError, [mbOK], 0);
+        Exit;
+      end;
+    end;
+  finally
+    LPedido.Free;
+  end;
 
   if MTblPedidoItem.RecordCount = 0 then
   begin
-    MessageDlg('Não existe itens cadastrados para o pedido!', mtWarning, [mbOK],0);
+    MessageDlg('Não existe itens cadastrados para o pedido!', mtWarning, [mbOK], 0);
     BtnInserirItens.SetFocus;
     Exit;
   end;
 
-  FPedido := ObterDadosFormulario;
-  {Pedido := TPedido.Create;
-  // Preenche Objeto
-  with FPedido do
-  begin
-    Dta_Pedido := StrToDate(EdtDataPedido.Text);
-    Cod_Cliente := StrToInt(EdtCodCliente.Text);
-    Val_Pedido := StrToFloat(
-    StringReplace(StringReplace(EdtTotalPedido.Text, '.', '', [rfReplaceAll]), ',', FormatSettings.DecimalSeparator, [rfReplaceAll]));
-  end;}
-
-    if not TransacaoPedidos.Connection.Connected then
+  Conexao.IniciarTransacao;
+  if not TransacaoPedidos.Connection.Connected then
     TransacaoPedidos.Connection.Open();
 
+  FPedido := ObterDadosFormulario;
   case FOperacao of
     opNovo:
     begin
@@ -530,11 +503,11 @@ begin
       with FCliente do
       begin
         FrmMostraPedido.LblNomeCliente.Caption := Des_NomeFantasia;
-        //FrmMostraPedido.LblEndCompleto.Caption := Des_Logradouro + 'Número: ' + Des_Numero;
-        //FrmMostraPedido.LblNomeCidade.Caption := Des_Cidade;
-        //FrmMostraPedido.LblNomeUF.Caption := Des_UF;
-        //FrmMostraPedido.LblNroCNPJ.Caption := Des_Cnpj;
-        //FrmMostraPedido.LblNroFone.Caption := Des_Telefone
+        FrmMostraPedido.LblEndCompleto.Caption := FCliente.Endereco.Logradouro + ' Número: ' + FCliente.Endereco.Numero;
+        FrmMostraPedido.LblNomeCidade.Caption := FCliente.Endereco.Cidade;
+        FrmMostraPedido.LblNomeUF.Caption := FCliente.Endereco.UF;
+        FrmMostraPedido.LblNroCNPJ.Caption := FCliente.Documento.CNPJ;
+        FrmMostraPedido.LblNroFone.Caption := FCliente.Contato.Telefone;
       end;
 
       with FrmMostraPedido,FPedido do
@@ -694,18 +667,35 @@ begin
 end;
 
 procedure TFrmCadPedido.BtnAddItemGridClick(Sender: TObject);
+var Erros: TArray<string>;
+    LPrecoUnitario, LPrecoTotal: Double;
+    LCodProduto, LQuantidade: Integer;
 begin
   inherited;
-  if not ValidarDados('Item') then
+
+  // Converter valores
+  LCodProduto := 0;
+  if LCbxProdutos.KeyValue <> Null then
+    LCodProduto := LCbxProdutos.KeyValue;
+
+  LQuantidade := StrToIntDef(EdtQuantidade.Text, 0);
+  LPrecoUnitario := StrToFloatDef(StringReplace(StringReplace(EdtPrecoUnit.Text, '.', '', [rfReplaceAll]),',',
+                                  FormatSettings.DecimalSeparator, [rfReplaceAll]), 0);
+  LPrecoTotal := StrToFloatDef(StringReplace(StringReplace(EdtPrecoTotal.Text, '.', '', [rfReplaceAll]),',',
+                               FormatSettings.DecimalSeparator, [rfReplaceAll]), 0);
+
+  Erros := TPedidoItemValidator.ValidarItem(LCodProduto, LQuantidade, LPrecoUnitario, LPrecoTotal);
+  if Length(Erros) > 0 then
   begin
+    MessageDlg('Erros no item:' + sLineBreak + string.Join(sLineBreak, Erros),
+      mtError, [mbOK], 0);
     Exit;
-  end
-  else
-  begin
-    PreencheCdsPedidoItem();
-    LimparCamposItens;
-    LCbxProdutos.SetFocus;
   end;
+
+  // Se passou na validação, adiciona ao grid
+  PreencheCdsPedidoItem();
+  LimparCamposItens;
+  LCbxProdutos.SetFocus;
 end;
 
 procedure TFrmCadPedido.BtnAlterarClick(Sender: TObject);
@@ -793,11 +783,34 @@ begin
 end;
 
 procedure TFrmCadPedido.BtnInserirItensClick(Sender: TObject);
+var Erros: TArray<string>;
+    LPedido: TPedido;
 begin
   inherited;
-   if not ValidarDados('Pedido') then
-  begin
-    Exit;
+  // Validar dados básicos do pedido antes de permitir incluir itens
+  LPedido := TPedido.Create;
+  try
+    try
+      LPedido.Dta_Pedido := StrToDateDef(EdtDataPedido.Text, 0);
+      LPedido.Cod_Cliente := StrToIntDef(EdtCodCliente.Text, 0);
+      LPedido.Val_Pedido := 0; // Valor pode ser zero inicialmente
+
+      Erros := LPedido.ObterErrosValidacao;
+
+      if Length(Erros) > 0 then
+      begin
+        MessageDlg('Corrija os erros antes de incluir itens:' + sLineBreak + string.Join(sLineBreak, Erros), mtError, [mbOK], 0);
+        Exit;
+      end;
+    except
+      on E: Exception do
+      begin
+        MessageDlg('Erro na validação: ' + E.Message, mtError, [mbOK], 0);
+        Exit;
+      end;
+    end;
+  finally
+    LPedido.Free;
   end;
 
   GrbDados.Enabled := False;
@@ -874,6 +887,31 @@ begin
     FOperacao := opNavegar;
     VerificaBotoes(FOperacao);
   end;
+end;
+
+procedure TFrmCadPedido.DefinirConfiguracaoDbLookup;
+begin
+  // Define configuração DbLookupComboBox
+  // Clientes
+  LcbxNomeCliente.KeyField := 'cod_cliente';
+  LcbxNomeCliente.ListField := 'des_nomefantasia';
+  LcbxNomeCliente.ListSource := DsClientes;
+
+  // Produtos
+  LCbxProdutos.KeyField := 'cod_produto';
+  LCbxProdutos.ListField := 'des_descricao';
+  LCbxProdutos.ListSource := DsProdutos;
+end;
+
+procedure TFrmCadPedido.CriarTabelas;
+begin
+  // Cria Tabelas
+  TblProdutos := Conexao.CriarQuery;
+  TblClientes := Conexao.CriarQuery;
+
+  // Atribui DataSet às tabelas
+  DsClientes.DataSet := TblClientes;
+  DsProdutos.DataSet := TblProdutos;
 end;
 
 procedure TFrmCadPedido.EdtCodPedidoKeyPress(Sender: TObject; var Key: Char);

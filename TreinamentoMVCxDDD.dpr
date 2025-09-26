@@ -49,9 +49,10 @@ uses
   PedidoDTO in 'src\application\dtos\PedidoDTO.pas',
   PedidoValueObject in 'src\domain\valueobjects\PedidoValueObject.pas',
   PedidoExceptions in 'src\domain\exceptions\PedidoExceptions.pas',
-  upesqpedidos in 'src\presentation\forms\pedidos\upesqpedidos.pas' {FrmPesquisaPedidos},
   ucadpedido in 'src\presentation\forms\pedidos\ucadpedido.pas' {FrmCadPedido},
-  umostrapedido in 'src\presentation\forms\pedidos\umostrapedido.pas' {FrmMostraPedido};
+  umostrapedido in 'src\presentation\forms\pedidos\umostrapedido.pas' {FrmMostraPedido},
+  PedidoItemValidator in 'src\shared\utils\PedidoItemValidator.pas',
+  upesqpedidos in 'src\presentation\forms\pedidos\upesqpedidos.pas' {FrmPesquisaPedidos};
 
 {$R *.res}
 

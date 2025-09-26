@@ -149,16 +149,17 @@
         <DCCReference Include="src\application\dtos\PedidoDTO.pas"/>
         <DCCReference Include="src\domain\valueobjects\PedidoValueObject.pas"/>
         <DCCReference Include="src\domain\exceptions\PedidoExceptions.pas"/>
-        <DCCReference Include="src\presentation\forms\pedidos\upesqpedidos.pas">
-            <Form>FrmPesquisaPedidos</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
         <DCCReference Include="src\presentation\forms\pedidos\ucadpedido.pas">
             <Form>FrmCadPedido</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="src\presentation\forms\pedidos\umostrapedido.pas">
             <Form>FrmMostraPedido</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="src\shared\utils\PedidoItemValidator.pas"/>
+        <DCCReference Include="src\presentation\forms\pedidos\upesqpedidos.pas">
+            <Form>FrmPesquisaPedidos</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Release">

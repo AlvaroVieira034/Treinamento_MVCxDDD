@@ -17,7 +17,7 @@ type
   public
     constructor Create(APedidoRepository: IPedidoRepository; APedidoService: IPedidoService);
 
-    procedure PreencherGridPedidos(APesquisa, ACampo: string);
+    procedure PreencherGridPedidos(TblPedidos: TFDQuery; APesquisa, ACampo: string);
     procedure PreencherGridRelatorio(ADataDe, ADataAte: string; CkRelatorio: Integer);
     function CarregarCampos(FPedido: TPedido; ACodigo: Integer): Boolean;
     function Inserir(APedido: TPedido): Boolean;
@@ -37,7 +37,7 @@ begin
   FPedidoService := APedidoService;
 end;
 
-procedure TPedidoAppService.PreencherGridPedidos(APesquisa, ACampo: string);
+procedure TPedidoAppService.PreencherGridPedidos(TblPedidos: TFDQuery; APesquisa, ACampo: string);
 var LCampo, sErro: string;
 begin
   try
@@ -50,7 +50,7 @@ begin
     if ACampo = '' then
       LCampo := 'ped.dta_pedido';
 
-    FPedidoService.PreencherGridPedidos(APesquisa, LCampo);
+    FPedidoService.PreencherGridPedidos(TblPedidos, APesquisa, LCampo);
   except on E: Exception do
     begin
       sErro := 'Ocorreu um erro ao pesquisar o pedido!' + sLineBreak + E.Message;

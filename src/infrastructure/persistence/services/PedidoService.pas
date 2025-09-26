@@ -21,7 +21,7 @@ type
     destructor Destroy; override;
 
     // Metodos de Acesso a banco de dados -> View
-    procedure PreencherGridPedidos(APesquisa, ACampo: string);
+    procedure PreencherGridPedidos(TblPedidos: TFDQuery; APesquisa, ACampo: string);
     procedure PreencherCamposForm(APedido: TPedido; AId: Integer);
     procedure PreencherGridRelatorio(ADataDe, ADataAte: string; CkRelatorio: Integer);
     procedure ExibirResumoPedido(CodPedido: Integer);
@@ -56,7 +56,7 @@ begin
   inherited;
 end;
 
-procedure TPedidoService.PreencherGridPedidos(APesquisa, ACampo: string);
+procedure TPedidoService.PreencherGridPedidos(TblPedidos: TFDQuery; APesquisa, ACampo: string);
 begin
   with TblPedidos do
   begin
@@ -69,8 +69,8 @@ begin
     SQL.Add('ped.val_pedido');
     SQL.Add('from tab_pedido ped');
     SQL.Add('join tab_cliente cli on ped.cod_cliente = cli.cod_cliente ');
-
     SQL.Add('where ' + ACampo + ' like :pNOME');
+
     if ACampo = 'cli.des_nomefantasia' then
       SQL.Add('order by ' + ACampo )
     else

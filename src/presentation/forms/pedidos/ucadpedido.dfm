@@ -278,7 +278,7 @@ inherited FrmCadPedido: TFrmCadPedido
         OnClick = LcbxNomeClienteClick
       end
       object BtnInserirItens: TButton
-        Left = 294
+        Left = 293
         Top = 131
         Width = 121
         Height = 30

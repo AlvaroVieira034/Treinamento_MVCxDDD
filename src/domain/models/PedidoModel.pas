@@ -37,7 +37,6 @@ type
     property Cod_Cliente: Integer read GetCod_Cliente write SetCod_Cliente;
     property Val_Pedido: Double read GetVal_Pedido write SetVal_Pedido;
 
-    // Value Objects (apenas leitura, para acesso interno se necessário)
     property DataPedidoVO: TDataPedido read FDataPedido;
     property ClientePedidoVO: TClientePedido read FClientePedido;
     property ValorPedidoVO: TValorPedido read FValorPedido;
@@ -93,18 +92,17 @@ begin
 end;
 
 procedure TPedido.Validar;
-var
-  Erros: TArray<string>;
+var Erros: TArray<string>;
 begin
   Erros := ObterErrosValidacao;
   if Length(Erros) > 0 then
     raise EPedidoException.Create(string.Join(sLineBreak, Erros));
+
 end;
 
 function TPedido.ObterErrosValidacao: TArray<string>;
 begin
   Result := [];
-
   // Valida Data do Pedido
   try
     FDataPedido.Validar;

@@ -2,14 +2,11 @@ unit upesqpedidos;
 
 interface
 
-{$REGION 'Uses'}
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, PedidoModel,
-  PedidoAppService, IPedido.Repository, PedidoRepository, IPedido.Service, PedidoService, ConexaoAdapter,
-  ConexaoSingleton, Vcl.Buttons, Vcl.ExtCtrls, FireDAC.Comp.Client;
-
-{$ENDREGION}
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, ConexaoAdapter,
+  PedidoModel, ConexaoSingleton, PedidoAppService, PedidoRepository, IPedido.Repository, PedidoService,
+  IPedido.Service, FireDAC.Comp.Client, Vcl.Buttons, Vcl.ExtCtrls;
 
 type
   TFrmPesquisaPedidos = class(TForm)
@@ -27,24 +24,24 @@ type
     procedure DbGridPedidosDblClick(Sender: TObject);
     procedure DbGridPedidosKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure CbxFiltroClick(Sender: TObject);
-    procedure BtnPesquisarClick(Sender: TObject);
     procedure BtnSelecionarClick(Sender: TObject);
+    procedure BtnPesquisarClick(Sender: TObject);
     procedure BtnSairClick(Sender: TObject);
+    procedure EdtPesquisarChange(Sender: TObject);
 
   private
     TblPedidos: TFDQuery;
     DsPedidos: TDataSource;
     FPedido: TPedido;
     PedidoAppService: TPedidoAppService;
-    AConnection: TFDConnection;
-    Conexao: TConexao;
 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure PreencherGrid(APesquisa, ACampo: string);
+    procedure PreencherGrid(TblPedidos: TFDQuery; APesquisa, ACampo: string);
     procedure CriarTabelas;
     procedure CriarCamposTabelas;
+
   end;
 
 var
@@ -52,9 +49,11 @@ var
 
 implementation
 
+{$R *.dfm}
+
 uses ucadpedido;
 
-{ TFrmPesqPedidos }
+{ TFrmPesquisaPedidos }
 
 constructor TFrmPesquisaPedidos.Create(AOwner: TComponent);
 begin
@@ -72,17 +71,28 @@ begin
   inherited;
 end;
 
+procedure TFrmPesquisaPedidos.EdtPesquisarChange(Sender: TObject);
+begin
+  PreencherGrid(TblPedidos, EdtPesquisar.Text + '%', CbxFiltro.Text)
+end;
+
 procedure TFrmPesquisaPedidos.FormCreate(Sender: TObject);
 var sCampo: string;
+    Repository: TPedidoRepository;
+    Service: TPedidoService;
+    Connection: TFDConnection;
 begin
   inherited;
- if TConexaoSingleton.GetInstance.DatabaseConnection.TestarConexao then
+  if TConexaoSingleton.GetInstance.DatabaseConnection.TestarConexao then
   begin
+    Connection := TFDConnection.Create(nil);
+    Repository := TPedidoRepository.Create(Connection);
+    Service := TPedidoService.Create(Connection);
     CriarTabelas();
     CriarCamposTabelas();
-    sCampo := 'ped.dta_pedido';
+    sCampo := 'ped.dta_Pedido';
     FPedido := TPedido.Create;
-    PedidoAppService := TPedidoAppService.Create(TPedidoRepository.Create(AConnection), TPedidoService.Create(AConnection));
+    PedidoAppService := TPedidoAppService.Create(Repository, Service);
   end
   else
   begin
@@ -93,33 +103,28 @@ end;
 
 procedure TFrmPesquisaPedidos.FormShow(Sender: TObject);
 begin
-  DbGridPedidos.Columns[0].Width := 90;
-  DbGridPedidos.Columns[1].Width := 90;
-  DbGridPedidos.Columns[2].Width := 325;
-  DbGridPedidos.Columns[3].Width := 110;
-  PreencherGrid(Trim(EdtPesquisar.Text) + '%', CbxFiltro.Text);
+  PreencherGrid(TblPedidos, Trim(EdtPesquisar.Text) + '%', CbxFiltro.Text);
 end;
 
-procedure TFrmPesquisaPedidos.PreencherGrid(APesquisa, ACampo: string);
+procedure TFrmPesquisaPedidos.PreencherGrid(TblPedidos: TFDQuery; APesquisa, ACampo: string);
 begin
-  PedidoAppService.PreencherGridPedidos(APesquisa + '%', ACampo);
+  PedidoAppService.PreencherGridPedidos(TblPedidos, APesquisa + '%', ACampo);
 end;
 
 procedure TFrmPesquisaPedidos.CriarTabelas;
 begin
-  TblPedidos := Conexao.CriarQuery;
-  DsPedidos := Conexao.CriarDataSource;
+  TblPedidos := TConexaoSingleton.GetInstance.DatabaseConnection.CriarQuery;
+  DsPedidos := TConexaoSingleton.GetInstance.DatabaseConnection.CriarDataSource;
   DsPedidos.DataSet := TblPedidos;
   DbGridPedidos.DataSource := DsPedidos;
 end;
 
 procedure TFrmPesquisaPedidos.CriarCamposTabelas;
-var
-  FloatField: TFloatField;
-  SingleField: TSingleField;
-  StringField: TStringField;
-  DateField: TDateField;
-  IntegerField: TIntegerField;
+var FloatField: TFloatField;
+    SingleField: TSingleField;
+    StringField: TStringField;
+    DateField: TDateField;
+    IntegerField: TIntegerField;
 begin
   // Criando o campo COD_Pedido
   IntegerField := TIntegerField.Create(TblPedidos);
@@ -142,17 +147,17 @@ begin
   StringField.Name := 'TblPedidosNOMECLIENTE';
 
   // Criando o campo VAL_PRECO
-  SingleField := TSingleField.Create(TblPedidos);
-  SingleField.FieldName := 'VAL_Pedido';
-  SingleField.DataSet := TblPedidos;
-  SingleField.Name := 'TblPedidosVAL_Pedido';
-  SingleField.DisplayFormat := '#,###,##0.00';
+  FloatField := TFloatField.Create(TblPedidos);
+  FloatField.FieldName := 'VAL_PEDIDO';
+  FloatField.DataSet := TblPedidos;
+  FloatField.Name := 'TblPedidosVAL_Pedido';
+  FloatField.DisplayFormat := '#,###,##0.00';
 
 end;
 
 procedure TFrmPesquisaPedidos.DbGridPedidosDblClick(Sender: TObject);
 begin
-  FrmCadPedido.codigoPedido := DsPedidos.DataSet.FieldByName('COD_Pedido').AsInteger;
+  FrmCadPedido.codigoPedido := DsPedidos.DataSet.FieldByName('COD_PEDIDO').AsInteger;
   FrmCadPedido.pesqPedido := True;
   FrmCadPedido.FOperacao := opNavegar;
   BtnSair.Click;
@@ -177,7 +182,7 @@ end;
 
 procedure TFrmPesquisaPedidos.BtnSelecionarClick(Sender: TObject);
 begin
-  FrmCadPedido.codigoPedido := DsPedidos.DataSet.FieldByName('COD_Pedido').AsInteger;
+  FrmCadPedido.codigoPedido := DsPedidos.DataSet.FieldByName('COD_PEDIDO').AsInteger;
   FrmCadPedido.pesqPedido := True;
   FrmCadPedido.FOperacao := opNavegar;
   BtnSair.Click;
@@ -185,19 +190,12 @@ end;
 
 procedure TFrmPesquisaPedidos.BtnPesquisarClick(Sender: TObject);
 begin
-  PreencherGrid(Trim(EdtPesquisar.Text) + '%', CbxFiltro.Text)
+  PreencherGrid(TblPedidos, EdtPesquisar.Text + '%', CbxFiltro.Text)
 end;
 
 procedure TFrmPesquisaPedidos.BtnSairClick(Sender: TObject);
 begin
   Close;
 end;
-
-
-
-
-
-
-
 
 end.

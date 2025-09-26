@@ -13,7 +13,7 @@ object FrmPesquisaPedidos: TFrmPesquisaPedidos
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  Position = poMainFormCenter
+  Position = poOwnerFormCenter
   OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
@@ -45,7 +45,7 @@ object FrmPesquisaPedidos: TFrmPesquisaPedidos
     end
     object BtnPesquisar: TSpeedButton
       Left = 514
-      Top = 3
+      Top = 2
       Width = 86
       Height = 27
       Anchors = [akTop, akRight]
@@ -78,11 +78,10 @@ object FrmPesquisaPedidos: TFrmPesquisaPedidos
         FFB67E0EFFFFFFFFFFFFBD8C27B67E0EB67C09B67B08B57B08B67B08B67B08B5
         7B08B67B08B67B08B57B08B67C09B67E0EBD8C27FFFFFFFFFFFF}
       OnClick = BtnPesquisarClick
-      ExplicitLeft = 498
     end
     object BtnSelecionar: TSpeedButton
       Left = 601
-      Top = 3
+      Top = 2
       Width = 39
       Height = 27
       Hint = 'Seleciona registro posicionado no grid'
@@ -117,11 +116,10 @@ object FrmPesquisaPedidos: TFrmPesquisaPedidos
       ParentShowHint = False
       ShowHint = True
       OnClick = BtnSelecionarClick
-      ExplicitLeft = 585
     end
     object BtnSair: TSpeedButton
       Left = 641
-      Top = 3
+      Top = 2
       Width = 39
       Height = 27
       Hint = 'Sair'
@@ -156,7 +154,6 @@ object FrmPesquisaPedidos: TFrmPesquisaPedidos
       ParentShowHint = False
       ShowHint = True
       OnClick = BtnSairClick
-      ExplicitLeft = 625
     end
     object EdtPesquisar: TEdit
       Left = 160
@@ -166,6 +163,7 @@ object FrmPesquisaPedidos: TFrmPesquisaPedidos
       Anchors = [akLeft, akTop, akRight]
       CharCase = ecUpperCase
       TabOrder = 1
+      OnChange = EdtPesquisarChange
     end
     object CbxFiltro: TComboBox
       Left = 59
@@ -193,10 +191,10 @@ object FrmPesquisaPedidos: TFrmPesquisaPedidos
       693
       360)
     object DbGridPedidos: TDBGrid
-      Left = 3
+      Left = 9
       Top = 20
       Width = 673
-      Height = 320
+      Height = 330
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 0
       TitleFont.Charset = DEFAULT_CHARSET

@@ -9,7 +9,7 @@ type
     ['{30AA9E08-E699-42F9-ACE6-C9DC2DBABB79}']
     procedure PreencherGridPedidos(TblPedidos: TFDQuery; APesquisa, ACampo: string);
     procedure PreencherCamposForm(APedido: TPedido; AId: Integer);
-    procedure PreencherGridRelatorio(ADataDe, ADataAte: string; CkRelatorio: Integer);
+    procedure PreencherGridRelatorio(TblPedidos: TFDQuery; ADataDe, ADataAte: string; CkRelatorio: Integer);
     procedure ExibirResumoPedido(CodPedido: Integer);
     procedure ValidarPedido(APedido: TPedido);
     procedure CriarTabelas;

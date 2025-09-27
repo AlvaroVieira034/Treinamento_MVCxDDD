@@ -1,9 +1,7 @@
 object FrmMain: TFrmMain
   Left = 0
   Top = 0
-  Caption = 
-    'Teste Tecnico Guarani Sistemas - Cadastro de clientes, produdos ' +
-    'e pedidos'
+  Caption = 'Treinamento DDD - Cadastro de clientes, produdos e pedidos'
   ClientHeight = 377
   ClientWidth = 740
   Color = clBtnFace
@@ -648,6 +646,7 @@ object FrmMain: TFrmMain
         6A6B6A6A6E6C6C414141FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFF0000}
       Layout = blGlyphTop
+      OnClick = BtnRelatoriosClick
     end
   end
   object Timer1: TTimer

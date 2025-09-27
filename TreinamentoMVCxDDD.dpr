@@ -52,7 +52,10 @@ uses
   ucadpedido in 'src\presentation\forms\pedidos\ucadpedido.pas' {FrmCadPedido},
   umostrapedido in 'src\presentation\forms\pedidos\umostrapedido.pas' {FrmMostraPedido},
   PedidoItemValidator in 'src\shared\utils\PedidoItemValidator.pas',
-  upesqpedidos in 'src\presentation\forms\pedidos\upesqpedidos.pas' {FrmPesquisaPedidos};
+  upesqpedidos in 'src\presentation\forms\pedidos\upesqpedidos.pas' {FrmPesquisaPedidos},
+  conexao in 'src\infrastructure\persistence\databases\conexao.pas',
+  connection in 'src\infrastructure\persistence\databases\connection.pas',
+  urelpedidos in 'src\presentation\forms\relatorios\urelpedidos.pas' {FrmRelPedidos};
 
 {$R *.res}
 

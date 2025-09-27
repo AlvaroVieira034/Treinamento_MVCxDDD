@@ -119,9 +119,9 @@ Depois: Cada classe com responsabilidade única
 
 
 ✅ 2. Manutenibilidade Melhorada
-![alt text](image.png)
+![Tela Melhoria](./docs/images/image.png)
 ✅ 3. Testabilidade
-![alt text](image-1.png)
+![Tela Testabilidade](./docs/images/image-1.png)
 ✅ 4. Reusabilidade de Código
 pascal
 // Validações centralizadas e reutilizáveis

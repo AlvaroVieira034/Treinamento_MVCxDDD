@@ -18,7 +18,7 @@ type
     constructor Create(APedidoRepository: IPedidoRepository; APedidoService: IPedidoService);
 
     procedure PreencherGridPedidos(TblPedidos: TFDQuery; APesquisa, ACampo: string);
-    procedure PreencherGridRelatorio(ADataDe, ADataAte: string; CkRelatorio: Integer);
+    procedure PreencherGridRelatorio(TblPedidos: TFDQuery; ADataDe, ADataAte: string; CkRelatorio: Integer);
     function CarregarCampos(FPedido: TPedido; ACodigo: Integer): Boolean;
     function Inserir(APedido: TPedido): Boolean;
     function Alterar(APedido: TPedido; AId: Integer): Boolean;
@@ -59,11 +59,11 @@ begin
   end;
 end;
 
-procedure TPedidoAppService.PreencherGridRelatorio(ADataDe, ADataAte: string; CkRelatorio: Integer);
+procedure TPedidoAppService.PreencherGridRelatorio(TblPedidos: TFDQuery; ADataDe, ADataAte: string; CkRelatorio: Integer);
 var LCampo, sErro: string;
 begin
   try
-    FPedidoService.PreencherGridRelatorio(ADataDe, ADataAte, CkRelatorio);
+    FPedidoService.PreencherGridRelatorio(TblPedidos, ADataDe, ADataAte, CkRelatorio);
   except on E: Exception do
     begin
       sErro := 'Ocorreu um erro ao pesquisar o pedido!' + sLineBreak + E.Message;
@@ -94,7 +94,7 @@ end;
 
 function TPedidoAppService.Alterar(APedido: TPedido; AId: Integer): Boolean;
 begin
-  Result := FPedidoRepository.Alterar(FPedido, AId);
+  Result := FPedidoRepository.Alterar(APedido, AId);
 end;
 
 function TPedidoAppService.Excluir(AId: Integer): Boolean;

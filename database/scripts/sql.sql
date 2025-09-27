@@ -34,3 +34,16 @@ select * from bdtestedguarani.dbo.tab_pedido_item
 select count(*) as quant from tab_pedido_item where cod_produto = 17
 
 select count(*) as quant from tab_produto where des_descricao = 'BBBB' and cod_produto <> 34
+
+select * from bdtestedguarani.dbo.tab_pedido
+select * from bdtestedguarani.dbo.tab_pedido_item
+
+select ped.cod_pedido,  
+ped.dta_pedido, 
+ped.cod_cliente, 
+ped.val_pedido 
+from tab_pedido ped
+where cod_pedido = 40
+
+select * from bdtestedguarani.dbo.tab_pedido_item
+where cod_pedido = 40

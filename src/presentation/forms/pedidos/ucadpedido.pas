@@ -8,12 +8,12 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Forms, Vcl.Dialogs, UCadastroPadrao, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Data.DB, FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, Vcl.DBCtrls, FireDAC.Phys.Intf,
-  FireDAC.DApt.Intf, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.Grids, Vcl.DBGrids, Vcl.Controls, ConexaoSingleton,
-  ConexaoAdapter, ProdutoModel, ProdutoAppSevice, IProduto.Repository, ProdutoRepository, IProduto.Service, ProdutoService,
+  FireDAC.DApt.Intf, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.Grids, Vcl.DBGrids, Vcl.Controls,
+  ProdutoModel, ProdutoAppSevice, IProduto.Repository, ProdutoRepository, IProduto.Service, ProdutoService,
   ClienteModel, ClienteAppService, PedidoModel, PedidoDTO, PedidoItemModel, PedidoAppService, IPedido.Repository,
   PedidoRepository, IPedido.Service, PedidoService, PedidoItemAppService, ICliente.Repository, ClienteRepository,
-  PedidoValueObject, ICliente.Service , ClienteService, PedidoItemValidator, PedidoExceptions, FormatUtil, upesqpedidos,
-  System.Generics.Collections;
+  PedidoValueObject, ICliente.Service, ClienteService, PedidoItemValidator, PedidoExceptions, FormatUtil, upesqpedidos,
+  System.Generics.Collections, conexao; //,ConexaoSingleton, ConexaoAdapter;
 
 {$ENDREGION}
 
@@ -119,8 +119,7 @@ type
     procedure PreencheCdsPedidoItem;
     procedure VerificaBotoes(AOperacao: TOperacao);
     procedure HabilitarBotaoIncluirItens;
-    procedure DefinirConfiguracaoDbLookup;
-    procedure CriarTabelas;
+
 
 
   public
@@ -164,7 +163,6 @@ begin
   if Assigned(FClienteAppService) then FClienteAppService.Free;
   if Assigned(FProdutoAppService) then FProdutoAppService.Free;
   if Assigned(FPedidoAppService) then  FPedidoAppService.Free;
-  //if Assigned(FPedidoItemAppService) then FPedidoItemAppService.Free;
 
   // Models
   if Assigned(FCliente) then FCliente.Free;
@@ -191,26 +189,32 @@ var ProdutoRepository: IProdutoRepository;
     Connection: TFDConnection;
 begin
   inherited;
-  if TConexaoSingleton.GetInstance.DatabaseConnection.TestarConexao then
+  if TConexao.GetInstance.Connection.TestarConexao then
   begin
     // Define Transacao pra Pedidos
-    CriarTabelas();
-    //Conexao.IniciarTransacao;
-    TransacaoPedidos := Conexao.CriarTransaction;
+    TConexao.GetInstance.Connection.InciarTransacao;
+    TransacaoPedidos := TConexao.GetInstance.Connection.CriarTransaction;
+
+    // Cria Tabelas
+    TblProdutos := TConexao.GetInstance.Connection.CriarQuery;
+    TblClientes := TConexao.GetInstance.Connection.CriarQuery;
+
+    // Atribui DataSet às tabelas
+    DsClientes.DataSet := TblClientes;
+    DsProdutos.DataSet := TblProdutos;
 
     //Instancias Classes
-    Connection := TFDConnection.Create(nil);
     ProdutoRepository := TProdutoRepository.Create(Connection);
-    ProdutoService    := TProdutoService.Create(Connection);
-    PedidoRepository := TPedidoRepository.Create(Connection);
-    PedidoService    := TPedidoService.Create(Connection);
+    ProdutoService := TProdutoService.Create(Connection);
     ClienteRepository := TClienteRepository.Create(Connection);
-    ClienteService    := TClienteService.Create(Connection);
+    ClienteService := TClienteService.Create(Connection);
+    PedidoRepository := TPedidoRepository.Create(Connection);
+    PedidoService := TPedidoService.Create(Connection);
     FProdutoAppService := TProdutoAppService.Create(ProdutoRepository, ProdutoService);
     FClienteAppService := TClienteAppService.Create(ClienteRepository, ClienteService);
-    FPedidoAppService := TPedidoAppService.Create(PedidoRepository, PedidoService);
     FCliente := TCliente.Create;
     FPedido := TPedido.Create;
+    FPedidoAppService := TPedidoAppService.Create(PedidoRepository, PedidoService);
     FPedidoItem := TPedidoItem.Create;
     FPedidoItemAppService := TPedidoItemAppService.Create;
 
@@ -220,7 +224,15 @@ begin
     SetLength(ValoresOriginais, 4);
     FOperacao := opInicio;
     MTblPedidoItem.CreateDataSet;
-    DefinirConfiguracaoDbLookup();
+
+    // Define configuração DbLookupComboBox
+    LcbxNomeCliente.KeyField := 'cod_cliente';
+    LcbxNomeCliente.ListField := 'des_razaosocial';
+    LcbxNomeCliente.ListSource := DsClientes;
+
+    LCbxProdutos.KeyField := 'cod_produto';
+    LCbxProdutos.ListField := 'des_descricao';
+    LCbxProdutos.ListSource := DsProdutos;
   end
   else
   begin
@@ -235,11 +247,6 @@ begin
   totPedido := 0;
   FClienteAppService.PreencherComboClientes(TblClientes);
   FProdutoAppService.PreencherComboProdutos(TblProdutos);
-
-  DbGridItensPedido.Columns[0].Width := 320;
-  DbGridItensPedido.Columns[1].Width := 90;
-  DbGridItensPedido.Columns[2].Width := 115;
-  DbGridItensPedido.Columns[3].Width := 115;
   VerificaBotoes(FOperacao);
   GrbDados.Enabled := True;
   GrbGrid.Enabled := False;
@@ -426,7 +433,6 @@ begin
     Exit;
   end;
 
-  Conexao.IniciarTransacao;
   if not TransacaoPedidos.Connection.Connected then
     TransacaoPedidos.Connection.Open();
 
@@ -718,7 +724,6 @@ begin
   inherited;
   ExcluirPedidos();
   LimparCamposPedido();
-  MessageDlg('Pedido excluído com sucesso!', mtInformation, [mbOK],0);
   MTblPedidoItem.Close;
   FOperacao := opInicio;
   VerificaBotoes(FOperacao);
@@ -866,7 +871,7 @@ begin
 
     if pesqPedido then
     begin
-      CarregarPedidos(0);
+      CarregarPedidos(codigoPedido);
       ValoresOriginais[0] := EdtCodPedido.Text;
       ValoresOriginais[1] := EdtDataPedido.Text;
       ValoresOriginais[2] := EdtCodCliente.Text;
@@ -887,31 +892,6 @@ begin
     FOperacao := opNavegar;
     VerificaBotoes(FOperacao);
   end;
-end;
-
-procedure TFrmCadPedido.DefinirConfiguracaoDbLookup;
-begin
-  // Define configuração DbLookupComboBox
-  // Clientes
-  LcbxNomeCliente.KeyField := 'cod_cliente';
-  LcbxNomeCliente.ListField := 'des_nomefantasia';
-  LcbxNomeCliente.ListSource := DsClientes;
-
-  // Produtos
-  LCbxProdutos.KeyField := 'cod_produto';
-  LCbxProdutos.ListField := 'des_descricao';
-  LCbxProdutos.ListSource := DsProdutos;
-end;
-
-procedure TFrmCadPedido.CriarTabelas;
-begin
-  // Cria Tabelas
-  TblProdutos := Conexao.CriarQuery;
-  TblClientes := Conexao.CriarQuery;
-
-  // Atribui DataSet às tabelas
-  DsClientes.DataSet := TblClientes;
-  DsProdutos.DataSet := TblProdutos;
 end;
 
 procedure TFrmCadPedido.EdtCodPedidoKeyPress(Sender: TObject; var Key: Char);
@@ -1039,11 +1019,11 @@ end;
 procedure TFrmCadPedido.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   inherited;
-  if Assigned(MTblPedidoItem) and MTblPedidoItem.Active then
+  {if Assigned(MTblPedidoItem) and MTblPedidoItem.Active then
     MTblPedidoItem.Close;
 
   if Assigned(TransacaoPedidos) and TransacaoPedidos.Active then
-    TransacaoPedidos.Rollback;
+    TransacaoPedidos.Rollback;}
 
   Action := caFree;
 end;

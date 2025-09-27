@@ -80,7 +80,7 @@ object FrmPesquisaPedidos: TFrmPesquisaPedidos
       OnClick = BtnPesquisarClick
     end
     object BtnSelecionar: TSpeedButton
-      Left = 601
+      Left = 600
       Top = 2
       Width = 39
       Height = 27
@@ -118,7 +118,7 @@ object FrmPesquisaPedidos: TFrmPesquisaPedidos
       OnClick = BtnSelecionarClick
     end
     object BtnSair: TSpeedButton
-      Left = 641
+      Left = 639
       Top = 2
       Width = 39
       Height = 27
@@ -191,9 +191,9 @@ object FrmPesquisaPedidos: TFrmPesquisaPedidos
       693
       360)
     object DbGridPedidos: TDBGrid
-      Left = 9
+      Left = 8
       Top = 20
-      Width = 673
+      Width = 674
       Height = 330
       Anchors = [akLeft, akTop, akRight]
       TabOrder = 0

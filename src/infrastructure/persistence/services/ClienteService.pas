@@ -16,6 +16,15 @@ type
     Conexao: TConexao;
     FConexao: TFDConnection;
 
+    // Constantes SQL
+    const
+      SQL_SELECT =
+        'select cli.cod_cliente, cli.cod_ativo, cli.cod_tipo, cli.des_razaosocial as nomecliente, ' + #13 +
+        'cli.des_nomefantasia, cli.des_contato, cli.des_cep, cli.des_logradouro, cli.des_numero, ' + #13 +
+        'cli.des_complemento, cli.des_cidade, cli.des_uf, cli.des_documento, cli.des_telefone,  ' + #13 +
+        'cli.des_email ' + #13 +
+        'from tab_cliente cli';
+
   public
     constructor Create(AConnection: TFDConnection);
     destructor Destroy; override;
@@ -64,17 +73,7 @@ begin
   begin
     Close;
     SQL.Clear;
-    SQL.Add('select cli.cod_cliente,  ');
-    SQL.Add('cli.des_razaosocial, ');
-    SQL.Add('cli.des_nomefantasia, ');
-    SQL.Add('cli.des_logradouro, ');
-    SQL.Add('cli.des_complemento, ');
-    SQL.Add('cli.des_cep, ');
-    SQL.Add('cli.des_cidade, ');
-    SQL.Add('cli.des_uf, ');
-    SQL.Add('cli.des_cnpj, ');
-    SQL.Add('cli.des_telefone ');
-    SQL.Add('from tab_cliente cli');
+    SQL.Text := SQL_SELECT;
     SQL.Add('where ' + ACampo + ' like :pNOME');
     SQL.Add('order by ' + ACampo);
 
@@ -101,22 +100,7 @@ begin
   begin
     Close;
     SQL.Clear;
-    SQL.Add('select cli.cod_cliente,  ');
-    SQL.Add('cli.cod_ativo, ');
-    SQL.Add('cli.cod_tipo, ');
-    SQL.Add('cli.des_nomefantasia, ');
-    SQL.Add('cli.des_razaosocial, ');
-    SQL.Add('cli.des_contato, ');
-    SQL.Add('cli.des_cep, ');
-    SQL.Add('cli.des_logradouro, ');
-    SQL.Add('cli.des_numero, ');
-    SQL.Add('cli.des_complemento, ');
-    SQL.Add('cli.des_cidade, ');
-    SQL.Add('cli.des_uf, ');
-    SQL.Add('cli.des_documento, ');
-    SQL.Add('cli.des_telefone, ');
-    SQL.Add('cli.des_email ');
-    SQL.Add('from tab_cliente cli');
+    SQL.Text := SQL_SELECT;
     SQL.Add('where cod_cliente = :cod_cliente');
     ParamByName('cod_cliente').AsInteger := AId;
     Open;
@@ -149,9 +133,7 @@ end;
 
 procedure TClienteService.ValidarCliente(ACliente: TCliente);
 begin
-  // Validações básicas da entidade
   ACliente.Validar;
-
   /// Validar documento conforme tipo
   ACliente.Documento.Validar(ACliente.Cod_Tipo);
 
@@ -182,22 +164,7 @@ begin
       begin
         Close;
         SQL.Clear;
-        SQL.Add('select cli.cod_cliente,  ');
-        SQL.Add('cli.cod_ativo, ');
-        SQL.Add('cli.cod_tipo, ');
-        SQL.Add('cli.des_nomefantasia, ');
-        SQL.Add('cli.des_razaosocial, ');
-        SQL.Add('cli.des_contato, ');
-        SQL.Add('cli.des_cep, ');
-        SQL.Add('cli.des_logradouro, ');
-        SQL.Add('cli.des_numero, ');
-        SQL.Add('cli.des_complemento, ');
-        SQL.Add('cli.des_cidade, ');
-        SQL.Add('cli.des_uf, ');
-        SQL.Add('cli.des_documento, ');
-        SQL.Add('cli.des_telefone, ');
-        SQL.Add('cli.des_email ');
-        SQL.Add('from tab_cliente cli');
+        SQL.Text := SQL_SELECT;
         SQL.Add('where cod_cliente = :cod_cliente');
         ParamByName('cod_cliente').AsInteger := AId;
         Open;

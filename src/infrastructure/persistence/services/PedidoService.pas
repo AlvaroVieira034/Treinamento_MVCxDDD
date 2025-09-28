@@ -16,6 +16,12 @@ type
     Conexao: TConexao;
     FConexao: TFDConnection;
 
+    const
+      SQL_SELECT =
+        'select ped.cod_pedido, ped.dta_pedido, ped.cod_cliente, cli.des_nomefantasia as nomecliente, ped.val_pedido ' + #13 +
+        'from tab_pedido ped ' + #13 +
+        'join tab_cliente cli on ped.cod_cliente = cli.cod_cliente';
+
   public
     constructor Create(AConnection: TFDConnection);
     destructor Destroy; override;
@@ -62,15 +68,8 @@ begin
   begin
     Close;
     SQL.Clear;
-    SQL.Add('select ped.cod_pedido, ');
-    SQL.Add('ped.dta_pedido, ');
-    SQL.Add('ped.cod_cliente, ');
-    SQL.Add('cli.des_nomefantasia as nomecliente, ');
-    SQL.Add('ped.val_pedido');
-    SQL.Add('from tab_pedido ped');
-    SQL.Add('join tab_cliente cli on ped.cod_cliente = cli.cod_cliente ');
+    SQL.Text := SQL_SELECT;
     SQL.Add('where ' + ACampo + ' like :pNOME');
-
     if ACampo = 'cli.des_nomefantasia' then
       SQL.Add('order by ' + ACampo )
     else
@@ -89,11 +88,7 @@ begin
   begin
     Close;
     SQL.Clear;
-    SQL.Add('select ped.cod_pedido,  ');
-    SQL.Add('ped.dta_pedido, ');
-    SQL.Add('ped.cod_cliente, ');
-    SQL.Add('ped.val_pedido ');
-    SQL.Add('from tab_pedido ped');
+    SQL.Text := SQL_SELECT;
     SQL.Add('where cod_pedido = :cod_pedido');
     ParamByName('cod_pedido').AsInteger := AId;
     Open;
@@ -179,11 +174,7 @@ begin
       begin
         Close;
         SQL.Clear;
-        SQL.Add('select ped.cod_pedido,  ');
-        SQL.Add('ped.dta_pedido, ');
-        SQL.Add('ped.cod_cliente, ');
-        SQL.Add('ped.val_pedido ');
-        SQL.Add('from tab_pedido ped');
+        SQL.Text := SQL_SELECT;
         SQL.Add('where cod_pedido = :cod_pedido');
         ParamByName('COD_PEDIDO').AsInteger := AId;
         Open;

@@ -26,7 +26,6 @@ type
     // Métodos de validação
     procedure ValidarNomeFantasia;
     procedure ValidarRazaoSocial;
-    procedure ValidarCamposObrigatorios;
     procedure SetDes_NomeFantasia(const Value: string);
     procedure SetDes_RazaoSocial(const Value: string);
     procedure SetDes_Contato(const Value: string);
@@ -91,22 +90,6 @@ begin
 
   if Length(Erros) > 0 then
     raise EClienteException.Create('Dados inválidos: ' + string.Join('; ', Erros));
-
-end;
-
-procedure TCliente.ValidarCamposObrigatorios;
-begin
-  if FDes_NomeFantasia.Trim = '' then
-    raise EClienteException.Create('Nome fantasia é obrigatório!');
-
-  if FEndereco.Cidade.Trim = '' then
-    raise EClienteException.Create('Cidade é obrigatória!');
-
-  if FEndereco.UF.Trim = '' then
-    raise EClienteException.Create('UF é obrigatória!');
-
-  if FDocumento.CNPJ.Trim = '' then
-    raise EClienteException.Create('Documento é obrigatório!');
 
 end;
 

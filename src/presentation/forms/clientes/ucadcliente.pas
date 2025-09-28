@@ -9,7 +9,7 @@ uses
   ICliente.Repository, ClienteService, ClienteDTO, ClienteAppService, ClienteRepository,
   ClienteExceptions, ConexaoSingleton, ucadastropadrao, CEPService, EnderecoValueObject,
   ContatoValueObject, DocumentoValueObject,  FormatUtil, Data.DB, Vcl.StdCtrls, Vcl.Grids,
-  Vcl.DBGrids, Vcl.Buttons, Vcl.ExtCtrls, FireDAC.Comp.Client;
+  Vcl.DBGrids, Vcl.Buttons, Vcl.ExtCtrls, FireDAC.Comp.Client, System.UITypes;
 
 {$ENDREGION}
 

@@ -14,8 +14,6 @@ inherited FrmCadProduto: TFrmCadProduto
   TextHeight = 13
   inherited PnlTopo: TPanel
     Width = 724
-    ExplicitLeft = 24
-    ExplicitTop = 8
     ExplicitWidth = 724
     inherited BtnInserir: TSpeedButton
       Left = 25
@@ -53,12 +51,10 @@ inherited FrmCadProduto: TFrmCadProduto
       ExplicitWidth = 110
     end
     inherited BtnSair: TSpeedButton
-      Left = 584
-      Top = 9
+      Left = 585
       Width = 110
       OnClick = BtnSairClick
-      ExplicitLeft = 584
-      ExplicitTop = 9
+      ExplicitLeft = 585
       ExplicitWidth = 110
     end
   end
@@ -69,7 +65,7 @@ inherited FrmCadProduto: TFrmCadProduto
     Align = alTop
     ExplicitLeft = 0
     ExplicitTop = 65
-    ExplicitWidth = 709
+    ExplicitWidth = 724
     inherited GrbDados: TGroupBox
       Left = 8
       Top = 6
@@ -79,7 +75,7 @@ inherited FrmCadProduto: TFrmCadProduto
       Caption = ' Dados do Produto '
       ExplicitLeft = 8
       ExplicitTop = 6
-      ExplicitWidth = 688
+      ExplicitWidth = 703
       ExplicitHeight = 142
       object Label1: TLabel
         Left = 69
@@ -158,8 +154,8 @@ inherited FrmCadProduto: TFrmCadProduto
     Align = alClient
     ExplicitLeft = 0
     ExplicitTop = 225
-    ExplicitWidth = 709
-    ExplicitHeight = 220
+    ExplicitWidth = 724
+    ExplicitHeight = 260
     inherited LblTotRegistros: TLabel
       Left = 621
       Top = 239
@@ -176,8 +172,8 @@ inherited FrmCadProduto: TFrmCadProduto
       Caption = ' Produtos Cadastrados '
       ExplicitLeft = 8
       ExplicitTop = 6
-      ExplicitWidth = 684
-      ExplicitHeight = 187
+      ExplicitWidth = 699
+      ExplicitHeight = 227
       object DBGridProdutos: TDBGrid
         Left = 12
         Top = 20
@@ -237,8 +233,6 @@ inherited FrmCadProduto: TFrmCadProduto
     BevelOuter = bvNone
     ParentBackground = False
     TabOrder = 3
-    ExplicitTop = 445
-    ExplicitWidth = 709
     DesignSize = (
       724
       47)

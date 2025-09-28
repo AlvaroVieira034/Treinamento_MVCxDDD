@@ -3,7 +3,7 @@ unit ClienteDTO;
 interface
 
 uses
-  System.SysUtils, ClienteModel, Data.DB, FireDAC.Comp.Client;
+  System.SysUtils, ClienteModel, Data.DB, FireDAC.Comp.Client, FireDAC.Stan.Param;
 
 type
   TClienteDTO = class

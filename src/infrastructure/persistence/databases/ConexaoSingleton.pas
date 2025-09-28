@@ -10,10 +10,11 @@ type
 
   private
     FDatabaseConnection: TDatabaseConnection;
+
+  public
     constructor Create;
     destructor Destroy; override;
 
-  public
     property DatabaseConnection: TDatabaseConnection read FDatabaseConnection;
     class function GetInstance: TConexaoSingleton;
 

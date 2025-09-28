@@ -16,6 +16,11 @@ type
     Conexao: TConexao;
     FConexao: TFDConnection;
 
+    const
+      SQL_SELECT =
+         'select prd.cod_produto, prd.des_descricao, prd.des_marca, prd.val_preco' + #13 +
+         'from tab_produto prd ';
+
   public
     constructor Create(AConnection: TFDConnection);
     destructor Destroy; override;
@@ -65,11 +70,7 @@ begin
   begin
     Close;
     SQL.Clear;
-    SQL.Add('select prd.cod_produto, ');
-    SQL.Add('prd.des_descricao, ');
-    SQL.Add('prd.des_marca, ');
-    SQL.Add('prd.val_preco ');
-    SQL.Add('from tab_produto prd');
+    SQL.Text := SQL_SELECT;
     SQL.Add('where ' + ACampo + ' like :pNOME');
     SQL.Add('order by ' + ACampo);
     ParamByName('PNOME').AsString := APesquisa;
@@ -95,11 +96,7 @@ begin
   begin
     Close;
     SQL.Clear;
-    SQL.Add('select prd.cod_produto,  ');
-    SQL.Add('prd.des_descrricao, ');
-    SQL.Add('prd.des_marca, ');
-    SQL.Add('prd.val_preco ');
-    SQL.Add('from tab_produto prd');
+    SQL.Text := SQL_SELECT;
     SQL.Add('where cod_produto = :cod_produto');
     ParamByName('cod_produto').AsInteger := AId;
     Open;
@@ -131,11 +128,7 @@ begin
       begin
         Close;
         SQL.Clear;
-        SQL.Add('select prd.cod_produto,  ');
-        SQL.Add('prd.des_descricao, ');
-        SQL.Add('prd.des_marca, ');
-        SQL.Add('prd.val_preco ');
-        SQL.Add('from tab_produto prd');
+        SQL.Text := SQL_SELECT;
         SQL.Add('where cod_produto = :cod_produto');
         ParamByName('cod_produto').AsInteger := AId;
         Open;

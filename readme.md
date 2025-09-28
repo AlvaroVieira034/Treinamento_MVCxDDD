@@ -59,11 +59,11 @@ As principais ferramentas utilizadas neste projeto são:
 ________________________________________
 🎯 Visão Geral da Migração
 
-Migramos de uma arquitetura MVC tradicional para Domain-Driven Design (DDD) com princípios SOLID e Clean Architecture, focando no módulo de clientes como piloto.
+Migramos de uma arquitetura MVC tradicional para Domain-Driven Design (DDD) com princípios SOLID e Clean Code e Clean Architecture.
 Objetivos principais:
 
-- 	Separar claramente as responsabilidades
--   Proteger as regras de negócio
+-	Separar claramente as responsabilidades
+- Proteger as regras de negócio
 -	Melhorar a testabilidade
 -	Facilitar a manutenção e evolução do sistema
 ________________________________________
@@ -90,7 +90,13 @@ ________________________________________
     |   └── Services/                     # Serviços da aplicação (APP Service)
     |── Presentation/                     # Camada de Apresentação
     |   |── forms/                        # Formulários
-    |   └── Controllers/                  # Controladores
+    |   |   |── base/                     # Formulários padrão
+    |   |   |── clientes/                 # Formulários de clientes
+    |   |   |── main/                     # Formulário principal
+    |   |   |── pedidos/                  # Formulários de pedidos
+    |   |   |── produtos/                 # Formulários produtos
+    |   |   |── relatorios/               # Formulários de relatórios
+    |   └── Controllers/                  # Controladores UI
     |── shared/                           # Camada Compartilhada
     |   |── constants/                    # 
     |   |── types/                        # 
@@ -101,7 +107,7 @@ ________________________________________
 
 
 
-📋 Principais Classes:
+📋 Exemplo de classes:
 | Classe             | Responsabilidade                          | Camada          |
 |---------------------|-------------------------------------------|-----------------|
 | **TCliente**        | Entidade principal com regras de negócio  | Domain          |
@@ -124,198 +130,162 @@ Depois: Cada classe com responsabilidade única
 ![Tela Melhoria](./docs/images/image.png)
 ✅ 3. Testabilidade
 ![Tela Testabilidade](./docs/images/image-1.png)
-✅ 4. Reusabilidade de Código
-pascal
-// Validações centralizadas e reutilizáveis
-if TValidadores.ValidarCNPJ(CNPJ) then
-  // Processa válido
-else
-  // Trata inválido
-________________________________________
+
 🧩 Princípios SOLID Aplicados
 1. ✅ Single Responsibility Principle
-pascal
-// ANTES: Form fazia tudo
-// DEPOIS: Cada classe com uma responsabilidade
-TClienteValidator.ValidarCNPJ;       // Apenas validação
-TClienteRepository.Inserir;          // Apenas persistência  
-TClienteService.ProcessarCadastro;   // Apenas coordenação
+
+Antes:
+![alt text](./docs/images/image-4.png)
+
+Depois:
+![alt text](./docs/images/image-5.png)
+
 2. ✅ Open/Closed Principle
-pascal
-// Fácil extensão para novos Value Objects
-type
-  TCliente = class
-    property Endereco: TEndereco;
-    property Contato: TContato;
-    property Documento: TDocumento;
-    // Pode adicionar novos VOs sem modificar a entity
-  end;
+
+Antes:
+![alt text](./docs/images/image-7.png)
+
+Depois:
+![alt text](./docs/images/image-6.png)
+
+
 3. ✅ Liskov Substitution Principle
-pascal
-// Value Objects são substituíveis
-procedure ProcessarEndereco(Endereco: TEndereco);
-begin
-  // Funciona com qualquer especialização de TEndereco
-end;
+
+![alt text](./docs/images/image-9.png)
+
+
+
 4. ✅ Interface Segregation Principle
-pascal
-type
-  IClienteRepository = interface
-    ['{GUID}']
-    function Inserir(ACliente: TCliente): Boolean;
-    function BuscarPorId(AId: Integer): TCliente;
-    // Interfaces específicas e lean
-  end;
+
+Antes:
+![alt text](./docs/images/image-3.png)
+
+Depois
+![alt text](./docs/images/image-8.png)
+
 5. ✅ Dependency Inversion Principle
-pascal
-// Forms dependem de abstrações
-type
-  TFrmCadCliente = class(TForm)
-  private
-    FClienteService: IClienteService; // Abstração, não implementação
-  end;
+
+Antes:
+![alt text](./docs/images/image-10.png)
+
+Depois:
+![alt text](image-11.png)
+
 ________________________________________
 🧹 Clean Code Aplicado
-✅ Nomenclatura Expressiva
-pascal
-// ANTES:
-procedure Processar;
 
-// DEPOIS:  
-procedure ValidarClienteCompleto;
+✅ Nomenclatura Expressiva
+
+Antes:
+![alt text](./docs/images/image-12.png)
+
+Depois:
+![alt text](./docs/images/image-13.png)
+
 ✅ Funções Pequenas e Específicas
-pascal
-// Métodos com 5-10 linhas máximo
-function TCliente.ObterErrosValidacao: TArray<string>;
-begin
-  Result := [];
-  Result := Result + ValidarNome;
-  Result := Result + ValidarDocumento;
-  Result := Result + FEndereco.Validar;
-end;
-✅ Prevenção de Duplicação
-pascal
-// Validações centralizadas
-class function TValidadores.ValidarCNPJ(const ACNPJ: string): Boolean;
-begin
-  // Usado em múltiplas classes
-end;
-✅ Código Auto-documentado
-pascal
-// Nomes claros que explicam a intenção
-if Cliente.PodeSerExcluido then
-  // instead of if CheckDeleteCondition then
+
+![alt text](./docs/images/image-14.png)
+
+✅ Eliminação de Código Duplicado
+
+ANTES: Validações repetidas em múltiplos lugares
+
+DEPOIS: Validações centralizadas nos Value Objects
+
 ________________________________________
 🏛️ Clean Architecture Implementada
-✅ Independência de Framework
-pascal
-// Domain não conhece FireDAC ou VCL
-TCliente = class
-  // Lógica pura de negócio - ZERO dependências de UI ou DB
-end;
+
 ✅ Camadas Bem Definidas
-text
-Presentation → Application → Domain ← Infrastructure
-✅ Fluxo de Dados Controlado
-pascal
-// Form → DTO → Entity → Repository
-DTO := TClienteDTO.FromEntity(Cliente);
-Cliente := TCliente.Create;
-DTO.ToEntity(Cliente);
-Repository.Inserir(Cliente);
-✅ Inversão de Dependências
-pascal
-// Domain não depende de Infrastructure
-type
-  IClienteRepository = interface
-    function Inserir(ACliente: TCliente): Boolean;
-    // Domain define a interface, Infrastructure implementa
-  end;
+
+![alt text](./docs/images/image-16.png)
+
+✅ Independência de Framework
+
+![alt text]./docs/images/(image-17.png)
+
 ________________________________________
 🎯 DDD em Ação - Exemplos Práticos
-1. ✅ Linguagem Ubíqua
-pascal
-// Termos do domínio refletidos no código
-Cliente.Ativar;           // instead of SetStatus(1)
-Cliente.Validar;          // domain-specific validation
-Cliente.Endereco.CEP;     // value object with business meaning
+1. ✅ Value Objects Implemntados
+
+![alt text](./docs/images/image-18.png)
+
 2. ✅ Agregações Claras
-pascal
-// Cliente como raiz de agregação
-TCliente = class
-  property Endereco: TEndereco;    // VO composto
-  property Documento: TDocumento;  // VO composto  
-  property Contato: TContato;      // VO composto
-end;
-3. ✅ Value Objects com Comportamento
-pascal
-// VOs não são apenas DTOs - têm comportamento
-TEndereco = class
-  procedure Validar;
-  function EstaVazio: Boolean;
-  function ToString: string;
-end;
-4. ✅ Entidades com Identidade
-pascal
-// Cliente possui identidade única
-if Cliente1.Equals(Cliente2) then
-  // Comparação por identidade
-5. ✅ Validações no Domínio
-pascal
-// Validações onde devem estar
-procedure TCliente.Validar;
-begin
-  ValidarCamposObrigatorios;
-  FEndereco.Validar;
-  FDocumento.Validar;
-  FContato.Validar;
-end;
+
+![alt text](./docs/images/image-19.png)
+3. ✅ Linguagem Ubíqua
+
+![alt text](./docs/images/image-20.png)
+
 ________________________________________
 🚀 Benefícios das Mudanças
+
 🛠️ Melhorias na Manutenibilidade
+
 •	✅ Mudanças isoladas em uma classe
+
 •	✅ Menor impacto em modificações
+
 •	✅ Fácil localização de código
+
 •	✅ Redução de bugs por acoplamento
+
 🔧 Facilidade para Futuras Implementações
+
 •	✅ Adicionar novo campo: apenas no DTO e Entity
+
 •	✅ Nova validação: apenas no Value Object
+
 •	✅ Novo relatório: usa DTO existente
+
 •	✅ Múltiplos frontends: mesma camada de aplicação
+
 📊 Organização e Clareza
+
 •	✅ Código auto-documentado
+
 •	✅ Estrutura previsível
+
 •	✅ Onboarding mais rápido de novos devs
+
 •	✅ Padrões consistentes em todo o projeto
+
 🧪 Testabilidade Aprimorada
+
 •	✅ Unit testing facilitado
+
 •	✅ Mocking simplificado
+
 •	✅ Testes de integração mais focados
+
 •	✅ Cobertura de testes aumentada
+
 ⚡ Performance e Qualidade
+
 •	✅ Menor acoplamento = menos bugs
+
 •	✅ Código mais limpo = melhor performance
+
 •	✅ Arquitetura sólida = menos technical debt
 ________________________________________
 📈 Resultado Final
+
 A migração transformou um código acoplado em uma arquitetura robusta onde:
+
 1.	🔒 Regras de negócio estão protegidas no Domain
+
 2.	🔄 Mudanças são isoladas e controladas
+
 3.	🧪 Testes são viáveis e eficientes
+
 4.	🚀 Novas features são implementadas rapidamente
+
 5.	👥 Trabalho em equipe é facilitado
+
 6.	📊 Qualidade do código é significativamente melhor
+
 7.	🔮 Futuro do projeto é mais seguro e escalável
+
 O DDD não é apenas uma arquitetura - é uma forma de pensar o domínio que resulta em software mais resiliente e adaptável às mudanças de negócio! 🎯
-________________________________________
-📋 Próximos Passos Recomendados
-1.	Estender o padrão para outros módulos do sistema
-2.	Implementar testes unitários abrangentes
-3.	Documentar padrões para a equipe
-4.	Criar templates para novas entidades
-5.	Implementar CQRS para consultas complexas
-6.	Adicionar logging estruturado
-7.	Implementar cache na camada de aplicação
 
 
         

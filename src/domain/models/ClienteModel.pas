@@ -11,8 +11,9 @@ type
   TCliente = class
 
   private
-    FCod_Ativo: Integer;
     FCod_Cliente: Integer;
+    FCod_Ativo: Integer;
+    FCod_Tipo: Integer;
     FDes_NomeFantasia: string;
     FDes_RazaoSocial: string;
     FDes_Contato: string;
@@ -44,6 +45,7 @@ type
     // Properties
     property Cod_Cliente: Integer read FCod_Cliente write FCod_Cliente;
     property Cod_Ativo: Integer read FCod_Ativo write FCod_Ativo;
+    property Cod_Tipo: Integer read FCod_Tipo write FCod_Tipo;
     property Des_NomeFantasia: string read FDes_NomeFantasia write SetDes_NomeFantasia;
     property Des_RazaoSocial: string read FDes_RazaoSocial write SetDes_RazaoSocial;
     property Des_Contato: string read FDes_Contato write SetDes_Contato;
@@ -56,7 +58,7 @@ type
     // Métodos para configurar VOs
     procedure ConfigurarEndereco(const ACEP, ALogradouro, ANumero, AComplemento, ACidade, AUF: string);
     procedure ConfigurarContato(const ATelefone, AEmail: string);
-    procedure ConfigurarDocumento(const ACNPJ: string);
+    procedure ConfigurarDocumento(const ADocumento: string; ATipoCliente: Integer);
   end;
 
 implementation
@@ -83,11 +85,12 @@ begin
 end;
 
 procedure TCliente.Validar;
-var  Erros: TArray<string>;
+var Erros: TArray<string>;
 begin
   Erros := ObterErrosValidacao;
+
   if Length(Erros) > 0 then
-    raise EClienteException.Create(string.Join(sLineBreak, Erros));
+    raise EClienteException.Create('Dados inválidos: ' + string.Join('; ', Erros));
 
 end;
 
@@ -103,7 +106,7 @@ begin
     raise EClienteException.Create('UF é obrigatória!');
 
   if FDocumento.CNPJ.Trim = '' then
-    raise EClienteException.Create('CNPJ é obrigatório!');
+    raise EClienteException.Create('Documento é obrigatório!');
 
 end;
 
@@ -165,9 +168,16 @@ begin
   FContato.Email := AEmail;
 end;
 
-procedure TCliente.ConfigurarDocumento(const ACNPJ: string);
+procedure TCliente.ConfigurarDocumento(const ADocumento: string; ATipoCliente: Integer);
 begin
-  FDocumento.CNPJ := ACNPJ;
+  case ATipoCliente of
+    0: // Pessoa Física
+      FDocumento.CPF := ADocumento;
+    1: // Pessoa Jurídica
+      FDocumento.CNPJ := ADocumento;
+    else
+      raise Exception.Create('Tipo de cliente inválido');
+  end;
 end;
 
 procedure TCliente.Ativar;
@@ -187,6 +197,8 @@ end;
 
 function TCliente.ObterErrosValidacao: TArray<string>;
 begin
+  Result := []; // Inicializar o array
+
   // Validações básicas do cliente
   if FDes_NomeFantasia.Trim = '' then
     Result := Result + ['Nome do cliente é obrigatório!'];
@@ -203,13 +215,32 @@ begin
   if FEndereco.UF.Trim = '' then
     Result := Result + ['UF é obrigatória!'];
 
-  // Validações dos Value Objects
-  Result := Result + FEndereco.ObterErrosValidacao;
-  Result := Result + FContato.ObterErrosValidacao;
-  Result := Result + FDocumento.ObterErrosValidacao;
+  // VALIDAÇÃO DO DOCUMENTO CONFORME TIPO
+  case FCod_Tipo of
+    0: // Pessoa Física
+      begin
+        if FDocumento.CPF.Trim = '' then
+          Result := Result + ['CPF é obrigatório para Pessoa Física!']
+        else if not FDocumento.ValidarCPF then
+          Result := Result + ['CPF inválido!'];
+      end;
+    1: // Pessoa Jurídica
+      begin
+        if FDocumento.CNPJ.Trim = '' then
+          Result := Result + ['CNPJ é obrigatório para Pessoa Jurídica!']
+        else if not FDocumento.ValidarCNPJ then
+          Result := Result + ['CNPJ inválido!'];
+      end;
+    else
+      Result := Result + ['Tipo de cliente inválido!'];
+  end;
 
-  if FDocumento.CNPJ.Trim = '' then
-    Result := Result + ['CNPJ é obrigatório!'];
+  // Validações do Value Object Endereço
+  Result := Result + FEndereco.ObterErrosValidacao;
+
+  // Validações do Value Object Contato
+  Result := Result + FContato.ObterErrosValidacao;
+
 end;
 
 

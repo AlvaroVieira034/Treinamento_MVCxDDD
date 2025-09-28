@@ -227,7 +227,7 @@ begin
 
     // Define configuração DbLookupComboBox
     LcbxNomeCliente.KeyField := 'cod_cliente';
-    LcbxNomeCliente.ListField := 'des_razaosocial';
+    LcbxNomeCliente.ListField := 'des_nomefantasia';
     LcbxNomeCliente.ListSource := DsClientes;
 
     LCbxProdutos.KeyField := 'cod_produto';

@@ -106,7 +106,7 @@ begin
   except
     on E: EClienteException do
       raise; // Re-lança exceções de validação
-    on E: ECNPJDuplicadoException do
+    on E: EDocumentoDuplicadoException do
       raise; // Re-lança exceções de negócio
     on E: Exception do
       raise EClienteException.Create('Erro inesperado na validação: ' + E.Message);
@@ -124,16 +124,25 @@ begin
   try
     Result.Cod_Ativo := ACliente.Cod_Ativo;
     Result.Cod_Cliente := ACliente.Cod_Cliente;
+    Result.Cod_Tipo := ACliente.Cod_Tipo; // IMPORTANTE: Não esqueça esta linha!
     Result.Des_RazaoSocial := ACliente.Des_RazaoSocial;
     Result.Des_NomeFantasia := ACliente.Des_NomeFantasia;
     Result.Des_Contato := ACliente.Des_Contato;
+
+    // Endereço
     Result.Des_Cep := ACliente.Endereco.CEP;
     Result.Des_Logradouro := ACliente.Endereco.Logradouro;
     Result.Des_Numero := ACliente.Endereco.Numero;
     Result.Des_Complemento := ACliente.Endereco.Complemento;
     Result.Des_Cidade := ACliente.Endereco.Cidade;
     Result.Des_UF := ACliente.Endereco.UF;
-    Result.Des_Cnpj := ACliente.Documento.CNPJ;
+
+    // CORREÇÃO: Documento conforme tipo
+    if ACliente.Cod_Tipo = 0 then
+      Result.Des_Documento := ACliente.Documento.CPF  // Pessoa Física
+    else
+      Result.Des_Documento := ACliente.Documento.CNPJ; // Pessoa Jurídica
+
     Result.Des_Telefone := ACliente.Contato.Telefone;
     Result.Des_Email := ACliente.Contato.Email;
   except
@@ -145,20 +154,35 @@ end;
 function TClienteAppService.DTOToEntity(AClienteDTO: TClienteDTO): TCliente;
 begin
   Result := TCliente.Create;
-  Result.Cod_Ativo := AClienteDTO.Cod_Ativo;
-  Result.Cod_Cliente := AClienteDTO.Cod_Cliente;
-  Result.Des_RazaoSocial := AClienteDTO.Des_RazaoSocial;
-  Result.Des_NomeFantasia := AClienteDTO.Des_NomeFantasia;
-  Result.Des_Contato := AClienteDTO.Des_Contato;
-  Result.Endereco.CEP := AClienteDTO.Des_Cep;
-  Result.Endereco.Logradouro := AClienteDTO.Des_Logradouro;
-  Result.Endereco.Numero := AClienteDTO.Des_Numero;
-  Result.Endereco.Complemento := AClienteDTO.Des_Complemento;
-  Result.Endereco.Cidade := AClienteDTO.Des_Cidade;
-  Result.Endereco.UF := AClienteDTO.Des_UF;
-  Result.Documento.CNPJ := AClienteDTO.Des_Cnpj;
-  Result.Contato.Telefone := AClienteDTO.Des_Telefone;
-  Result.Contato.Email := AClienteDTO.Des_Email;
+  try
+    Result.Cod_Ativo := AClienteDTO.Cod_Ativo;
+    Result.Cod_Cliente := AClienteDTO.Cod_Cliente;
+    Result.Cod_Tipo := AClienteDTO.Cod_Tipo; // IMPORTANTE: Não esqueça esta linha!
+    Result.Des_RazaoSocial := AClienteDTO.Des_RazaoSocial;
+    Result.Des_NomeFantasia := AClienteDTO.Des_NomeFantasia;
+    Result.Des_Contato := AClienteDTO.Des_Contato;
+
+    // Endereço
+    Result.Endereco.CEP := AClienteDTO.Des_Cep;
+    Result.Endereco.Logradouro := AClienteDTO.Des_Logradouro;
+    Result.Endereco.Numero := AClienteDTO.Des_Numero;
+    Result.Endereco.Complemento := AClienteDTO.Des_Complemento;
+    Result.Endereco.Cidade := AClienteDTO.Des_Cidade;
+    Result.Endereco.UF := AClienteDTO.Des_UF;
+
+    // CORREÇÃO: Documento conforme tipo
+    if AClienteDTO.Cod_Tipo = 0 then
+      Result.Documento.CPF := AClienteDTO.Des_Documento  // Pessoa Física
+    else
+      Result.Documento.CNPJ := AClienteDTO.Des_Documento; // Pessoa Jurídica
+
+    // Contato
+    Result.Contato.Telefone := AClienteDTO.Des_Telefone;
+    Result.Contato.Email := AClienteDTO.Des_Email;
+  except
+    Result.Free;
+    raise;
+  end;
 end;
 
 end.

@@ -47,3 +47,55 @@ where cod_pedido = 40
 
 select * from bdtestedguarani.dbo.tab_pedido_item
 where cod_pedido = 40
+
+
+
+DECLARE @DataInicio DATE = NULL;      -- informe a data inicial ou deixe NULL
+DECLARE @DataFim DATE = NULL;         -- informe a data final ou deixe NULL
+DECLARE @MostrarTodos BIT = 1;        -- 1 = lista todos, 0 = lista só os TOP 2
+
+SELECT TOP (
+    CASE WHEN @MostrarTodos = 1 THEN 2147483647 ELSE 2 END
+)
+    p.cod_produto,
+    pr.des_descricao,
+    pr.des_marca,
+    SUM(p.val_quantidade) AS QuantidadeVendida,
+    SUM(p.val_totalitem)  AS ValorTotalVendido
+FROM tab_pedido_item p
+JOIN tab_pedido ped ON p.cod_pedido = ped.cod_pedido
+JOIN tab_produto pr ON p.cod_produto = pr.cod_produto
+WHERE (@DataInicio IS NULL OR ped.dta_pedido >= @DataInicio)
+  AND (@DataFim IS NULL OR ped.dta_pedido <= @DataFim)
+GROUP BY p.cod_produto, pr.des_descricao, pr.des_marca
+ORDER BY SUM(p.val_quantidade) DESC;
+
+
+
+DECLARE @DataInicio DATE = NULL;      -- informe a data inicial ou deixe NULL
+DECLARE @DataFim DATE = NULL;         -- informe a data final ou deixe NULL
+DECLARE @MostrarTodos BIT = 1;        -- 1 = lista todos, 0 = lista só os TOP 2
+
+
+SELECT TOP (
+CASE WHEN @MostrarTodos = 1 THEN 2147483647 ELSE 2 END)
+p.cod_produto, 
+pr.des_descricao, 
+pr.des_marca, 
+SUM(p.val_quantidade) AS QuantidadeVendida, 
+SUM(p.val_totalitem)  AS ValorTotalVendido 
+FROM tab_pedido_item p 
+JOIN tab_pedido ped ON p.cod_pedido = ped.cod_pedido 
+JOIN tab_produto pr ON p.cod_produto = pr.cod_produto 
+WHERE (@DataInicio IS NULL OR ped.dta_pedido >= @DataInicio) 
+AND (@DataFim IS NULL OR ped.dta_pedido <= @DataFim) 
+GROUP BY p.cod_produto, pr.des_descricao, pr.des_marca 
+ORDER BY SUM(p.val_quantidade) DESC
+
+
+
+update bdtestedguarani.dbo.tab_cliente set des_documento = des_cnpj
+
+alter table bdtestedguarani.dbo.tab_cliente add des_documento varchar(18)
+
+select * from bdtestedguarani.dbo.tab_cliente

@@ -8,7 +8,7 @@ uses
 type
   EClienteException = class(Exception);
 
-  ECNPJDuplicadoException = class(EClienteException)
+  EDocumentoDuplicadoException = class(EClienteException)
   public
     constructor Create(const ACNPJ: string);
   end;
@@ -26,9 +26,9 @@ type
 implementation
 
 { ECNPJDuplicadoException }
-constructor ECNPJDuplicadoException.Create(const ACNPJ: string);
+constructor EDocumentoDuplicadoException.Create(const ACNPJ: string);
 begin
-  inherited CreateFmt('CNPJ %s já está cadastrado para outro cliente!', [ACNPJ]);
+  inherited CreateFmt('O documento %s já está cadastrado para outro cliente!', [ACNPJ]);
 end;
 
 { EClienteNaoEncontradoException }

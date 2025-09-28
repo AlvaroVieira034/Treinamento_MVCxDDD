@@ -34,7 +34,7 @@ type
     Label1: TLabel;
     Label2: TLabel;
     Label4: TLabel;
-    Label5: TLabel;
+    LblDocumento: TLabel;
     Label9: TLabel;
     Label11: TLabel;
     Label13: TLabel;
@@ -53,6 +53,7 @@ type
     EdtNumero: TEdit;
     EdtEmail: TEdit;
     RdgSituacao: TRadioGroup;
+    RdgTipoPessoa: TRadioGroup;
 
 
 {$ENDREGION}
@@ -77,6 +78,7 @@ type
     procedure EdtPesquisarKeyPress(Sender: TObject; var Key: Char);
     procedure EdtPesquisarChange(Sender: TObject);
     procedure BtnSairClick(Sender: TObject);
+    procedure RdgTipoPessoaClick(Sender: TObject);
 
   private
     ValoresOriginais: array of string;
@@ -193,8 +195,9 @@ begin
     try
       ClienteDTO := TClienteDTO.FromEntity(Cliente);
       try
-        RdgSituacao.ItemIndex := ClienteDTO.Cod_Ativo;
         EdtCodigoCliente.Text := IntToStr(ClienteDTO.Cod_Cliente);
+        RdgTipoPessoa.ItemIndex := ClienteDTO.Cod_Tipo;
+        RdgSituacao.ItemIndex := ClienteDTO.Cod_Ativo;
         EdtNomeFantasia.Text := ClienteDTO.Des_NomeFantasia;
         EdtRazaoSocial.Text := ClienteDTO.Des_RazaoSocial;
         EdtContato.Text := ClienteDTO.Des_Contato;
@@ -205,7 +208,7 @@ begin
         EdtCidade.Text := ClienteDTO.Des_Cidade;
         EdtUF.Text := ClienteDTO.Des_UF;
         EdtTelefone.Text := ClienteDTO.Des_Telefone;
-        EdtCnpj.Text := ClienteDTO.Des_Cnpj;
+        EdtCnpj.Text := ClienteDTO.Des_Documento;
         EdtEmail.Text := ClienteDTO.Des_Email;
 
         SalvarValoresOriginais();
@@ -220,7 +223,6 @@ begin
     on E: Exception do
     begin
       ShowMessage('Erro ao carregar dados do cliente: ' + E.Message);
-      // Limpa os campos em caso de erro
       LimparCamposForm(Self);
     end;
   end;
@@ -265,37 +267,41 @@ end;
 
 procedure TFrmCadCliente.SalvarValoresOriginais;
 begin
-  SetLength(ValoresOriginais, 14);
+  SetLength(ValoresOriginais, 16);
   ValoresOriginais[0] := EdtCodigoCliente.Text;
-  ValoresOriginais[1] := EdtNomeFantasia.Text;
-  ValoresOriginais[2] := EdtRazaoSocial.Text;
-  ValoresOriginais[3] := EdtContato.Text;
-  ValoresOriginais[4] := EdtCep.Text;
-  ValoresOriginais[5] := EdtLogradouro.Text;
-  ValoresOriginais[6] := EdtNumero.Text;
-  ValoresOriginais[7] := EdtComplemento.Text;
-  ValoresOriginais[8] := EdtCidade.Text;
-  ValoresOriginais[9] := EdtUF.Text;
-  ValoresOriginais[10] := EdtTelefone.Text;
-  ValoresOriginais[11] := EdtCnpj.Text;
-  ValoresOriginais[12] := EdtEmail.Text;
+  ValoresOriginais[1] := IntToStr(RdgTipoPessoa.ItemIndex);
+  ValoresOriginais[2] := IntToStr(RdgSituacao.ItemIndex);
+  ValoresOriginais[3] := EdtNomeFantasia.Text;
+  ValoresOriginais[4] := EdtRazaoSocial.Text;
+  ValoresOriginais[5] := EdtContato.Text;
+  ValoresOriginais[6] := EdtCep.Text;
+  ValoresOriginais[7] := EdtLogradouro.Text;
+  ValoresOriginais[8] := EdtNumero.Text;
+  ValoresOriginais[9] := EdtComplemento.Text;
+  ValoresOriginais[10] := EdtCidade.Text;
+  ValoresOriginais[11] := EdtUF.Text;
+  ValoresOriginais[12] := EdtTelefone.Text;
+  ValoresOriginais[13] := EdtCnpj.Text;
+  ValoresOriginais[14] := EdtEmail.Text;
 end;
 
 procedure TFrmCadCliente.RestaurarValoresOriginais;
 begin
   EdtCodigoCliente.Text := ValoresOriginais[0];
-  EdtNomeFantasia.Text := ValoresOriginais[1];
-  EdtRazaoSocial.Text := ValoresOriginais[2];
-  EdtContato.Text := ValoresOriginais[3];
-  EdtCep.Text := ValoresOriginais[4];
-  EdtLogradouro.Text := ValoresOriginais[5];
-  EdtNumero.Text := ValoresOriginais[6];
-  EdtComplemento.Text := ValoresOriginais[7];
-  EdtCidade.Text := ValoresOriginais[8];
-  EdtUF.Text := ValoresOriginais[9];
-  EdtTelefone.Text := ValoresOriginais[10];
-  EdtCnpj.Text := ValoresOriginais[11];
-  EdtEmail.Text := ValoresOriginais[12];
+  RdgTipoPessoa.ItemIndex := StrToInt(ValoresOriginais[1]);
+  RdgSituacao.ItemIndex := StrToInt(ValoresOriginais[2]);
+  EdtNomeFantasia.Text := ValoresOriginais[3];
+  EdtRazaoSocial.Text := ValoresOriginais[4];
+  EdtContato.Text := ValoresOriginais[5];
+  EdtCep.Text := ValoresOriginais[6];
+  EdtLogradouro.Text := ValoresOriginais[7];
+  EdtNumero.Text := ValoresOriginais[8];
+  EdtComplemento.Text := ValoresOriginais[9];
+  EdtCidade.Text := ValoresOriginais[10];
+  EdtUF.Text := ValoresOriginais[11];
+  EdtTelefone.Text := ValoresOriginais[12];
+  EdtCnpj.Text := ValoresOriginais[13];
+  EdtEmail.Text := ValoresOriginais[14];
 end;
 
 function TFrmCadCliente.GravarDados: Boolean;
@@ -345,7 +351,7 @@ begin
       on E: EDocumentoInvalidoException do
         MessageDlg('Erro de documento: ' + E.Message, mtError, [mbOK], 0);
 
-      on E: ECNPJDuplicadoException do
+      on E: EDocumentoDuplicadoException do
         MessageDlg('Erro de negócio: ' + E.Message, mtError, [mbOK], 0);
 
       on E: Exception do
@@ -363,8 +369,9 @@ begin
   try
     with ClienteDTO do
     begin
-      Cod_Ativo := RdgSituacao.ItemIndex;
       Cod_Cliente := StrToIntDef(EdtCodigoCliente.Text, 0);
+      Cod_Tipo := RdgTipoPessoa.ItemIndex;
+      Cod_Ativo := RdgSituacao.ItemIndex;
       Des_NomeFantasia := EdtNomeFantasia.Text;
       Des_RazaoSocial := EdtRazaoSocial.Text;
       Des_Contato := EdtContato.Text;
@@ -375,7 +382,7 @@ begin
       Des_Cidade := EdtCidade.Text;
       Des_UF := EdtUF.Text;
       Des_Telefone := EdtTelefone.Text;
-      Des_Cnpj := EdtCnpj.Text;
+      Des_Documento := EdtCnpj.Text;
       Des_Email := EdtEmail.Text;
     end;
 
@@ -384,6 +391,23 @@ begin
   finally
     ClienteDTO.Free;
   end;
+end;
+
+procedure TFrmCadCliente.RdgTipoPessoaClick(Sender: TObject);
+begin
+  inherited;
+  if RdgTipoPessoa.ItemIndex = 0 then
+  begin
+    LblDocumento.Caption := ' *CPF:';
+    EdtCnpj.MaxLength := 14;
+  end;
+
+  if RdgTipoPessoa.ItemIndex = 1 then
+  begin
+    LblDocumento.Caption := '*CNPJ:';
+    EdtCnpj.MaxLength := 18;
+  end;
+
 end;
 
 function TFrmCadCliente.GetCampoFiltro: string;
@@ -591,7 +615,11 @@ end;
 procedure TFrmCadCliente.EdtCnpjExit(Sender: TObject);
 begin
   inherited;
-  Formatar(EdtCnpj, TFormato.CNPJ);
+  if RdgTipoPessoa.ItemIndex = 0 then
+    Formatar(EdtCnpj, TFormato.CPF);
+
+  if RdgTipoPessoa.ItemIndex = 1 then
+    Formatar(EdtCnpj, TFormato.CNPJ);
 end;
 
 procedure TFrmCadCliente.EdtCnpjKeyPress(Sender: TObject; var Key: Char);

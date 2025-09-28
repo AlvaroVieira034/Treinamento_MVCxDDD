@@ -22,9 +22,9 @@ inherited FrmCadCliente: TFrmCadCliente
       ExplicitLeft = 25
     end
     inherited BtnAlterar: TSpeedButton
-      Left = 141
+      Left = 142
       OnClick = BtnAlterarClick
-      ExplicitLeft = 141
+      ExplicitLeft = 142
     end
     inherited BtnExcluir: TSpeedButton
       Left = 259
@@ -97,7 +97,7 @@ inherited FrmCadCliente: TFrmCadCliente
       end
       object BtnPesquisarCep: TSpeedButton
         Left = 524
-        Top = 98
+        Top = 97
         Width = 28
         Height = 24
         Hint = 'Pesquisar'
@@ -166,7 +166,7 @@ inherited FrmCadCliente: TFrmCadCliente
         Height = 13
         Caption = 'Telefone:'
       end
-      object Label5: TLabel
+      object LblDocumento: TLabel
         Left = 344
         Top = 204
         Width = 35
@@ -208,7 +208,7 @@ inherited FrmCadCliente: TFrmCadCliente
         Height = 21
         CharCase = ecUpperCase
         MaxLength = 9
-        TabOrder = 5
+        TabOrder = 6
         OnExit = EdtCepExit
       end
       object EdtCidade: TEdit
@@ -218,7 +218,7 @@ inherited FrmCadCliente: TFrmCadCliente
         Height = 21
         CharCase = ecUpperCase
         MaxLength = 100
-        TabOrder = 9
+        TabOrder = 10
       end
       object EdtUF: TEdit
         Left = 511
@@ -227,11 +227,11 @@ inherited FrmCadCliente: TFrmCadCliente
         Height = 21
         CharCase = ecUpperCase
         MaxLength = 2
-        TabOrder = 10
+        TabOrder = 11
       end
       object EdtCodigoCliente: TEdit
         Left = 106
-        Top = 25
+        Top = 24
         Width = 70
         Height = 21
         Alignment = taRightJustify
@@ -247,7 +247,7 @@ inherited FrmCadCliente: TFrmCadCliente
         Height = 21
         CharCase = ecUpperCase
         MaxLength = 100
-        TabOrder = 3
+        TabOrder = 4
       end
       object EdtLogradouro: TEdit
         Left = 106
@@ -256,7 +256,7 @@ inherited FrmCadCliente: TFrmCadCliente
         Height = 21
         CharCase = ecUpperCase
         MaxLength = 100
-        TabOrder = 6
+        TabOrder = 7
       end
       object EdtComplemento: TEdit
         Left = 106
@@ -265,7 +265,7 @@ inherited FrmCadCliente: TFrmCadCliente
         Height = 21
         CharCase = ecUpperCase
         MaxLength = 50
-        TabOrder = 8
+        TabOrder = 9
       end
       object EdtTelefone: TEdit
         Left = 106
@@ -274,16 +274,16 @@ inherited FrmCadCliente: TFrmCadCliente
         Height = 21
         CharCase = ecUpperCase
         MaxLength = 20
-        TabOrder = 11
+        TabOrder = 12
       end
       object EdtCnpj: TEdit
-        Left = 391
-        Top = 200
+        Left = 389
+        Top = 199
         Width = 161
         Height = 21
         CharCase = ecUpperCase
         MaxLength = 18
-        TabOrder = 12
+        TabOrder = 13
         OnExit = EdtCnpjExit
         OnKeyPress = EdtCnpjKeyPress
       end
@@ -294,7 +294,7 @@ inherited FrmCadCliente: TFrmCadCliente
         Height = 21
         CharCase = ecUpperCase
         MaxLength = 50
-        TabOrder = 2
+        TabOrder = 3
       end
       object EdtContato: TEdit
         Left = 106
@@ -303,7 +303,7 @@ inherited FrmCadCliente: TFrmCadCliente
         Height = 21
         CharCase = ecUpperCase
         MaxLength = 50
-        TabOrder = 4
+        TabOrder = 5
       end
       object EdtNumero: TEdit
         Left = 432
@@ -312,7 +312,7 @@ inherited FrmCadCliente: TFrmCadCliente
         Height = 21
         CharCase = ecUpperCase
         MaxLength = 15
-        TabOrder = 7
+        TabOrder = 8
       end
       object EdtEmail: TEdit
         Left = 106
@@ -321,12 +321,12 @@ inherited FrmCadCliente: TFrmCadCliente
         Height = 21
         CharCase = ecLowerCase
         MaxLength = 100
-        TabOrder = 13
+        TabOrder = 14
       end
       object RdgSituacao: TRadioGroup
-        Left = 367
-        Top = 8
-        Width = 184
+        Left = 385
+        Top = 11
+        Width = 167
         Height = 36
         Caption = ' Situa'#231#227'o '
         Columns = 2
@@ -334,7 +334,21 @@ inherited FrmCadCliente: TFrmCadCliente
         Items.Strings = (
           'Inativo'
           'Ativo')
+        TabOrder = 2
+      end
+      object RdgTipoPessoa: TRadioGroup
+        Left = 182
+        Top = 11
+        Width = 168
+        Height = 36
+        Caption = ' Tipo Pessoa  '
+        Columns = 2
+        ItemIndex = 1
+        Items.Strings = (
+          'F'#237'sica'
+          'Jur'#237'dica')
         TabOrder = 1
+        OnClick = RdgTipoPessoaClick
       end
     end
   end

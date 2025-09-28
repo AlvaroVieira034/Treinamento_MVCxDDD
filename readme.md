@@ -73,19 +73,21 @@ ________________________________________
 
     |domain/                              # Camada de Domínio
     |   |── exceptions/                   # Excessões da classe
-    |   |── models/                       # Objetos de valor
+    |   |── models/                       # Modelos de entidades
     |   |── repositories/                 # Interfaces dos repósitorios
     |   |── services/                     # Interfaces de serviços
-    |   |── valueobjects/                 # Objetos de Valor
-    |   └── Exceptions/                   # Excessões de domínio
+    |   └── valueobjects/                 # Objetos de Valor
     │── Infrastructure/                   # Camada de Infraestrutura
-    |   |── persistence/                  # Implementação de persistência
-    |   |── services/                     # Implementação dos repositórios
-    |   └── Mapping/                      # Mapeamento Objeto-Relacional
+    |   |── persistence/                  # SubCamada de persistência
+    |   |   |── databases/                # Classes de conexões ao BD
+    |   |   |── mappings/                 # Mapeamento de Classes
+    |   |   |── repositories              # Classes de Persistência
+    |   |   └── services/                 # Classes de aceesso a serviços
+    |   └── services/                     # API´s de serviços
     |── Application/                      # Camada de aplicação
-    |   |── mappers/                      # Casos de uso
+    |   |── mappers/                      # Mapeamento de classes
     |   |── DTOs/                         # Objetos de transferência de dados
-    |   └── Services/                     # Serviços da aplicação
+    |   └── Services/                     # Serviços da aplicação (APP Service)
     |── Presentation/                     # Camada de Apresentação
     |   |── forms/                        # Formulários
     |   └── Controllers/                  # Controladores
@@ -114,7 +116,7 @@ ________________________________________
 ## 🚀 Ganhos com a Migração para DDD
 
 ✅ 1. Separação Clara de Responsabilidades  
-Antes: Lógica misturada nas Forms  
+Antes: Lógica misturada nos Forms  
 Depois: Cada classe com responsabilidade única 
 
 

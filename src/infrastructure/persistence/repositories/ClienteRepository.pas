@@ -19,17 +19,18 @@ type
     const
       SQL_INSERT =
         'insert into tab_cliente(' +
-        'cod_ativo, des_razaosocial, des_nomefantasia, des_contato, ' +
+        'cod_ativo, cod_tipo, des_razaosocial, des_nomefantasia, des_contato, ' +
         'des_cep, des_logradouro, des_numero, des_complemento, ' +
-        'des_cidade, des_uf, des_cnpj, des_telefone, des_email) ' +
+        'des_cidade, des_uf, des_documento, des_telefone, des_email) ' +
         'values (' +
-        ':cod_ativo, :des_razaosocial, :des_nomefantasia, :des_contato, ' +
+        ':cod_ativo, :cod_tipo, :des_razaosocial, :des_nomefantasia, :des_contato, ' +
         ':des_cep, :des_logradouro, :des_numero, :des_complemento, ' +
-        ':des_cidade, :des_uf, :des_cnpj, :des_telefone, :des_email)';
+        ':des_cidade, :des_uf, :des_documento, :des_telefone, :des_email)';
 
       SQL_UPDATE =
         'update tab_cliente set ' +
         'cod_ativo = :cod_ativo, ' +
+        'cod_tipo = :cod_tipo, ' +
         'des_razaosocial = :des_razaosocial, ' +
         'des_nomefantasia = :des_nomefantasia, ' +
         'des_contato = :des_contato, ' +
@@ -39,7 +40,7 @@ type
         'des_complemento = :des_complemento, ' +
         'des_cidade = :des_cidade, ' +
         'des_uf = :des_uf, ' +
-        'des_cnpj = :des_cnpj, ' +
+        'des_documento = :des_documento, ' +
         'des_telefone = :des_telefone, ' +
         'des_email = :des_email ' +
         'where cod_cliente = :cod_cliente';

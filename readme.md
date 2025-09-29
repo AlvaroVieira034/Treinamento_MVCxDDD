@@ -46,6 +46,7 @@ As principais ferramentas utilizadas neste projeto são:
 
 
 📋 Relatório de Migração para DDD - Módulo de Clientes
+
 📝 Índice
 1.	Visão Geral da Migração
 2.	Nova Estrutura de Pastas e Classes
@@ -128,6 +129,7 @@ Depois: Cada classe com responsabilidade única
 
 ✅ 2. Manutenibilidade Melhorada
 ![Tela Melhoria](./docs/images/image.png)
+
 ✅ 3. Testabilidade
 ![Tela Testabilidade](./docs/images/image-1.png)
 
@@ -135,9 +137,11 @@ Depois: Cada classe com responsabilidade única
 1. ✅ Single Responsibility Principle
 
 Antes:
+
 ![alt text](./docs/images/image-4.png)
 
 Depois:
+
 ![alt text](./docs/images/image-5.png)
 
 2. ✅ Open/Closed Principle

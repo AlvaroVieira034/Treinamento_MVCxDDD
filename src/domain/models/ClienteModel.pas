@@ -62,9 +62,6 @@ type
 
 implementation
 
-{ TCliente }
-
-
 constructor TCliente.Create;
 begin
   inherited Create;
@@ -180,7 +177,7 @@ end;
 
 function TCliente.ObterErrosValidacao: TArray<string>;
 begin
-  Result := []; // Inicializar o array
+  Result := [];
 
   // Validações básicas do cliente
   if FDes_NomeFantasia.Trim = '' then
@@ -198,7 +195,7 @@ begin
   if FEndereco.UF.Trim = '' then
     Result := Result + ['UF é obrigatória!'];
 
-  // VALIDAÇÃO DO DOCUMENTO CONFORME TIPO
+  // // Validações do Value Object Documento - Conforme Tipo
   case FCod_Tipo of
     0: // Pessoa Física
       begin

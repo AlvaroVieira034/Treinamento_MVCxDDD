@@ -165,19 +165,29 @@ Depois:
 
 4. ✅ Interface Segregation Principle
 
+
 Antes:
+
 ![alt text](./docs/images/image-3.png)
 
+
 Depois
+
 ![alt text](./docs/images/image-8.png)
+
 
 5. ✅ Dependency Inversion Principle
 
+
 Antes:
+
 ![alt text](./docs/images/image-10.png)
 
+
 Depois:
+
 ![alt text](image-11.png)
+
 
 ________________________________________
 🧹 Clean Code Aplicado

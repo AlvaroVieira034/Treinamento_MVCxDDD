@@ -99,3 +99,8 @@ update bdtestedguarani.dbo.tab_cliente set des_documento = des_cnpj
 alter table bdtestedguarani.dbo.tab_cliente add des_documento varchar(18)
 
 select * from bdtestedguarani.dbo.tab_cliente
+
+select cli.cod_cliente, cli.cod_ativo, cli.cod_tipo, cli.des_razaosocial, cli.des_nomefantasia, cli.des_contato, cli.des_cep, cli.des_logradouro, cli.des_numero, cli.des_complemento, cli.des_cidade, cli.des_uf, cli.des_documento, cli.des_telefone, cli.des_email 
+from tab_cliente cli
+where cli.des_nomefantasia like '%'
+order by cli.des_nomefantasia

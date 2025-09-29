@@ -146,14 +146,18 @@ Depois:
 
 2. ✅ Open/Closed Principle
 
+
 Antes:
+
 ![alt text](./docs/images/image-7.png)
 
 Depois:
+
 ![alt text](./docs/images/image-6.png)
 
 
 3. ✅ Liskov Substitution Principle
+
 
 ![alt text](./docs/images/image-9.png)
 

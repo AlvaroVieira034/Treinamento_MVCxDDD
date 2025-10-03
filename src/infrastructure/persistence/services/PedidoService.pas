@@ -29,7 +29,7 @@ type
     // Metodos de Acesso a banco de dados -> View
     procedure PreencherGridPedidos(TblPedidos: TFDQuery; APesquisa, ACampo: string);
     procedure PreencherCamposForm(APedido: TPedido; AId: Integer);
-    procedure PreencherGridRelatorio(TblPedidos: TFDQuery; ADataDe, ADataAte: string; CkRelatorio: Integer);
+    procedure PreencherGridRelatorio(TblPedidos: TFDQuery; ADataDe, ADataAte: string; AQuantidadeTop: Integer);
     procedure ExibirResumoPedido(CodPedido: Integer);
     procedure SetParamDateOrNull(const ParamName, DateValue: string);
     function BuscarPedidoPorCodigo(AId: Integer): TPedido;
@@ -107,7 +107,7 @@ begin
   end;
 end;
 
-procedure TPedidoService.PreencherGridRelatorio(TblPedidos: TFDQuery; ADataDe, ADataAte: string; CkRelatorio: Integer);
+procedure TPedidoService.PreencherGridRelatorio(TblPedidos: TFDQuery; ADataDe, ADataAte: string; AQuantidadeTop: Integer);
 var DataDe, DataAte: TDate;
 begin
   with TblPedidos do
@@ -125,7 +125,7 @@ begin
     Close;
     SQL.Clear;
     SQL.Add('SELECT TOP (');
-    SQL.Add('CASE WHEN :MostrarTodos = 1 THEN 2147483647 ELSE 2 END)');
+    SQL.Add(':QuantidadeTop) ');
     SQL.Add('p.cod_produto, ');
     SQL.Add('pr.des_descricao, ');
     SQL.Add('pr.des_marca, ');
@@ -139,9 +139,9 @@ begin
     SQL.Add('GROUP BY p.cod_produto, pr.des_descricao, pr.des_marca ');
     SQL.Add('ORDER BY SUM(p.val_quantidade) DESC');
 
-    ParamByName('DataInicio').AsDate := DataDe;
-    ParamByName('DataFim').AsDate := DataAte;
-    ParamByName('MostrarTodos').AsInteger := CkRelatorio;
+    ParamByName('DATAINICIO').AsDate := DataDe;
+    ParamByName('DATAFIM').AsDate := DataAte;
+    ParamByName('QUANTIDADETOP').AsInteger := AQuantidadeTop;
 
     Prepared := True;
     Open;

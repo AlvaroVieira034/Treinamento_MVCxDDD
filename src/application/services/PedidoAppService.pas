@@ -18,7 +18,7 @@ type
     destructor Destroy;
 
     procedure PreencherGridPedidos(TblPedidos: TFDQuery; APesquisa, ACampo: string);
-    procedure PreencherGridRelatorio(TblPedidos: TFDQuery; ADataDe, ADataAte: string; CkRelatorio: Integer);
+    procedure PreencherGridRelatorio(TblPedidos: TFDQuery; ADataDe, ADataAte: string; AQuantidadeTop: Integer);
     function CarregarCampos(FPedido: TPedido; ACodigo: Integer): Boolean;
     function Inserir(APedido: TPedido): Boolean;
     function Alterar(APedido: TPedido; AId: Integer): Boolean;
@@ -69,11 +69,11 @@ begin
   end;
 end;
 
-procedure TPedidoAppService.PreencherGridRelatorio(TblPedidos: TFDQuery; ADataDe, ADataAte: string; CkRelatorio: Integer);
+procedure TPedidoAppService.PreencherGridRelatorio(TblPedidos: TFDQuery; ADataDe, ADataAte: string; AQuantidadeTop: Integer);
 var LCampo, sErro: string;
 begin
   try
-    FPedidoService.PreencherGridRelatorio(TblPedidos, ADataDe, ADataAte, CkRelatorio);
+    FPedidoService.PreencherGridRelatorio(TblPedidos, ADataDe, ADataAte, AQuantidadeTop);
   except on E: Exception do
     begin
       sErro := 'Ocorreu um erro ao pesquisar o pedido!' + sLineBreak + E.Message;

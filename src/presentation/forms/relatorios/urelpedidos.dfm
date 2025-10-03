@@ -181,6 +181,13 @@ object FrmRelPedidos: TFrmRelPedidos
       ShowHint = True
       OnClick = BtnSairClick
     end
+    object Label3: TLabel
+      Left = 181
+      Top = 49
+      Width = 121
+      Height = 13
+      Caption = 'produtos mais vendidos ?'
+    end
     object EdtDataDe: TEdit
       Left = 86
       Top = 15
@@ -206,12 +213,24 @@ object FrmRelPedidos: TFrmRelPedidos
     end
     object ChkRelatorio: TCheckBox
       Left = 24
-      Top = 46
-      Width = 401
+      Top = 48
+      Width = 125
       Height = 17
-      Caption = 'Emitir relat'#243'rio com os dois produtos mais vendidos ?'
+      Caption = 'Emitir relat'#243'rio com os '
       TabOrder = 2
       OnClick = ChkRelatorioClick
+    end
+    object EdtQuantVendidos: TEdit
+      Left = 155
+      Top = 46
+      Width = 23
+      Height = 21
+      Alignment = taRightJustify
+      Enabled = False
+      MaxLength = 3
+      TabOrder = 3
+      OnClick = BtnPesquisarClick
+      OnKeyPress = EdtQuantVendidosKeyPress
     end
   end
 end

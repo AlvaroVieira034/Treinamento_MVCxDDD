@@ -28,6 +28,8 @@ type
     EdtDataAte: TEdit;
     BtnSair: TSpeedButton;
     ChkRelatorio: TCheckBox;
+    EdtQuantVendidos: TEdit;
+    Label3: TLabel;
 
 {$ENDREGION}
 
@@ -39,6 +41,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure ChkRelatorioClick(Sender: TObject);
     procedure EdtDataDeExit(Sender: TObject);
+    procedure EdtQuantVendidosKeyPress(Sender: TObject; var Key: Char);
 
   private
     TblPedidos: TFDQuery;
@@ -155,14 +158,21 @@ begin
 end;
 
 procedure TFrmRelPedidos.PreencherGridRelatorio;
-var CkRelatorio: Integer;
+var QuantidadeTop: Integer;
 begin
   if ChkRelatorio.Checked then
-      CkRelatorio := 0
+  begin
+    if EdtQuantVendidos.Text <> '' then
+      QuantidadeTop := StrToInt(EdtQuantVendidos.Text)
     else
-      CkRelatorio := 1;
+      QuantidadeTop := 2147483647;
+  end
+  else
+  begin
+    QuantidadeTop := 2147483647
+  end;
 
-  FPedidoAppService.PreencherGridRelatorio(TblPedidos, EdtDataDe.Text, EdtDataAte.Text, CkRelatorio);
+  FPedidoAppService.PreencherGridRelatorio(TblPedidos, EdtDataDe.Text, EdtDataAte.Text, QuantidadeTop);
 end;
 
 procedure TFrmRelPedidos.EdtDataDeChange(Sender: TObject);
@@ -182,12 +192,30 @@ end;
 
 procedure TFrmRelPedidos.ChkRelatorioClick(Sender: TObject);
 begin
-  PreencherGridRelatorio();
+  if ChkRelatorio.Checked then
+  begin
+    EdtQuantVendidos.Enabled := True;
+    EdtQuantVendidos.SetFocus;
+  end;
+
+  if not ChkRelatorio.Checked then
+  begin
+    EdtQuantVendidos.Enabled := False;
+    EdtQuantVendidos.Text := '';
+    PreencherGridRelatorio();
+  end;
+
 end;
 
 procedure TFrmRelPedidos.BtnPesquisarClick(Sender: TObject);
 begin
   PreencherGridRelatorio();
+end;
+
+procedure TFrmRelPedidos.EdtQuantVendidosKeyPress(Sender: TObject; var Key: Char);
+begin
+  if not (key in ['0'..'9', #08]) then
+    key := #0;
 end;
 
 procedure TFrmRelPedidos.BtnSairClick(Sender: TObject);

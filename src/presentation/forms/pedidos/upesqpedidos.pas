@@ -78,21 +78,15 @@ end;
 
 procedure TFrmPesquisaPedidos.FormCreate(Sender: TObject);
 var sCampo: string;
-    Repository: TPedidoRepository;
-    Service: TPedidoService;
-    Connection: TFDConnection;
 begin
   inherited;
   if TConexaoSingleton.GetInstance.DatabaseConnection.TestarConexao then
   begin
-    Connection := TFDConnection.Create(nil);
-    Repository := TPedidoRepository.Create(Connection);
-    Service := TPedidoService.Create(Connection);
     CriarTabelas();
     CriarCamposTabelas();
     sCampo := 'ped.dta_Pedido';
     FPedido := TPedido.Create;
-    PedidoAppService := TPedidoAppService.Create(Repository, Service);
+    PedidoAppService := TPedidoAppService.Create(TPedidoRepository.Create, TPedidoService.Create);
   end
   else
   begin

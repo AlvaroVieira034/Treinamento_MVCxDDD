@@ -3,7 +3,7 @@ unit PedidoService;
 interface
 
 uses
-  PedidoModel, ConexaoAdapter, IPedido.Service, PedidoExceptions, PedidoDTO, System.SysUtils,
+  PedidoModel, Conexao, IPedido.Service, PedidoExceptions, PedidoDTO, System.SysUtils,
   FireDAC.Comp.Client, FireDAC.Stan.Param, Data.DB;
 
 type
@@ -13,8 +13,8 @@ type
     TblPedidos: TFDQuery;
     QryTemp: TFDQuery;
     DsPedidos: TDataSource;
-    Conexao: TConexao;
-    FConexao: TFDConnection;
+    //Conexao: TConexao;
+    //FConexao: TFDConnection;
 
     const
       SQL_SELECT =
@@ -23,7 +23,7 @@ type
         'join tab_cliente cli on ped.cod_cliente = cli.cod_cliente';
 
   public
-    constructor Create(AConnection: TFDConnection);
+    constructor Create;
     destructor Destroy; override;
 
     // Metodos de Acesso a banco de dados -> View
@@ -47,9 +47,8 @@ implementation
 
 { TPedidoService }
 
-constructor TPedidoService.Create(AConnection: TFDConnection);
+constructor TPedidoService.Create;
 begin
-  FConexao := AConnection;
   CriarTabelas();
 end;
 
@@ -168,7 +167,7 @@ var Query: TFDQuery;
 begin
   Result := TPedido.Create;
   try
-    Query := Conexao.CriarQuery();
+    Query := TConexao.GetInstance.Connection.CriarQuery();
     try
       with Query do
       begin
@@ -203,15 +202,14 @@ end;
 
 procedure TPedidoService.ValidarPedido(APedido: TPedido);
 begin
-    // Validações básicas da entidade
   APedido.Validar;
 end;
 
 procedure TPedidoService.CriarTabelas;
 begin
-  TblPedidos := Conexao.CriarQuery;
-  QryTemp := Conexao.CriarQuery;
-  DsPedidos := Conexao.CriarDataSource;
+  TblPedidos := TConexao.GetInstance.Connection.CriarQuery;
+  QryTemp := TConexao.GetInstance.Connection.CriarQuery;
+  DsPedidos := TConexao.GetInstance.Connection.CriarDataSource;
   DsPedidos.DataSet := TblPedidos;
 end;
 

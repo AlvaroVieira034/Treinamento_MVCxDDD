@@ -3,8 +3,8 @@ unit ClienteRepository;
 interface
 
 uses
-  ClienteModel, ConexaoAdapter, ConexaoSingleton, ICliente.Repository, ClienteDTO,
-  ClienteExceptions, System.SysUtils, FireDAC.Comp.Client, FireDAC.Stan.Param, Data.DB;
+  ClienteModel, Conexao, ICliente.Repository, ClienteDTO, ClienteExceptions, System.SysUtils,
+  FireDAC.Comp.Client, FireDAC.Stan.Param, Data.DB;
 
 type
   TClienteRepository = class(TInterfacedObject, IClienteRepository)
@@ -13,7 +13,6 @@ type
     QryClientes: TFDQuery;
     Transacao: TFDTransaction;
     Conexao: TConexao;
-    FConexao: TFDConnection;
 
     // Constantes SQL
     const
@@ -46,7 +45,7 @@ type
         'where cod_cliente = :cod_cliente';
 
   public
-    constructor Create(AConnection: TFDConnection);
+    constructor Create;
     destructor Destroy; override;
 
     function Inserir(ACliente: TCliente): Boolean;
@@ -61,10 +60,9 @@ implementation
 
 { TClienteRepository }
 
-constructor TClienteRepository.Create(AConnection: TFDConnection);
+constructor TClienteRepository.Create;
 begin
   inherited Create;
-  FConexao := AConnection;
   CriarTabelas();
 end;
 
@@ -159,8 +157,8 @@ end;
 
 procedure TClienteRepository.CriarTabelas;
 begin
-  QryClientes := Conexao.CriarQuery;
-  Transacao := Conexao.CriarTransaction;
+  QryClientes := TConexao.GetInstance.Connection.CriarQuery();
+  Transacao := TConexao.GetInstance.Connection.CriarTransaction();
   QryClientes.Transaction := Transacao;
 end;
 

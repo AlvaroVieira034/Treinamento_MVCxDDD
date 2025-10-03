@@ -6,16 +6,14 @@ uses PedidoItemModel, PedidoItemRepository, system.SysUtils, Vcl.Forms, FireDAC.
      System.Generics.Collections;
 
 type
-  TCampoInvalido = (ciData, ciDescricao, ciCliente, ciValor, ciValorZero);
   TPedidoItemAppService = class
 
   private
     FPedidoItem: TPedidoItem;
     FPedidoItemRepository: TPedidoItemRepository;
-    AConnection: TFDConnection;
 
   public
-    constructor Create();
+    constructor Create;
     destructor Destroy; override;
 
     function CarregarItensPedido(ACodPedido: Integer): TList<TPedidoItem>;
@@ -26,12 +24,10 @@ type
 
 implementation
 
-{ TPedidoItensController }
-
 constructor TPedidoItemAppService.Create;
 begin
   FPedidoItem := TPedidoItem.Create;
-  FPedidoItemRepository := TPedidoItemRepository.Create(AConnection);
+  FPedidoItemRepository := TPedidoItemRepository.Create;
 end;
 
 destructor TPedidoItemAppService.Destroy;

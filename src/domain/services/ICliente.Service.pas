@@ -15,7 +15,7 @@ type
     procedure PreencherComboClientes(TblClientes: TFDQuery);
     procedure PreencherCamposForm(ACliente: TCliente; AId: Integer);
     procedure ValidarCliente(ACliente: TCliente);
-    function BuscarClientePorCodigo(AId: Integer): TCliente;
+    function BuscarClientePorCodigo(FCliente: TCliente; AId: Integer): TCliente;
     function ClientePodeSerExcluido(AClienteId: Integer): Boolean;
 
     // Metodos para criação de tabeas

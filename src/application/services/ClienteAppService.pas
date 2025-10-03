@@ -8,35 +8,23 @@ uses
   Data.DB, FireDAC.Comp.Client;
 
 type
-  IClienteAppService = interface
-    ['{BCFF5BF5-B916-48EB-A803-007F2AF482C9}']
-    procedure PreencheGridClientes(APesquisa, ACampo: string);
-    procedure PreencherCamposForm(ACliente: TCliente; ACodigo: Integer);
-    procedure PreencherComboClientes(TblComboClientes: TFDQuery);
-    function BuscarClientePorCodigo(AId: Integer): TCliente;
-    function Inserir(ACliente: TCliente): Boolean;
-    function Alterar(ACliente: TCliente; ACodigo: Integer): Boolean;
-    function Excluir(ACodigo: Integer): Boolean;
-    function ValidarCliente(ACliente: TCliente): Boolean;
-    function GetDataSource: TDataSource;
+  TClienteAppService = class
 
-  end;
-
-  TClienteAppService = class(TInterfacedObject, IClienteAppService)
   private
-    FClienteRepository: IClienteRepository;
-    FClienteService: IClienteService;
+    FClienteRepository: TClienteRepository;
+    FClienteService: TClienteService;
 
     function EntityToDTO(ACliente: TCliente): TClienteDTO;
     function DTOToEntity(AClienteDTO: TClienteDTO): TCliente;
 
   public
     constructor Create(AClienteRepository: IClienteRepository; AClienteService: IClienteService);
+    destructor Destroy;
 
     procedure PreencheGridClientes(APesquisa, ACampo: string);
     procedure PreencherCamposForm(ACliente: TCliente; ACodigo: Integer);
-    procedure PreencherComboClientes(TblComboClientes: TFDQuery);
-    function BuscarClientePorCodigo(AId: Integer): TCliente;
+    procedure PreencherComboClientes(TblClientes: TFDQuery);
+    function BuscarClientePorCodigo(FCliente: TCliente; AId: Integer): TCliente;
     function Inserir(ACliente: TCliente): Boolean;
     function Alterar(ACliente: TCliente; ACodigo: Integer): Boolean;
     function Excluir(ACodigo: Integer): Boolean;
@@ -51,8 +39,14 @@ implementation
 constructor TClienteAppService.Create(AClienteRepository: IClienteRepository; AClienteService: IClienteService);
 begin
   inherited Create;
-  FClienteRepository := AClienteRepository;
-  FClienteService := AClienteService;
+  FClienteRepository := TClienteRepository.Create;
+  FClienteService := TClienteService.Create;
+end;
+
+destructor TClienteAppService.Destroy;
+begin
+  FClienteRepository.Free;
+  FClienteService.Free;
 end;
 
 procedure TClienteAppService.PreencheGridClientes(APesquisa, ACampo: string);
@@ -65,14 +59,14 @@ begin
   FClienteService.PreencherCamposForm(ACliente, ACodigo);
 end;
 
-procedure TClienteAppService.PreencherComboClientes(TblComboClientes: TFDQuery);
+procedure TClienteAppService.PreencherComboClientes(TblClientes: TFDQuery);
 begin
-  FClienteService.PreencherComboClientes(TblComboClientes);
+  FClienteService.PreencherComboClientes(TblClientes);
 end;
 
-function TClienteAppService.BuscarClientePorCodigo(AId: Integer): TCliente;
+function TClienteAppService.BuscarClientePorCodigo(FCliente: TCliente; AId: Integer): TCliente;
 begin
-  Result := FClienteService.BuscarClientePorCodigo(AId);
+  Result := FClienteService.BuscarClientePorCodigo(FCliente, AId);
   if not Assigned(Result) then
     raise EClienteNaoEncontradoException.Create(AId);
 end;

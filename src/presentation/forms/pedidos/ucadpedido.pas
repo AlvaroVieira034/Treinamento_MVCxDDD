@@ -180,13 +180,6 @@ begin
 end;
 
 procedure TFrmCadPedido.FormCreate(Sender: TObject);
-var ProdutoRepository: IProdutoRepository;
-    ProdutoService: IProdutoService;
-    PedidoRepository: IPedidoRepository;
-    PedidoService: IPedidoService;
-    ClienteRepository: IClienteRepository;
-    ClienteService: IClienteService;
-    Connection: TFDConnection;
 begin
   inherited;
   if TConexao.GetInstance.Connection.TestarConexao then
@@ -204,17 +197,11 @@ begin
     DsProdutos.DataSet := TblProdutos;
 
     //Instancias Classes
-    ProdutoRepository := TProdutoRepository.Create(Connection);
-    ProdutoService := TProdutoService.Create(Connection);
-    ClienteRepository := TClienteRepository.Create(Connection);
-    ClienteService := TClienteService.Create(Connection);
-    PedidoRepository := TPedidoRepository.Create(Connection);
-    PedidoService := TPedidoService.Create(Connection);
-    FProdutoAppService := TProdutoAppService.Create(ProdutoRepository, ProdutoService);
-    FClienteAppService := TClienteAppService.Create(ClienteRepository, ClienteService);
+    FProdutoAppService := TProdutoAppService.Create(TProdutoRepository.Create, TProdutoService.Create);
+    FClienteAppService := TClienteAppService.Create(TClienteRepository.Create, TClienteService.Create);
     FCliente := TCliente.Create;
     FPedido := TPedido.Create;
-    FPedidoAppService := TPedidoAppService.Create(PedidoRepository, PedidoService);
+    FPedidoAppService := TPedidoAppService.Create(TPedidoRepository.Create, TPedidoService.Create);
     FPedidoItem := TPedidoItem.Create;
     FPedidoItemAppService := TPedidoItemAppService.Create;
 

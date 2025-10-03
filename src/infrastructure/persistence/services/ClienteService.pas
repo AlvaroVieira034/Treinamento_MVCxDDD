@@ -3,7 +3,7 @@ unit ClienteService;
 interface
 
 uses
-  ClienteModel, ConexaoAdapter, ICliente.Service, ClienteExceptions, ClienteDTO, System.SysUtils,
+  ClienteModel, Conexao, ICliente.Service, ClienteExceptions, ClienteDTO, System.SysUtils,
   FireDAC.Comp.Client, FireDAC.Stan.Param, Data.DB;
 
 type
@@ -14,26 +14,26 @@ type
     QryTemp: TFDQuery;
     DsClientes: TDataSource;
     Conexao: TConexao;
-    FConexao: TFDConnection;
+
 
     // Constantes SQL
     const
       SQL_SELECT =
-        'select cli.cod_cliente, cli.cod_ativo, cli.cod_tipo, cli.des_razaosocial as nomecliente, ' + #13 +
+        'select cli.cod_cliente, cli.cod_ativo, cli.cod_tipo, cli.des_razaosocial, ' + #13 +
         'cli.des_nomefantasia, cli.des_contato, cli.des_cep, cli.des_logradouro, cli.des_numero, ' + #13 +
         'cli.des_complemento, cli.des_cidade, cli.des_uf, cli.des_documento, cli.des_telefone,  ' + #13 +
         'cli.des_email ' + #13 +
         'from tab_cliente cli';
 
   public
-    constructor Create(AConnection: TFDConnection);
+    constructor Create;
     destructor Destroy; override;
 
     // Metodos de Acesso a banco de dados -> View
     procedure PreencheGridClientes(APesquisa, ACampo: string);
     procedure PreencherComboClientes(TblClientes: TFDQuery);
     procedure PreencherCamposForm(ACliente: TCliente; AId: Integer);
-    function BuscarClientePorCodigo(AId: Integer): TCliente;
+    function BuscarClientePorCodigo(FCliente: TCliente; AId: Integer): TCliente;
 
     // Metódos de Validação
     procedure ValidarDocumentoUnico(const ADocumento: string; ACodigoCliente, ATipoCliente: Integer);
@@ -52,10 +52,9 @@ implementation
 { TClienteService }
 
 
-constructor TClienteService.Create(AConnection: TFDConnection);
+constructor TClienteService.Create;
 begin
   inherited Create;
-  FConexao := AConnection;
   CriarTabelas();
 end;
 
@@ -88,7 +87,7 @@ begin
   begin
     Close;
     SQL.Clear;
-    SQL.Add('select cod_cliente, des_nomefantasia from tab_cliente order by des_nomefantasia ');
+    SQL.Add('select * from tab_cliente order by des_nomefantasia ');
     Open();
   end;
 end;
@@ -146,19 +145,19 @@ end;
 
 procedure TClienteService.CriarTabelas;
 begin
-  TblClientes := Conexao.CriarQuery;
-  QryTemp := Conexao.CriarQuery;
-  DsClientes := Conexao.CriarDataSource;
+  TblClientes := TConexao.GetInstance.Connection.CriarQuery;
+  QryTemp := TConexao.GetInstance.Connection.CriarQuery;
+  DsClientes := TConexao.GetInstance.Connection.CriarDataSource;
   DsClientes.DataSet := TblClientes;
 end;
 
-function TClienteService.BuscarClientePorCodigo(AId: Integer): TCliente;
+function TClienteService.BuscarClientePorCodigo(FCliente: TCliente; AId: Integer): TCliente;
 var Query: TFDQuery;
     DTO: TClienteDTO;
 begin
   Result := TCliente.Create;
   try
-    Query := Conexao.CriarQuery();
+    Query := TConexao.GetInstance.Connection.CriarQuery();
     try
       with Query do
       begin

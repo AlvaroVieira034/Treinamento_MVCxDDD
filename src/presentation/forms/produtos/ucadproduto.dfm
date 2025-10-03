@@ -175,10 +175,10 @@ inherited FrmCadProduto: TFrmCadProduto
       ExplicitWidth = 699
       ExplicitHeight = 227
       object DBGridProdutos: TDBGrid
-        Left = 12
+        Left = 9
         Top = 20
-        Width = 674
-        Height = 195
+        Width = 682
+        Height = 196
         Anchors = [akLeft, akTop, akRight, akBottom]
         Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgTitleHotTrack]
         TabOrder = 0

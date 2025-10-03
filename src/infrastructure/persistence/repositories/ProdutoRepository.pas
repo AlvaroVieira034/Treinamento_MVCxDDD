@@ -3,7 +3,7 @@ unit ProdutoRepository;
 interface
 
 uses
-  ProdutoModel, ConexaoAdapter, ConexaoSingleton, IProduto.Repository, ProdutoDTO,
+  ProdutoModel, Conexao, ConexaoSingleton, IProduto.Repository, ProdutoDTO,
   ProdutoExceptions, System.SysUtils, FireDAC.Comp.Client, FireDAC.Stan.Param, Data.DB;
 
 type
@@ -13,7 +13,6 @@ type
     QryProdutos: TFDQuery;
     Transacao: TFDTransaction;
     Conexao: TConexao;
-    FConexao: TFDConnection;
 
     // Constantes SQL
     const
@@ -31,7 +30,7 @@ type
         'where cod_produto = :cod_produto';
 
   public
-    constructor Create(AConnection: TFDConnection);
+    constructor Create;
     destructor Destroy; override;
 
     function Inserir(AProduto: TProduto): Boolean;
@@ -46,20 +45,15 @@ implementation
 
 { TProdutoRepository }
 
-constructor TProdutoRepository.Create(AConnection: TFDConnection);
+constructor TProdutoRepository.Create;
 begin
   inherited Create();
-  FConexao := AConnection;
   CriarTabelas();
 end;
 
 destructor TProdutoRepository.Destroy;
 begin
-  if Assigned(QryProdutos) then
-    QryProdutos.Free;
-
-  if Assigned(Transacao) then
-    Transacao.Free;
+  QryProdutos.Free;
 
   inherited;
 end;
@@ -150,8 +144,8 @@ end;
 
 procedure TProdutoRepository.CriarTabelas;
 begin
-  QryProdutos := Conexao.CriarQuery;
-  Transacao := Conexao.CriarTransaction;
+  QryProdutos := TConexao.GetInstance.Connection.CriarQuery;
+  Transacao := TConexao.GetInstance.Connection.CriarTransaction;
   QryProdutos.Transaction := Transacao;
 end;
 

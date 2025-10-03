@@ -15,7 +15,7 @@ type
     procedure PreencherComboProdutos(TblProdutos: TFDQuery);
     procedure PreencherCamposForm(AProduto: TProduto; AId: Integer);
     procedure ValidarProduto(AProduto: TProduto);
-    function BuscarProdutoPorCodigo(AId: Integer): TProduto;
+    function BuscarProdutoPorCodigo(AProduto: TProduto; AId: Integer): TProduto;
     function ProdutoPodeSerExcluido(AProdutoId: Integer): Boolean;
 
     // Metodos para criação de tabeas

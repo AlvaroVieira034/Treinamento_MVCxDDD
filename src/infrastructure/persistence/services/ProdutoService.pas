@@ -3,7 +3,7 @@ unit ProdutoService;
 interface
 
 uses
-  ProdutoModel, ConexaoAdapter, IProduto.Service, ProdutoExceptions, ProdutoDTO, System.SysUtils,
+  ProdutoModel, Conexao, IProduto.Service, ProdutoExceptions, ProdutoDTO, System.SysUtils,
   FireDAC.Comp.Client, FireDAC.Stan.Param, Data.DB;
 
 type
@@ -14,7 +14,6 @@ type
     QryTemp: TFDQuery;
     DsProdutos: TDataSource;
     Conexao: TConexao;
-    FConexao: TFDConnection;
 
     const
       SQL_SELECT =
@@ -22,14 +21,14 @@ type
          'from tab_produto prd ';
 
   public
-    constructor Create(AConnection: TFDConnection);
+    constructor Create;
     destructor Destroy; override;
 
     // Metodos de Acesso a banco de dados -> View
     procedure PreencheGridProdutos(APesquisa, ACampo: string);
     procedure PreencherComboProdutos(TblProdutos: TFDQuery);
     procedure PreencherCamposForm(AProduto: TProduto; AId: Integer);
-    function BuscarProdutoPorCodigo(AId: Integer): TProduto;
+    function BuscarProdutoPorCodigo(FProduto: TProduto; AId: Integer): TProduto;
 
     // Metódos de Validação
     procedure ValidarProduto(AProduto: TProduto);
@@ -49,10 +48,9 @@ implementation
 
 { TProdutoService }
 
-constructor TProdutoService.Create(AConnection: TFDConnection);
+constructor TProdutoService.Create;
 begin
   inherited Create;
-  FConexao := AConnection;
   CriarTabelas();
 end;
 
@@ -116,13 +114,13 @@ begin
   end;
 end;
 
-function TProdutoService.BuscarProdutoPorCodigo(AId: Integer): TProduto;
+function TProdutoService.BuscarProdutoPorCodigo(FProduto: TProduto; AId: Integer): TProduto;
 var Query: TFDQuery;
     DTO: TProdutoDTO;
 begin
   Result := TProduto.Create;
   try
-    Query := Conexao.CriarQuery();
+    Query := TConexao.GetInstance.Connection.CriarQuery();
     try
       with Query do
       begin
@@ -174,6 +172,7 @@ function TProdutoService.VerificarDescricaoExistente(const ADescricao: string; A
 begin
   Result := False;
   QryTemp.Close;
+  QryTemp.SQL.Clear;
   QryTemp.SQL.Add('select count(*) as quant from tab_produto where des_descricao = :des_descricao');
   if ACodigoProduto > 0 then
   begin
@@ -203,9 +202,9 @@ end;
 
 procedure TProdutoService.CriarTabelas;
 begin
-  TblProdutos := Conexao.CriarQuery;
-  QryTemp := Conexao.CriarQuery;
-  DsProdutos := Conexao.CriarDataSource;
+  TblProdutos := TConexao.GetInstance.Connection.CriarQuery;
+  QryTemp := TConexao.GetInstance.Connection.CriarQuery;
+  DsProdutos := TConexao.GetInstance.Connection.CriarDataSource;
   DsProdutos.DataSet := TblProdutos;
   CriarCamposTabelas();
 end;

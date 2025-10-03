@@ -268,12 +268,12 @@ inherited FrmCadPedido: TFrmCadPedido
         OnKeyPress = EdtCodClienteKeyPress
       end
       object LcbxNomeCliente: TDBLookupComboBox
-        Left = 214
-        Top = 79
+        Left = 216
+        Top = 80
         Width = 284
         Height = 21
         KeyField = 'COD_CLIENTE'
-        ListField = 'DES_RAZAOSOCIAL'
+        ListField = 'DES_NOMEFANTASIA'
         TabOrder = 4
         OnClick = LcbxNomeClienteClick
       end

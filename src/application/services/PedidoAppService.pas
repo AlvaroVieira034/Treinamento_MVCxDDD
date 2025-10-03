@@ -10,12 +10,12 @@ type
 
   private
     FPedido: TPedido;
-    FPedidoRepository: IPedidoRepository;
-    FPedidoService: IPedidoService;
-    AConnection: TFDConnection;
+    FPedidoRepository: TPedidoRepository;
+    FPedidoService: TPedidoService;
 
   public
     constructor Create(APedidoRepository: IPedidoRepository; APedidoService: IPedidoService);
+    destructor Destroy;
 
     procedure PreencherGridPedidos(TblPedidos: TFDQuery; APesquisa, ACampo: string);
     procedure PreencherGridRelatorio(TblPedidos: TFDQuery; ADataDe, ADataAte: string; CkRelatorio: Integer);
@@ -33,8 +33,18 @@ implementation
 
 constructor TPedidoAppService.Create(APedidoRepository: IPedidoRepository; APedidoService: IPedidoService);
 begin
-  FPedidoRepository := APedidoRepository;
-  FPedidoService := APedidoService;
+  FPedido := TPedido.Create();
+  FPedidoRepository := TPedidoRepository.Create();
+  FPedidoService := TPedidoService.Create();
+end;
+
+destructor TPedidoAppService.Destroy;
+begin
+  FPedido.Free;
+  FPedidoRepository.Free;
+  FPedidoService.Free;
+
+  inherited;
 end;
 
 procedure TPedidoAppService.PreencherGridPedidos(TblPedidos: TFDQuery; APesquisa, ACampo: string);

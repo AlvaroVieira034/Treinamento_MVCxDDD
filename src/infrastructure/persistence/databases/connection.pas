@@ -40,26 +40,26 @@ var FDPhysMSSQL: TFDPhysMSSQLDriverLink;
 begin
   inherited Create;
   // Caminho do arquivo INI
-  IniFileName := TPath.Combine(TPath.GetDirectoryName(ParamStr(0)), 'guarani.ini');
+  IniFileName := TPath.Combine(TPath.GetDirectoryName(ParamStr(0)), 'confsys.ini');
 
   // Carregar o arquivo INI
   Ini := TIniFile.Create(IniFileName);
   try
     // Ler o tipo de banco de dados configurado
-    Banco := Ini.ReadString('DatabaseConfig', 'Banco', 'FIREBIRD');
+    Banco := Ini.ReadString('DatabaseConfig', 'Banco', 'MSSQL');
 
-    if Banco = 'FIREBIRD' then
+    if Banco = 'MSSQL' then
     begin
-      // Configuração para Firebird
+      // Configuração para MSSQL
+      FDPhysMSSQL := TFDPhysMSSQLDriverLink.Create(nil);
 
       FConexao := TFDConnection.Create(nil);
-      FConexao.Params.DriverID := 'FB'; // Driver do Firebird no FireDAC
-      FConexao.Params.Database := Ini.ReadString('Database', 'Database', 'C:\Treinamento\Delphi\Teste Tecnico Guarani\data\BDTESTEGUARANI.fdb'); // Caminho para o arquivo do banco de dados
-      FConexao.Params.UserName := Ini.ReadString('Database', 'UserName', 'SYSDBA');
-      FConexao.Params.Password := Ini.ReadString('Database', 'Password', 'masterkey');
-      FConexao.Params.Add('Server=' + Ini.ReadString('Database', 'Server', 'localhost'));
-      FConexao.Params.Add('Port=' + Ini.ReadString('Database', 'Port', '3050'));
-      FConexao.Params.Add('CharacterSet=WIN1252');
+      FConexao.Params.DriverID := 'MSSQL';
+      FConexao.Params.Database := Ini.ReadString('Database', 'Database', 'bdtestedguarani');
+      FConexao.Params.UserName := Ini.ReadString('Database', 'UserName', 'sa');
+      FConexao.Params.Password := Ini.ReadString('Database', 'Password', 'info');
+      FConexao.Params.Add('Server=' + Ini.ReadString('Database', 'Server', 'NOTEBOOKALVARO\SQLEXPRESS'));
+      FConexao.Params.Add('Port=' + Ini.ReadString('Database', 'Port', '1433'));
       FConexao.LoginPrompt := False;
     end
     else

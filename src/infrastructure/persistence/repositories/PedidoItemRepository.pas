@@ -3,8 +3,8 @@ unit PedidoItemRepository;
 interface
 
 uses
-  PedidoItemModel, PedidoItemDTO, IPedidoItem.Repository, ConexaoAdapter, ConexaoSingleton, System.SysUtils,
-  FireDAC.Comp.Client, FireDAC.Stan.Param, System.Classes, System.Generics.Collections, Data.DB;
+  PedidoItemModel, PedidoItemDTO, IPedidoItem.Repository, Conexao, System.SysUtils, FireDAC.Comp.Client,
+  FireDAC.Stan.Param, System.Classes, System.Generics.Collections, Data.DB;
 
 type
   TPedidoItemRepository = class(TInterfacedObject, IPedidoItemRepository)
@@ -12,8 +12,8 @@ type
   private
     QryPedidoItem: TFDQuery;
     TransacaoItens: TFDTransaction;
-    Conexao: TConexao;
-    FConexao: TFDConnection;
+    //Conexao: TConexao;
+    //FConexao: TFDConnection;
 
     // Constantes SQL
     const
@@ -30,7 +30,7 @@ type
         'where vdi.cod_pedido = :cod_pedido order by vdi.id_pedido ';
 
   public
-    constructor Create(AConnection: TFDConnection);
+    constructor Create;
     destructor Destroy; override;
     function CarregarItensPedido(ACodPedido: Integer): TList<TPedidoItem>;
     function Inserir(APedidoItem: TPedidoItem): Boolean;
@@ -44,16 +44,14 @@ implementation
 
 { TPedidosItensRepository }
 
-constructor TPedidoItemRepository.Create(AConnection: TFDConnection);
+constructor TPedidoItemRepository.Create;
 begin
-  FConexao := AConnection;
   CriarTabelas()
 end;
 
 destructor TPedidoItemRepository.Destroy;
 begin
-  TransacaoItens.Free;
-  QryPedidoItem.Free;
+
   inherited;
 end;
 
@@ -157,8 +155,8 @@ end;
 
 procedure TPedidoItemRepository.CriarTabelas;
 begin
-  QryPedidoItem := Conexao.CriarQuery;
-  TransacaoItens := Conexao.CriarTransaction;
+  QryPedidoItem := TConexao.GetInstance.Connection.CriarQuery();
+  TransacaoItens := TConexao.GetInstance.Connection.CriarTransaction();
   QryPedidoItem.Transaction := TransacaoItens;
 end;
 

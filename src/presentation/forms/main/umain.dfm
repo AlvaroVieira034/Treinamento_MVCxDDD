@@ -26,7 +26,7 @@ object FrmMain: TFrmMain
     TabOrder = 0
     object BtnSair: TSpeedButton
       Left = 397
-      Top = 4
+      Top = 5
       Width = 97
       Height = 71
       Caption = 'Sair'
@@ -352,8 +352,8 @@ object FrmMain: TFrmMain
       OnClick = BtnProdutosClick
     end
     object BtnClientes: TSpeedButton
-      Left = 0
-      Top = 4
+      Left = -2
+      Top = 5
       Width = 97
       Height = 71
       Caption = 'Clientes'

@@ -113,7 +113,7 @@ begin
 
   // Verifica se o arquivo INI existe
   if not FileExists(IniFileName) then
-    raise Exception.Create('Arquivo testewk.ini não encontrado!');
+    raise Exception.Create('Arquivo confsys.ini não encontrado!');
 
    // Carregar o arquivo INI
   Ini := TIniFile.Create(IniFileName);

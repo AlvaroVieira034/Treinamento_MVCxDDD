@@ -381,10 +381,10 @@ inherited FrmCadCliente: TFrmCadCliente
       ExplicitWidth = 737
       ExplicitHeight = 242
       object DbGridClientes: TDBGrid
-        Left = 12
+        Left = 10
         Top = 20
         Width = 717
-        Height = 211
+        Height = 210
         TabOrder = 0
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = clWindowText

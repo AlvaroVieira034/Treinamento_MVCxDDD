@@ -103,25 +103,15 @@ end;
 
 procedure TFrmMostraPedido.FormCreate(Sender: TObject);
 var sCampo: string;
-    ClienteRepository: IClienteRepository;
-    ClienteService: IClienteService;
-    PedidoRepository: IPedidoRepository;
-    PedidoService: IPedidoService;
-    Connection: TFDConnection;
 begin
   inherited;
   if TConexaoSingleton.GetInstance.DatabaseConnection.TestarConexao then
   begin
     //Instancias Classes
-    Connection := TFDConnection.Create(nil);
-    ClienteRepository := TClienteRepository.Create(Connection);
-    ClienteService    := TClienteService.Create(Connection);
-    PedidoRepository := TPedidoRepository.Create(Connection);
-    PedidoService    := TPedidoService.Create(Connection);
     FPedido := TPedido.Create;
     FPedidoItem := TPedidoItem.Create;
-    FClienteAppService := TClienteAppService.Create(ClienteRepository, ClienteService);
-    FPedidoAppService := TPedidoAppService.Create(PedidoRepository, PedidoService);
+    FClienteAppService := TClienteAppService.Create(TClienteRepository.Create, TClienteService.Create);
+    FPedidoAppService := TPedidoAppService.Create(TPedidoRepository.Create, TPedidoService.Create);
     FPedidoItemAppService := TPedidoItemAppService.Create;
     MTblPedidoItem.CreateDataSet;
   end

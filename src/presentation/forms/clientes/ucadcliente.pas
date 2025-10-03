@@ -7,7 +7,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, ClienteModel, ICliente.Service,
   ICliente.Repository, ClienteService, ClienteDTO, ClienteAppService, ClienteRepository,
-  ClienteExceptions, ConexaoSingleton, ucadastropadrao, CEPService, EnderecoValueObject,
+  ClienteExceptions, Conexao, ucadastropadrao, CEPService, EnderecoValueObject,
   ContatoValueObject, DocumentoValueObject,  FormatUtil, Data.DB, Vcl.StdCtrls, Vcl.Grids,
   Vcl.DBGrids, Vcl.Buttons, Vcl.ExtCtrls, FireDAC.Comp.Client, System.UITypes;
 
@@ -129,18 +129,14 @@ begin
 end;
 
 procedure TFrmCadCliente.FormCreate(Sender: TObject);
-var Repository: IClienteRepository;
-    Service: IClienteService;
-    Connection: TFDConnection;
+var Connection: TFDConnection;
 begin
   inherited;
-  if TConexaoSingleton.GetInstance.DatabaseConnection.TestarConexao then
+  if TConexao.GetInstance.Connection.TestarConexao then
   begin
     FCliente := TCliente.Create;
     Connection := TFDConnection.Create(nil);
-    Repository := TClienteRepository.Create(Connection);
-    Service    := TClienteService.Create(Connection);
-    FClienteAppService := TClienteAppService.Create(Repository, Service);
+    FClienteAppService := TClienteAppService.Create(TClienteRepository.Create, TClienteService.Create);
     GetDataSource();
     FOperacao := opInicio;
   end
@@ -191,7 +187,7 @@ begin
 
   try
     CodigoCliente := DsClientes.DataSet.FieldByName('COD_CLIENTE').AsInteger;
-    Cliente := FClienteAppService.BuscarClientePorCodigo(CodigoCliente);
+    Cliente := FClienteAppService.BuscarClientePorCodigo(FCliente, CodigoCliente);
     try
       ClienteDTO := TClienteDTO.FromEntity(Cliente);
       try

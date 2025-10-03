@@ -6,8 +6,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, System.UITypes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, ProdutoModel, IProduto.Service, IProduto.Repository,
-  ProdutoService, ProdutoDTO, ProdutoAppSevice, ProdutoRepository, ProdutoExceptions, ConexaoSingleton,
-  ucadastropadrao, CEPService, ProdutoValueObject, FormatUtil, Data.DB, Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids,
+  ProdutoService, ProdutoRepository, ProdutoDTO, ProdutoAppSevice, ProdutoExceptions, Conexao, CEPService,
+  ucadastropadrao, ProdutoValueObject, FormatUtil, Data.DB, Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids,
   Vcl.Buttons, Vcl.ExtCtrls, FireDAC.Comp.Client;
 
 {$ENDREGION}
@@ -103,18 +103,14 @@ begin
 end;
 
 procedure TFrmCadProduto.FormCreate(Sender: TObject);
-var Repository: IProdutoRepository;
-    Service: IProdutoService;
-    Connection: TFDConnection;
+var Connection: TFDConnection;
 begin
   inherited;
-  if TConexaoSingleton.GetInstance.DatabaseConnection.TestarConexao then
+  if TConexao.GetInstance.Connection.TestarConexao then
   begin
     FProduto := TProduto.Create;
     Connection := TFDConnection.Create(nil);
-    Repository := TProdutoRepository.Create(Connection);
-    Service    := TProdutoService.Create(Connection);
-    FProdutoAppService := TProdutoAppService.Create(Repository, Service);
+    FProdutoAppService := TProdutoAppService.Create(TProdutoRepository.Create, TProdutoService.Create);
     GetDataSource();
     FOperacao := opInicio;
   end
@@ -159,7 +155,7 @@ begin
 
   try
     CodigoProduto := DsProdutos.DataSet.FieldByName('COD_PRODUTO').AsInteger;
-    Produto := FProdutoAppService.BuscarProdutoPorCodigo(CodigoProduto);
+    Produto := FProdutoAppService.BuscarProdutoPorCodigo(FProduto, CodigoProduto);
     try
       ProdutoDTO := TProdutoDTO.FromEntity(Produto);
       try

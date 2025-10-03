@@ -8,33 +8,22 @@ uses
   Data.DB, FireDAC.Comp.Client;
 
 type
-  IProdutoAppService = interface
-    ['{8A01A606-9CED-4455-9B78-3FC3F64DAD69}']
-    procedure PreencheGridProdutos(APesquisa, ACampo: string);
-    procedure PreencherComboProdutos(TblComboProdutos: TFDQuery);
-    function BuscarProdutoPorCodigo(AId: Integer): TProduto;
-    function Inserir(AProduto: TProduto): Boolean;
-    function Alterar(AProduto: TProduto; ACodigo: Integer): Boolean;
-    function Excluir(ACodigo: Integer): Boolean;
-    function ValidarProduto(AProduto: TProduto): Boolean;
-    function GetDataSource: TDataSource;
+  TProdutoAppService = class
 
-  end;
-
-  TProdutoAppService = class(TInterfacedObject, IProdutoAppService)
   private
-    FProdutoRepository: IProdutoRepository;
-    FProdutoService: IProdutoService;
+    FProdutoRepository: TProdutoRepository;
+    FProdutoService: TProdutoService;
 
     function EntityToDTO(AProduto: TProduto): TProdutoDTO;
     function DTOToEntity(AProdutoDTO: TProdutoDTO): TProduto;
 
   public
     constructor Create(AProdutoRepository: IProdutoRepository; AProdutoService: IProdutoService);
+    destructor Destroy;
 
     procedure PreencheGridProdutos(APesquisa, ACampo: string);
     procedure PreencherComboProdutos(TblComboProdutos: TFDQuery);
-    function BuscarProdutoPorCodigo(AId: Integer): TProduto;
+    function BuscarProdutoPorCodigo(AProduto: TProduto; AId: Integer): TProduto;
     function Inserir(AProduto: TProduto): Boolean;
     function Alterar(AProduto: TProduto; ACodigo: Integer): Boolean;
     function Excluir(ACodigo: Integer): Boolean;
@@ -50,8 +39,14 @@ implementation
 
 constructor TProdutoAppService.Create(AProdutoRepository: IProdutoRepository; AProdutoService: IProdutoService);
 begin
-  FProdutoRepository := AProdutoRepository;
-  FProdutoService := AProdutoService;
+  FProdutoRepository := TProdutoRepository.Create;
+  FProdutoService := TProdutoService.Create;
+end;
+
+destructor TProdutoAppService.Destroy;
+begin
+  FProdutoRepository.Free;
+  FProdutoService.Free;
 end;
 
 procedure TProdutoAppService.PreencheGridProdutos(APesquisa, ACampo: string);
@@ -64,9 +59,9 @@ begin
   FProdutoService.PreencherComboProdutos(TblComboProdutos);
 end;
 
-function TProdutoAppService.BuscarProdutoPorCodigo(AId: Integer): TProduto;
+function TProdutoAppService.BuscarProdutoPorCodigo(AProduto: TProduto; AId: Integer): TProduto;
 begin
-  Result := FProdutoService.BuscarProdutoPorCodigo(AId);
+  Result := FProdutoService.BuscarProdutoPorCodigo(AProduto, AId);
   if not Assigned(Result) then
     raise EProdutoNaoEncontradoException.Create(AId);
 end;

@@ -3,8 +3,8 @@ unit PedidoRepository;
 interface
 
 uses
-  PedidoModel, ConexaoAdapter, ConexaoSingleton, IPedido.Repository, PedidoDTO,
-  PedidoExceptions, System.SysUtils, FireDAC.Comp.Client, FireDAC.Stan.Param, Data.DB;
+  PedidoModel, Conexao, IPedido.Repository, PedidoDTO, PedidoExceptions, System.SysUtils,
+  FireDAC.Comp.Client, FireDAC.Stan.Param, Data.DB;
 
 type
   TPedidoRepository = class(TInterfacedObject, IPedidoRepository)
@@ -12,8 +12,8 @@ type
   private
     QryPedidos: TFDQuery;
     Transacao: TFDTransaction;
-    Conexao: TConexao;
-    FConexao: TFDConnection;
+    //Conexao: TConexao;
+    //FConexao: TFDConnection;
 
     // Constantes SQL
     const
@@ -29,7 +29,7 @@ type
         'where cod_pedido = :cod_pedido';
 
   public
-    constructor Create(AConnection: TFDConnection);
+    constructor Create;
     destructor Destroy; override;
 
     function Inserir(FPedido: TPedido): Boolean;
@@ -44,10 +44,9 @@ implementation
 
 { TPedidoRepository }
 
-constructor TPedidoRepository.Create(AConnection: TFDConnection);
+constructor TPedidoRepository.Create;
 begin
   inherited Create;
-  FConexao := AConnection;
   CriarTabelas();
 end;
 
@@ -146,8 +145,8 @@ end;
 
 procedure TPedidoRepository.CriarTabelas;
 begin
-  QryPedidos := Conexao.CriarQuery;
-  Transacao := Conexao.CriarTransaction;
+  QryPedidos := TConexao.GetInstance.Connection.CriarQuery;
+  Transacao := TConexao.GetInstance.Connection.CriarTransaction;
   QryPedidos.Transaction := Transacao;
 end;
 end.

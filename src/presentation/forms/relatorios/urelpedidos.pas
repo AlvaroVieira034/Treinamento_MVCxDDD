@@ -8,8 +8,8 @@ uses
   Vcl.Forms, Vcl.Dialogs, UCadastroPadrao, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Data.DB,
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.Grids, Vcl.DBGrids,
-  Vcl.DBCtrls, Vcl.Controls, ConexaoSingleton, ConexaoAdapter, ProdutoModel, ProdutoAppSevice, ProdutoRepository,
-  ProdutoService, ClienteModel, ClienteAppService, PedidoModel, PedidoItemModel, PedidoAppService, PedidoRepository,
+  Vcl.DBCtrls, Vcl.Controls, Conexao, ProdutoModel, ProdutoAppSevice, ProdutoRepository, ProdutoService,
+  ClienteModel, ClienteAppService, PedidoModel, PedidoItemModel, PedidoAppService, PedidoRepository,
   IPedido.Repository, PedidoService, IPedido.Service, PedidoItemAppService, ClienteRepository, ICliente.Repository,
   ClienteService, ICliente.Service, FormatUtil, upesqpedidos, umostrapedido, System.Generics.Collections;
 
@@ -121,28 +121,23 @@ end;
 
 procedure TFrmRelPedidos.FormCreate(Sender: TObject);
 var sCampo: string;
-    PedidoRepository: TPedidoRepository;
-    PedidoService: TPedidoService;
-    Connection: TFDConnection;
 begin
   inherited;
-  if TConexaoSingleton.GetInstance.DatabaseConnection.TestarConexao then
+  if TConexao.GetInstance.Connection.TestarConexao then
   begin
      // Cria Tabelas
-    TblPedidos := TConexaoSingleton.GetInstance.DatabaseConnection.CriarQuery;
+    TblPedidos := TConexao.GetInstance.Connection.CriarQuery;
 
     // Cria DataSource
-    DsRelatorio := TConexaoSingleton.GetInstance.DatabaseConnection.CriarDataSource;
+    DsRelatorio := TConexao.GetInstance.Connection.CriarDataSource;
     DbGridRelatorio.DataSource := DsRelatorio;
 
     // Atribui DataSet às tabelas
     DsRelatorio.DataSet := TblPedidos;
 
     //Instancias Classes
-    PedidoRepository := TPedidoRepository.Create(Connection);
-    PedidoService := TPedidoService.Create(Connection);
     FPedido := TPedido.Create;
-    FPedidoAppService := TPedidoAppService.Create(PedidoRepository, PedidoService);
+    FPedidoAppService := TPedidoAppService.Create(TPedidoRepository.Create, TPedidoService.Create);
 
     CriarCamposTabelas();
   end

@@ -13,7 +13,6 @@ type
     TblProdutos: TFDQuery;
     QryTemp: TFDQuery;
     DsProdutos: TDataSource;
-    Conexao: TConexao;
 
     const
       SQL_SELECT =
@@ -45,8 +44,6 @@ type
   end;
 
 implementation
-
-{ TProdutoService }
 
 constructor TProdutoService.Create;
 begin

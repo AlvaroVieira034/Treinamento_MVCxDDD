@@ -13,8 +13,6 @@ type
     TblClientes: TFDQuery;
     QryTemp: TFDQuery;
     DsClientes: TDataSource;
-    Conexao: TConexao;
-
 
     // Constantes SQL
     const

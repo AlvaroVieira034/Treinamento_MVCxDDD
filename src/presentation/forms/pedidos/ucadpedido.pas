@@ -13,7 +13,7 @@ uses
   ClienteModel, ClienteAppService, PedidoModel, PedidoDTO, PedidoItemModel, PedidoAppService, IPedido.Repository,
   PedidoRepository, IPedido.Service, PedidoService, PedidoItemAppService, ICliente.Repository, ClienteRepository,
   PedidoValueObject, ICliente.Service, ClienteService, PedidoItemValidator, PedidoExceptions, FormatUtil, upesqpedidos,
-  System.Generics.Collections, conexao; //,ConexaoSingleton, ConexaoAdapter;
+  System.Generics.Collections, Conexao;
 
 {$ENDREGION}
 
@@ -100,8 +100,6 @@ type
     FPedidoAppService: TPedidoAppService;
     FPedidoItem: TPedidoItem;
     FPedidoItemAppService: TPedidoItemAppService;
-    Conexao: TConexao;
-    FConexao: TFDConnection;
     TransacaoPedidos : TFDTransaction;
     totPedido, totPedidoAnt: Double;
     idItem: Integer;

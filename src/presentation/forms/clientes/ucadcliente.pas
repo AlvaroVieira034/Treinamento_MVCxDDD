@@ -129,13 +129,11 @@ begin
 end;
 
 procedure TFrmCadCliente.FormCreate(Sender: TObject);
-var Connection: TFDConnection;
 begin
   inherited;
   if TConexao.GetInstance.Connection.TestarConexao then
   begin
     FCliente := TCliente.Create;
-    Connection := TFDConnection.Create(nil);
     FClienteAppService := TClienteAppService.Create(TClienteRepository.Create, TClienteService.Create);
     GetDataSource();
     FOperacao := opInicio;
@@ -159,13 +157,6 @@ begin
   VerificarBotoes(FOperacao);
   if EdtPesquisar.CanFocus then
     EdtPesquisar.SetFocus;
-end;
-
-procedure TFrmCadCliente.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-  inherited;
-  if Key = VK_RETURN then
-    perform(WM_NEXTDLGCTL,0,0)
 end;
 
 procedure TFrmCadCliente.PreencherGridClientes;
@@ -565,7 +556,6 @@ begin
         Exit;
       end;
 
-      //Formatar(EdtCep, TFormato.CEP);
       EdtLogradouro.Text := JSONObject.GetValue<string>('logradouro', '');
       EdtCidade.Text := JSONObject.GetValue<string>('localidade', '');
       EdtUf.Text := JSONObject.GetValue<string>('uf', '');
@@ -616,6 +606,13 @@ begin
 
   if RdgTipoPessoa.ItemIndex = 1 then
     Formatar(EdtCnpj, TFormato.CNPJ);
+end;
+
+procedure TFrmCadCliente.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  inherited;
+  if Key = VK_RETURN then
+    perform(WM_NEXTDLGCTL,0,0)
 end;
 
 procedure TFrmCadCliente.EdtCnpjKeyPress(Sender: TObject; var Key: Char);

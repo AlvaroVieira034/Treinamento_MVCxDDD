@@ -57,7 +57,6 @@ type
     ValoresOriginais: array of string;
     FProduto: TProduto;
     FProdutoAppService: TProdutoAppService;
-    sErro: string;
 
     procedure PreencherGridProduto;
     procedure PreencherCamposForm;
@@ -103,13 +102,11 @@ begin
 end;
 
 procedure TFrmCadProduto.FormCreate(Sender: TObject);
-var Connection: TFDConnection;
 begin
   inherited;
   if TConexao.GetInstance.Connection.TestarConexao then
   begin
     FProduto := TProduto.Create;
-    Connection := TFDConnection.Create(nil);
     FProdutoAppService := TProdutoAppService.Create(TProdutoRepository.Create, TProdutoService.Create);
     GetDataSource();
     FOperacao := opInicio;
@@ -321,6 +318,7 @@ function TFrmCadProduto.GetDataSource: TDataSource;
 begin
   DBGridProdutos.DataSource := FProdutoAppService.GetDataSource();
   DsProdutos := FProdutoAppService.GetDataSource();
+
 end;
 
 procedure TFrmCadProduto.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);

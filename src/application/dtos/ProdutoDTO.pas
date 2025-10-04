@@ -3,7 +3,7 @@ unit ProdutoDTO;
 interface
 
 uses
-  System.SysUtils, ProdutoModel, Data.DB, FireDAC.Comp.Client;
+  System.SysUtils, ProdutoModel, Data.DB, FireDAC.Comp.Client, FireDAC.Stan.Param;
 
 type
   TProdutoDTO = class

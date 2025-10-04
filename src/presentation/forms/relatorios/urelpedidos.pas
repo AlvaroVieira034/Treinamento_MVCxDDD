@@ -48,7 +48,6 @@ type
     DsRelatorio: TDataSource;
     FPedido: TPedido;
     FPedidoAppService: TPedidoAppService;
-    FPedidoItem: TPedidoItem;
 
     procedure PreencherGridRelatorio;
     procedure CriarCamposTabelas;
@@ -75,9 +74,7 @@ end;
 
 procedure TFrmRelPedidos.CriarCamposTabelas;
 var FloatField: TFloatField;
-    SingleField: TSingleField;
     StringField: TStringField;
-    DateField: TDateField;
     IntegerField: TIntegerField;
 begin
   // Criando o campo COD_Pedido
@@ -123,7 +120,6 @@ begin
 end;
 
 procedure TFrmRelPedidos.FormCreate(Sender: TObject);
-var sCampo: string;
 begin
   inherited;
   if TConexao.GetInstance.Connection.TestarConexao then

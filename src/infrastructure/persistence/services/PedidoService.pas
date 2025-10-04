@@ -13,8 +13,6 @@ type
     TblPedidos: TFDQuery;
     QryTemp: TFDQuery;
     DsPedidos: TDataSource;
-    //Conexao: TConexao;
-    //FConexao: TFDConnection;
 
     const
       SQL_SELECT =
@@ -30,7 +28,6 @@ type
     procedure PreencherGridPedidos(TblPedidos: TFDQuery; APesquisa, ACampo: string);
     procedure PreencherCamposForm(APedido: TPedido; AId: Integer);
     procedure PreencherGridRelatorio(TblPedidos: TFDQuery; ADataDe, ADataAte: string; AQuantidadeTop: Integer);
-    procedure ExibirResumoPedido(CodPedido: Integer);
     procedure SetParamDateOrNull(const ParamName, DateValue: string);
     function BuscarPedidoPorCodigo(AId: Integer): TPedido;
 
@@ -44,8 +41,6 @@ type
   end;
 
 implementation
-
-{ TPedidoService }
 
 constructor TPedidoService.Create;
 begin
@@ -146,11 +141,6 @@ begin
     Prepared := True;
     Open;
   end;
-end;
-
-procedure TPedidoService.ExibirResumoPedido(CodPedido: Integer);
-begin
-
 end;
 
 procedure TPedidoService.SetParamDateOrNull(const ParamName, DateValue: string);

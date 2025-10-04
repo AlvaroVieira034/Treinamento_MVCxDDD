@@ -10,7 +10,6 @@ type
     procedure PreencherGridPedidos(TblPedidos: TFDQuery; APesquisa, ACampo: string);
     procedure PreencherCamposForm(APedido: TPedido; AId: Integer);
     procedure PreencherGridRelatorio(TblPedidos: TFDQuery; ADataDe, ADataAte: string; AQuantidadeTop: Integer);
-    procedure ExibirResumoPedido(CodPedido: Integer);
     procedure ValidarPedido(APedido: TPedido);
     procedure CriarTabelas;
     function GetDataSource: TDataSource;

@@ -2,7 +2,8 @@ unit PedidoItemDTO;
 
 interface
 
-uses PedidoItemModel, System.SysUtils, FireDAC.Comp.Client, System.Classes, System.Generics.Collections,
+uses
+  PedidoItemModel, System.SysUtils, FireDAC.Comp.Client, FireDAC.Stan.Param, System.Classes, System.Generics.Collections,
   Data.DB;
 
 type

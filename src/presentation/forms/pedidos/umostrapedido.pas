@@ -9,8 +9,8 @@ uses
   Vcl.Forms, Vcl.Dialogs, UCadastroPadrao, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Data.DB,
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.Grids, Vcl.DBGrids,
-  Vcl.DBCtrls, Vcl.Controls, ConexaoAdapter, ConexaoSingleton, ProdutoModel, ProdutoAppSevice, ProdutoRepository,
-  ProdutoService, ClienteModel, ClienteAppService, PedidoModel, PedidoItemModel, PedidoAppService, PedidoRepository,
+  Vcl.DBCtrls, Vcl.Controls, Conexao, ProdutoModel, ProdutoAppSevice, ProdutoRepository, ProdutoService,
+  ClienteModel, ClienteAppService, PedidoModel, PedidoItemModel, PedidoAppService, PedidoRepository,
   IPedido.Repository, PedidoService, IPedido.Service, PedidoItemAppService, ClienteRepository, ClienteService,
   ICliente.Repository, ICliente.Service, FormatUtil, upesqpedidos, System.Generics.Collections;
 
@@ -61,13 +61,11 @@ type
     procedure BtnFecharClick(Sender: TObject);
 
   private
-    FProdutoAppService: TProdutoAppService;
     FClienteAppService: TClienteAppService;
     FPedido: TPedido;
     FPedidoAppService: TPedidoAppService;
     FPedidoItem: TPedidoItem;
     FPedidoItemAppService: TPedidoItemAppService;
-    TransacaoPedidos : TFDTransaction;
 
   public
     codigoPedido: Integer;
@@ -102,10 +100,9 @@ begin
 end;
 
 procedure TFrmMostraPedido.FormCreate(Sender: TObject);
-var sCampo: string;
 begin
   inherited;
-  if TConexaoSingleton.GetInstance.DatabaseConnection.TestarConexao then
+  if TConexao.GetInstance.Connection.TestarConexao then
   begin
     //Instancias Classes
     FPedido := TPedido.Create;

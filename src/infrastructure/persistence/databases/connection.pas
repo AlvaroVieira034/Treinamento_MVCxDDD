@@ -33,7 +33,6 @@ uses Vcl.Dialogs;
 
 constructor TConnection.Create;
 var FDPhysMSSQL: TFDPhysMSSQLDriverLink;
-    FDPhysFBDriverLink1: TFDPhysFBDriverLink;
     Banco: string;
     Ini: TIniFile;
     IniFileName: string;

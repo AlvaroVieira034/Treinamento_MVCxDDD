@@ -6,9 +6,6 @@ uses
   ucadastropadrao in 'src\presentation\forms\base\ucadastropadrao.pas' {FrmCadastroPadrao},
   ucadcliente in 'src\presentation\forms\clientes\ucadcliente.pas' {FrmCadCliente},
   ClienteRepository in 'src\infrastructure\persistence\repositories\ClienteRepository.pas',
-  ConexaoAdapter in 'src\infrastructure\persistence\databases\ConexaoAdapter.pas',
-  ConexaoSingleton in 'src\infrastructure\persistence\databases\ConexaoSingleton.pas',
-  DatabaseConnection in 'src\infrastructure\persistence\databases\DatabaseConnection.pas',
   IConexao.Database in 'src\infrastructure\persistence\databases\IConexao.Database.pas',
   EnderecoValueObject in 'src\domain\valueobjects\EnderecoValueObject.pas',
   ContatoValueObject in 'src\domain\valueobjects\ContatoValueObject.pas',
@@ -49,13 +46,13 @@ uses
   PedidoDTO in 'src\application\dtos\PedidoDTO.pas',
   PedidoValueObject in 'src\domain\valueobjects\PedidoValueObject.pas',
   PedidoExceptions in 'src\domain\exceptions\PedidoExceptions.pas',
-  ucadpedido in 'src\presentation\forms\pedidos\ucadpedido.pas' {FrmCadPedido},
   umostrapedido in 'src\presentation\forms\pedidos\umostrapedido.pas' {FrmMostraPedido},
   PedidoItemValidator in 'src\shared\utils\PedidoItemValidator.pas',
   upesqpedidos in 'src\presentation\forms\pedidos\upesqpedidos.pas' {FrmPesquisaPedidos},
   conexao in 'src\infrastructure\persistence\databases\conexao.pas',
   connection in 'src\infrastructure\persistence\databases\connection.pas',
-  urelpedidos in 'src\presentation\forms\relatorios\urelpedidos.pas' {FrmRelPedidos};
+  urelpedidos in 'src\presentation\forms\relatorios\urelpedidos.pas' {FrmRelPedidos},
+  ucadpedido in 'src\presentation\forms\pedidos\ucadpedido.pas' {FrmCadPedido};
 
 {$R *.res}
 

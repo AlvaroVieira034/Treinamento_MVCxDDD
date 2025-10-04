@@ -29,8 +29,6 @@ type
 
 implementation
 
-{ TPedidoController }
-
 constructor TPedidoAppService.Create(APedidoRepository: IPedidoRepository; APedidoService: IPedidoService);
 begin
   FPedido := TPedido.Create();
@@ -70,7 +68,7 @@ begin
 end;
 
 procedure TPedidoAppService.PreencherGridRelatorio(TblPedidos: TFDQuery; ADataDe, ADataAte: string; AQuantidadeTop: Integer);
-var LCampo, sErro: string;
+var sErro: string;
 begin
   try
     FPedidoService.PreencherGridRelatorio(TblPedidos, ADataDe, ADataAte, AQuantidadeTop);

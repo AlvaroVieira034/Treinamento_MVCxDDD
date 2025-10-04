@@ -4,9 +4,9 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, ConexaoAdapter,
-  PedidoModel, ConexaoSingleton, PedidoAppService, PedidoRepository, IPedido.Repository, PedidoService,
-  IPedido.Service, FireDAC.Comp.Client, Vcl.Buttons, Vcl.ExtCtrls;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, Conexao,
+  PedidoModel,  PedidoAppService, PedidoRepository, IPedido.Repository, PedidoService, IPedido.Service,
+  FireDAC.Comp.Client, Vcl.Buttons, Vcl.ExtCtrls;
 
 type
   TFrmPesquisaPedidos = class(TForm)
@@ -80,7 +80,7 @@ procedure TFrmPesquisaPedidos.FormCreate(Sender: TObject);
 var sCampo: string;
 begin
   inherited;
-  if TConexaoSingleton.GetInstance.DatabaseConnection.TestarConexao then
+  if TConexao.GetInstance.Connection.TestarConexao then
   begin
     CriarTabelas();
     CriarCamposTabelas();
@@ -107,15 +107,14 @@ end;
 
 procedure TFrmPesquisaPedidos.CriarTabelas;
 begin
-  TblPedidos := TConexaoSingleton.GetInstance.DatabaseConnection.CriarQuery;
-  DsPedidos := TConexaoSingleton.GetInstance.DatabaseConnection.CriarDataSource;
+  TblPedidos := TConexao.GetInstance.Connection.CriarQuery;
+  DsPedidos := TConexao.GetInstance.Connection.CriarDataSource;
   DsPedidos.DataSet := TblPedidos;
   DbGridPedidos.DataSource := DsPedidos;
 end;
 
 procedure TFrmPesquisaPedidos.CriarCamposTabelas;
 var FloatField: TFloatField;
-    SingleField: TSingleField;
     StringField: TStringField;
     DateField: TDateField;
     IntegerField: TIntegerField;

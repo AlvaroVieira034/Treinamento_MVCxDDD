@@ -34,8 +34,6 @@ type
 
 implementation
 
-{ TClienteAppService }
-
 constructor TClienteAppService.Create(AClienteRepository: IClienteRepository; AClienteService: IClienteService);
 begin
   inherited Create;
@@ -94,7 +92,6 @@ end;
 function TClienteAppService.ValidarCliente(ACliente: TCliente): Boolean;
 begin
   try
-    // Delega a validação para o Domain Service
     FClienteService.ValidarCliente(ACliente);
     Result := True;
   except
@@ -118,7 +115,7 @@ begin
   try
     Result.Cod_Ativo := ACliente.Cod_Ativo;
     Result.Cod_Cliente := ACliente.Cod_Cliente;
-    Result.Cod_Tipo := ACliente.Cod_Tipo; // IMPORTANTE: Não esqueça esta linha!
+    Result.Cod_Tipo := ACliente.Cod_Tipo;
     Result.Des_RazaoSocial := ACliente.Des_RazaoSocial;
     Result.Des_NomeFantasia := ACliente.Des_NomeFantasia;
     Result.Des_Contato := ACliente.Des_Contato;
@@ -131,11 +128,10 @@ begin
     Result.Des_Cidade := ACliente.Endereco.Cidade;
     Result.Des_UF := ACliente.Endereco.UF;
 
-    // CORREÇÃO: Documento conforme tipo
     if ACliente.Cod_Tipo = 0 then
-      Result.Des_Documento := ACliente.Documento.CPF  // Pessoa Física
+      Result.Des_Documento := ACliente.Documento.CPF
     else
-      Result.Des_Documento := ACliente.Documento.CNPJ; // Pessoa Jurídica
+      Result.Des_Documento := ACliente.Documento.CNPJ;
 
     Result.Des_Telefone := ACliente.Contato.Telefone;
     Result.Des_Email := ACliente.Contato.Email;
@@ -151,7 +147,7 @@ begin
   try
     Result.Cod_Ativo := AClienteDTO.Cod_Ativo;
     Result.Cod_Cliente := AClienteDTO.Cod_Cliente;
-    Result.Cod_Tipo := AClienteDTO.Cod_Tipo; // IMPORTANTE: Não esqueça esta linha!
+    Result.Cod_Tipo := AClienteDTO.Cod_Tipo;
     Result.Des_RazaoSocial := AClienteDTO.Des_RazaoSocial;
     Result.Des_NomeFantasia := AClienteDTO.Des_NomeFantasia;
     Result.Des_Contato := AClienteDTO.Des_Contato;
@@ -164,11 +160,10 @@ begin
     Result.Endereco.Cidade := AClienteDTO.Des_Cidade;
     Result.Endereco.UF := AClienteDTO.Des_UF;
 
-    // CORREÇÃO: Documento conforme tipo
     if AClienteDTO.Cod_Tipo = 0 then
-      Result.Documento.CPF := AClienteDTO.Des_Documento  // Pessoa Física
+      Result.Documento.CPF := AClienteDTO.Des_Documento
     else
-      Result.Documento.CNPJ := AClienteDTO.Des_Documento; // Pessoa Jurídica
+      Result.Documento.CNPJ := AClienteDTO.Des_Documento;
 
     // Contato
     Result.Contato.Telefone := AClienteDTO.Des_Telefone;

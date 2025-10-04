@@ -3,8 +3,8 @@ unit ProdutoRepository;
 interface
 
 uses
-  ProdutoModel, Conexao, ConexaoSingleton, IProduto.Repository, ProdutoDTO,
-  ProdutoExceptions, System.SysUtils, FireDAC.Comp.Client, FireDAC.Stan.Param, Data.DB;
+  ProdutoModel, Conexao, IProduto.Repository, ProdutoDTO, ProdutoExceptions, System.SysUtils,
+  FireDAC.Comp.Client, FireDAC.Stan.Param, Data.DB;
 
 type
   TProdutoRepository = class(TInterfacedObject, IProdutoRepository)
@@ -12,7 +12,6 @@ type
   private
     QryProdutos: TFDQuery;
     Transacao: TFDTransaction;
-    Conexao: TConexao;
 
     // Constantes SQL
     const

@@ -3,7 +3,7 @@ unit PedidoDTO;
 interface
 
 uses
-  System.SysUtils, PedidoModel, Data.DB, FireDAC.Comp.Client;
+  System.SysUtils, PedidoModel, Data.DB, FireDAC.Comp.Client, FireDAC.Stan.Param;
 
 type
   TPedidoDTO = class

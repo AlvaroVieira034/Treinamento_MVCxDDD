@@ -12,7 +12,6 @@ type
   private
     QryClientes: TFDQuery;
     Transacao: TFDTransaction;
-    Conexao: TConexao;
 
     // Constantes SQL
     const

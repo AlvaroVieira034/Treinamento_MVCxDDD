@@ -12,8 +12,6 @@ type
   private
     QryPedidos: TFDQuery;
     Transacao: TFDTransaction;
-    //Conexao: TConexao;
-    //FConexao: TFDConnection;
 
     // Constantes SQL
     const
@@ -41,8 +39,6 @@ type
   end;
 
 implementation
-
-{ TPedidoRepository }
 
 constructor TPedidoRepository.Create;
 begin
@@ -149,4 +145,5 @@ begin
   Transacao := TConexao.GetInstance.Connection.CriarTransaction;
   QryPedidos.Transaction := Transacao;
 end;
+
 end.
